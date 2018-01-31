@@ -13,8 +13,8 @@ import { scheduleOnce } from '@ember/runloop';
 export default Component.extend(RecognizerMixin, {
   layout,
 
-  classNames: ['gesture-slider'],
-  classNameBindings: ['isDragging:gesture-slider--dragging', 'finishAnimation:gesture-slider--transitioning'],
+  classNames: ['mobile-pane'],
+  classNameBindings: ['isDragging:mobile-pane--dragging', 'finishAnimation:mobile-pane--transitioning'],
   recognizers: 'pan',
 
   router: service(),
@@ -207,7 +207,7 @@ export default Component.extend(RecognizerMixin, {
   //TODO: dont run store/restore scroll when in fastboot mode
   storeScroll(){
     if(!this.get('isFastBoot')){
-      //const elem = this.element.querySelector('.gesture-slider-container .current');
+      //const elem = this.element.querySelector('.mobile-pane__container .child--current');
       const key = this._buildMemoryKey(this.get('currentModel.id'));
 
       this.get('memory')[key] = document.scrollingElement.scrollTop || document.documentElement.scrollTop;//elem.scrollTop;
@@ -221,9 +221,9 @@ export default Component.extend(RecognizerMixin, {
       const currentKey  = this._buildMemoryKey(this.get('currentModel.id'));
       const nextKey     = this._buildMemoryKey(this.get('nextModel.id'));
 
-      const prev    = this.element.querySelector('.gesture-slider-container .previous');
+      const prev    = this.element.querySelector('.mobile-pane__container .child--previous');
       const current = document.scrollingElement || document.documentElement;
-      const next    = this.element.querySelector('.gesture-slider-container .next');
+      const next    = this.element.querySelector('.mobile-pane__container .child--next');
 
       if(prev) prev.scrollTop    = this.get('memory')[prevKey] || 0;
       current.scrollTop = this.get('memory')[currentKey] || 0;
@@ -237,6 +237,6 @@ export default Component.extend(RecognizerMixin, {
   },
 
   _buildMemoryKey(id){
-    return `gesture-slider/${this.get('currentRouteName')}.${id}`;
+    return `mobile-pane/${this.get('currentRouteName')}.${id}`;
   }
 });

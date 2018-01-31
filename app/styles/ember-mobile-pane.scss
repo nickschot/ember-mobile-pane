@@ -1,0 +1,44 @@
+$transition-duration: 0.2s;
+
+.mobile-pane {
+  position: relative;
+
+  .mobile-pane__container {
+    will-change: transform;
+  }
+
+  .mobile-pane__child {
+    overflow: hidden;
+
+    &.child--previous, &.child--next {
+      position: fixed;
+      top: 0;
+      left: 0;
+      max-height: 100vh;
+    }
+
+    &.child--current {
+      touch-action: pan-y;
+      height: 100%;
+      overflow: auto;
+    }
+
+    &.child--previous {
+      transform: translateX(-100vw);
+    }
+
+    &.child--next {
+      transform: translateX(100vw);
+    }
+  }
+
+  &.mobile-pane--transitioning .mobile-pane__container {
+    transition: transform $transition-duration;
+  }
+
+  &.mobile-pane--dragging {
+    .mobile-pane__container {
+      transition: none;
+    }
+  }
+}

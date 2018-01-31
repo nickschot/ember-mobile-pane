@@ -1,16 +1,16 @@
-<div class="gesture-slider-container" style="{{containerStyle}}">
+<div class="mobile-pane__container" style="{{containerStyle}}">
   {{#if previousModel}}
-    <div class="gesture-slider-child previous" style="{{scrollOffset}}">
+    <div class="mobile-pane__child child--previous" style="{{scrollOffset}}">
       {{~yield previousModel ~}}
     </div>
   {{/if}}
 
-  <div class="gesture-slider-child current">
+  <div class="mobile-pane__child child--current">
     {{~yield currentModel ~}}
   </div>
 
   {{#if nextModel}}
-    <div class="gesture-slider-child next" style="{{scrollOffset}}">
+    <div class="mobile-pane__child child--next" style="{{scrollOffset}}">
       {{~yield nextModel ~}}
     </div>
   {{/if}}
