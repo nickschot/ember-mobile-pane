@@ -18,6 +18,7 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
 
   // public
   triggerVelocity: 0.25,
+  lazyRendering: false,
 
   // fired whenever the active pane changes
   onChange(){},
@@ -107,11 +108,11 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
   },
 
   panStart(e){
-    const {
-      angle,
-    } = e.originalEvent.gesture;
-
     if(this._isEnabled(e)){
+      const {
+        angle,
+      } = e.originalEvent.gesture;
+
       // only detect initial drag from left side of the window
       // only detect when angle is 30 deg or lower (fix for iOS)
       if(((angle > -25 && angle < 25) || (angle > 155 || angle < -155))
@@ -124,11 +125,11 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
   },
 
   pan(e){
-    const {
-      deltaX
-    } = e.originalEvent.gesture;
-
     if(this._isEnabled(e) && this.get('isDragging')){
+      const {
+        deltaX
+      } = e.originalEvent.gesture;
+
       const activeIndex = get(this, 'activeIndex');
       const paneWidth = this._getMobilePaneWidth();
       const paneCount = get(this, 'childPaneCount');
@@ -150,11 +151,11 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
   },
 
   panEnd(e) {
-    const {
-      overallVelocityX
-    } = e.originalEvent.gesture;
-
     if(this._isEnabled(e) && this.get('isDragging', true)){
+      const {
+        overallVelocityX
+      } = e.originalEvent.gesture;
+
       this.set('isDragging', false);
 
       const dx = get(this, 'dx');
