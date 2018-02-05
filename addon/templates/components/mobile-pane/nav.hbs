@@ -1,0 +1,12 @@
+<ul class="nav nav-tabs">
+  {{!-- TODO: make it yieldable if there is a block --}}
+  {{#each navItems as |navItem|}}
+    {{mobile-pane/nav/item
+      navItem=navItem
+      activePane=activePane
+      parent=this
+      onClick=onItemClick
+    }}
+  {{/each}}
+</ul>
+<span class="nav__indicator" id="{{this.elementId}}-nav__indicator"></span>

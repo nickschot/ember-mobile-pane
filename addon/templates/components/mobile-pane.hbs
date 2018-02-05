@@ -1,12 +1,9 @@
-<ul class="nav nav-tabs">
-  {{#each navItems as |navItem|}}
-    <li class="nav-item">
-      <a class="nav-link" {{action 'changePane' navItem}}>
-        {{navItem.title}}
-      </a>
-    </li>
-  {{/each}}
-</ul>
+{{mobile-pane/nav
+  navItems=navItems
+  activePane=activePane
+  navOffset=navOffset
+  onItemClick=(action 'changePane')
+}}
 
 <div class="mobile-pane__scroller" style={{scrollerStyle}}>
   {{yield

@@ -30,6 +30,7 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
 
   // private
   isDragging: false,
+  dx: 0,
 
   childPanes: computed.filter('children', function(view) {
     return view instanceof Pane;
@@ -63,15 +64,29 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
     return get(this, 'childPanes').objectAt(get(this, 'activeIndex'));
   }),
 
-  scrollerStyle: computed('childPaneCount', 'activeIndex', 'isDragging', 'dx', function(){
+  currentOffset: computed(
+    'activeIndex',
+    'dx',
+    'isDragging',
+    'childPaneCount',
+    function(){
+      const dx = get(this, 'isDragging')
+        ? get(this, 'dx')
+        : 0;
+
+      // don't divide by 0
+      return get(this, 'childPaneCount') !== 0
+        ? get(this, 'activeIndex') * -100 / get(this, 'childPaneCount') + dx
+        : dx;
+    }
+  ),
+  navOffset: computed('currentOffset', 'childPaneCount', function(){
+    return Math.min(Math.max(get(this, 'currentOffset') * get(this, 'childPaneCount') / -100, 0), get(this, 'childPaneCount') - 1);
+  }),
+  scrollerStyle: computed('childPaneCount', 'currentOffset', function(){
     let style  = `width: ${get(this, 'childPaneCount') * 100}%;`;
 
-    let dx = 0;
-    if(get(this, 'isDragging')){
-      dx = get(this, 'dx');
-    }
-
-    style += `transform: translateX(${get(this, 'activeIndex') * -100 / get(this, 'childPaneCount') + dx}%)`;
+    style += `transform: translateX(${get(this, 'currentOffset')}%)`;
 
     //TODO: don't use ember binds to set this
     return htmlSafe(style);
@@ -158,6 +173,7 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
       }
 
       set(this, 'activeIndex', targetIndex);
+      set(this, 'dx', 0);
     }
   },
 
