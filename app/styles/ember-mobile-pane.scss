@@ -1,6 +1,25 @@
 $transition-duration: 0.2s;
 
 .mobile-pane {
+  width: 100vw;
+
+  .mobile-pane__scroller {
+    display: flex;
+
+    will-change: transform;
+
+    .mobile-pane__pane {
+      width: 100%;
+      border-right: 1px solid red;
+    }
+  }
+
+  &:not(.mobile-pane--dragging) .mobile-pane__scroller{
+    transition: transform $transition-duration;
+  }
+}
+
+.mobile-pane-old {
   position: relative;
 
   .mobile-pane__container {

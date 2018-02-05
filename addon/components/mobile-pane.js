@@ -1,94 +1,90 @@
 import Component from '@ember/component';
 import layout from '../templates/components/mobile-pane';
 
-import { htmlSafe } from '@ember/string';
-import { computed } from '@ember/object';
-import { inject as service } from '@ember/service';
-import { A } from '@ember/array';
-import { getOwner } from "@ember/application";
+import { computed, get, set } from '@ember/object';
 import RecognizerMixin from 'ember-gestures/mixins/recognizers';
-import { scheduleOnce } from '@ember/runloop';
 
-//TODO: when transitioning in from some route wich doesn't match, reset scroll
-export default Component.extend(RecognizerMixin, {
+import Pane from 'ember-mobile-pane/components/mobile-pane/pane';
+import ComponentParentMixin from 'ember-mobile-pane/mixins/component-parent';
+
+import { htmlSafe } from '@ember/string';
+
+export default Component.extend(ComponentParentMixin, RecognizerMixin, {
   layout,
 
   classNames: ['mobile-pane'],
-  classNameBindings: ['isDragging:mobile-pane--dragging', 'finishAnimation:mobile-pane--transitioning'],
+  classNameBindings: ['isDragging:mobile-pane--dragging'],
   recognizers: 'pan',
 
-  router: service(),
-  memory: service('memory-scroll'),
-  fastboot: service(),
-  isFastBoot: computed.reads('fastboot.isFastBoot'),
-
-  // public attributes
-  slideableModels: null,
-  currentModel: null,
-  leftOpenDetectionWidth: 10,
-  transitionDuration: 200,
+  // public
   triggerVelocity: 0.25,
 
-  // private attributes
+  // private
   isDragging: false,
-  finishAnimation: false,
 
-  // computed properties
-  currentModelIndex: computed('slideableModels.[]', 'currentModel', function(){
-    return this.get('slideableModels').indexOf(this.get('currentModel'));
+  childPanes: computed.filter('children', function(view) {
+    return view instanceof Pane;
+  }),
+  childPaneCount: computed('childPanes.[]', function(){
+    return get(this, 'childPanes').length;
   }),
 
-  previousModel: computed('slideableModels.[]', 'currentModelIndex', function(){
-    if(this.get('currentModelIndex') > 0){
-      return this.get('slideableModels').objectAt(this.get('currentModelIndex') - 1);
-    } else {
-      return null;
+  navItems: computed('childPanes.@each.{elementId,title}', function(){
+    return get(this, 'childPanes').map((item, index) => {
+      const result = item.getProperties('elementId', 'title');
+      result.index = index;
+      return result;
+    });
+  }),
+
+  activeIndex: 0,
+  activeElement: computed('activeIndex', function(){
+    return get(this, 'childPanes').objectAt(get(this, 'activeIndex'));
+  }),
+
+  actions: {
+    changePane(element){
+      set(this, 'activeIndex', element.index);
     }
-  }),
+  },
 
-  nextModel: computed('slideableModels.[]', 'currentModelIndex', function(){
-    if(this.get('currentModelIndex') + 1 < this.get('slideableModels.length')){
-      return this.get('slideableModels').objectAt(this.get('currentModelIndex') + 1);
-    } else {
-      return null;
+  scrollerStyle: computed('childPaneCount', 'activeIndex', 'isDragging', 'dx', function(){
+    let style  = `width: ${get(this, 'childPaneCount') * 100}%;`;
+
+    let dx = 0;
+    if(get(this, 'isDragging')){
+      dx = get(this, 'dx');
     }
+
+    style += `transform: translateX(${get(this, 'activeIndex') * -100 / get(this, 'childPaneCount') + dx}%)`;
+
+    //TODO: don't use ember binds to set this
+    return htmlSafe(style);
   }),
 
-  containerStyle: computed('currentPosition', function(){
-    return htmlSafe(`transform: translateX(${this.get('currentPosition')}vw)`);
-  }),
+  _getMobilePaneWidth(){
+    return get(this, 'element').clientWidth;
+  },
+  _isEnabled(e){
+    const {
+      center,
+      pointerType
+    } = e.originalEvent.gesture;
 
-  scrollOffset: computed('currentScroll', function(){
-    return htmlSafe(`top: ${this.get('currentScroll')}px`);
-  }),
-
-  currentRouteName: computed(function(){
-    return getOwner(this).lookup('controller:application').get('currentRouteName');
-  }),
+    return pointerType === 'touch'
+      && !(center.x === 0 && center.y === 0); // workaround for https://github.com/hammerjs/hammer.js/issues/1132
+  },
 
   // event handlers
   panStart(e){
     const {
-      center,
-      pointerType,
       angle,
     } = e.originalEvent.gesture;
 
-    // don't allow pan start while the animation is finishing (for now)
-    if(pointerType === 'touch' && !this.get('finishAnimation')){
-      // workaround for https://github.com/hammerjs/hammer.js/issues/1132
-      if (center.x === 0 && center.y === 0) return;
-
-      // write scroll offset for prev/next children
-      this.set('currentScroll', document.scrollingElement.scrollTop || document.documentElement.scrollTop);//elem.scrollTop;
-
-      const windowWidth = this._getWindowWidth();
-      const startOffset = 100 * center.x / windowWidth;
-
+    if(this._isEnabled(e)){
       // only detect initial drag from left side of the window
       // only detect when angle is 30 deg or lower (fix for iOS)
-      if(startOffset > this.get('leftOpenDetectionWidth')
-        && ((angle > -25 && angle < 25) || (angle > 155 || angle < -155))
+      if(((angle > -25 && angle < 25) || (angle > 155 || angle < -155))
       ){
         // add a dragging class so any css transitions are disabled
         // and the pan event is enabled
@@ -99,144 +95,46 @@ export default Component.extend(RecognizerMixin, {
 
   pan(e){
     const {
-      deltaX,
-      center,
-      pointerType
+      deltaX
     } = e.originalEvent.gesture;
 
-    if(pointerType === 'touch' && this.get('isDragging')){
-      // workaround for https://github.com/hammerjs/hammer.js/issues/1132
-      if (center.x === 0 && center.y === 0) return;
+    if(this._isEnabled(e) && this.get('isDragging')){
+      const paneWidth = this._getMobilePaneWidth();
+      const paneCount = get(this, 'childPaneCount');
 
-      const windowWidth = this._getWindowWidth();
+      // limit dx to -1, +1 pane
+      const dx = Math.max(Math.min(deltaX, paneWidth), -paneWidth);
+      let targetOffset = 100 * dx / paneWidth / paneCount;
 
-      // initial target offset calculation
-      let targetOffset = 100 * deltaX / windowWidth;
-
-      // overflow scrolling bounds
-      const targetOffsetMin = this.get('nextModel')     ? -100 : -34;
-      const targetOffsetMax = this.get('previousModel') ?  100 :  34;
-
-      // calculate overflow scroll offset
-      if(  (!this.get('nextModel') && targetOffset < 0)
-        || (!this.get('previousModel') && targetOffset > 0)
-      ){
-        targetOffset = 100 * (deltaX / 3) / windowWidth;
-      }
-
-      // pass the new position taking limits into account
-      if(targetOffset < targetOffsetMin){
-        targetOffset = targetOffsetMin;
-      } else if(targetOffset > targetOffsetMax){
-        targetOffset = targetOffsetMax;
-      }
-
-      this.set('currentPosition', targetOffset);
+      this.set('dx', targetOffset);
     }
   },
 
   panEnd(e) {
     const {
-      additionalEvent,
-      center,
-      overallVelocityX,
-      pointerType,
+      overallVelocityX
     } = e.originalEvent.gesture;
 
-    if(pointerType === 'touch' && this.get('isDragging')){
-      // workaround for https://github.com/hammerjs/hammer.js/issues/1132
-      if (center.x === 0 && center.y === 0) return;
-
+    if(this._isEnabled(e) && this.get('isDragging', true)){
       this.set('isDragging', false);
-      this.set('finishAnimation', true);
 
-      //TODO: clean up all timeouts
-      setTimeout(() => {
-        this.set('finishAnimation', false);
-      }, this.get('transitionDuration'));
+      const dx = get(this, 'dx');
+      const paneCount = get(this, 'childPaneCount');
+      const currentIndex = get(this, 'activeIndex');
+      const rawTargetIndex = dx * paneCount / -100;
 
-      const currentPosition = this.get('currentPosition');
-      const currentRouteName = getOwner(this).lookup('controller:application').get('currentRouteName');
+      let targetIndex = Math.max(Math.min(currentIndex + Math.round(rawTargetIndex), paneCount - 1), 0);
 
-      // when position has the overhand or overall horizontal velocity is high,
-      // transition to the prev/next model
-      if(
-        currentPosition < -50
-        || (
-          this.get('nextModel')
-          && overallVelocityX < -1 * this.get('triggerVelocity')
-          && additionalEvent === 'panleft'
-        )
-      ){
-        this.set('currentPosition', -100);
-        this.storeScroll();
-
-        const targetModel = this.get('nextModel');
-        setTimeout(() => {
-          this.get('router').transitionTo(currentRouteName, targetModel);
-        }, this.get('transitionDuration'));
-      } else if(
-        currentPosition > 50
-        || (
-          this.get('previousModel')
-          && overallVelocityX > this.get('triggerVelocity')
-          && additionalEvent === 'panright'
-        )
-      ){
-        this.set('currentPosition', 100);
-        this.storeScroll();
-
-        const targetModel = this.get('previousModel');
-        setTimeout(() => {
-          this.get('router').transitionTo(currentRouteName, targetModel);
-        }, this.get('transitionDuration'));
-      } else {
-        this.set('currentPosition', 0);
+      if(targetIndex === currentIndex){
+        if(overallVelocityX < -1 * this.get('triggerVelocity') && targetIndex < paneCount - 1){
+          targetIndex++;
+        } else if(overallVelocityX > this.get('triggerVelocity') && targetIndex > 0){
+          targetIndex--;
+        }
       }
+
+      set(this, 'activeIndex', targetIndex);
     }
   },
 
-  didReceiveAttrs(){
-    this._super(...arguments);
-
-    this.set('currentPosition', 0);
-    scheduleOnce('afterRender', () => { this.restoreScroll(); });
-  },
-
-  // functions
-  //TODO: dont run store/restore scroll when in fastboot mode
-  storeScroll(){
-    if(!this.get('isFastBoot')){
-      //const elem = this.element.querySelector('.mobile-pane__container .child--current');
-      const key = this._buildMemoryKey(this.get('currentModel.id'));
-
-      this.get('memory')[key] = document.scrollingElement.scrollTop || document.documentElement.scrollTop;//elem.scrollTop;
-    }
-  },
-
-  //TODO: only do this within the route
-  restoreScroll(){
-    if(!this.get('isFastBoot')){
-      const prevKey     = this._buildMemoryKey(this.get('previousModel.id'));
-      const currentKey  = this._buildMemoryKey(this.get('currentModel.id'));
-      const nextKey     = this._buildMemoryKey(this.get('nextModel.id'));
-
-      const prev    = this.element.querySelector('.mobile-pane__container .child--previous');
-      const current = document.scrollingElement || document.documentElement;
-      const next    = this.element.querySelector('.mobile-pane__container .child--next');
-
-      if(prev) prev.scrollTop    = this.get('memory')[prevKey] || 0;
-      current.scrollTop = this.get('memory')[currentKey] || 0;
-      if(next) next.scrollTop    = this.get('memory')[nextKey] || 0;
-    }
-  },
-
-  // utils
-  _getWindowWidth(){
-    return window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
-  },
-
-  _buildMemoryKey(id){
-    return `mobile-pane/${this.get('currentRouteName')}.${id}`;
-  }
 });

@@ -1,17 +1,17 @@
-<div class="mobile-pane__container" style="{{containerStyle}}">
-  {{#if previousModel}}
-    <div class="mobile-pane__child child--previous" style="{{scrollOffset}}">
-      {{~yield previousModel ~}}
-    </div>
-  {{/if}}
+<ul class="nav nav-tabs">
+  {{#each navItems as |navItem|}}
+    <li class="nav-item">
+      <a class="nav-link" {{action 'changePane' navItem}}>
+        {{navItem.title}}
+      </a>
+    </li>
+  {{/each}}
+</ul>
 
-  <div class="mobile-pane__child child--current">
-    {{~yield currentModel ~}}
-  </div>
-
-  {{#if nextModel}}
-    <div class="mobile-pane__child child--next" style="{{scrollOffset}}">
-      {{~yield nextModel ~}}
-    </div>
-  {{/if}}
+<div class="mobile-pane__scroller" style={{scrollerStyle}}>
+  {{yield
+    (hash
+      pane=(component 'mobile-pane/pane' parent=this)
+    )
+  }}
 </div>
