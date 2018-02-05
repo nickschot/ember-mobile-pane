@@ -99,12 +99,21 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
     } = e.originalEvent.gesture;
 
     if(this._isEnabled(e) && this.get('isDragging')){
+      const activeIndex = get(this, 'activeIndex');
       const paneWidth = this._getMobilePaneWidth();
       const paneCount = get(this, 'childPaneCount');
 
       // limit dx to -1, +1 pane
       const dx = Math.max(Math.min(deltaX, paneWidth), -paneWidth);
       let targetOffset = 100 * dx / paneWidth / paneCount;
+
+      // overscroll effect
+      if(
+           (activeIndex === 0 && targetOffset > 0)
+        || (activeIndex === paneCount - 1 && targetOffset < 0)
+      ) {
+        targetOffset /= 3;
+      }
 
       this.set('dx', targetOffset);
     }
