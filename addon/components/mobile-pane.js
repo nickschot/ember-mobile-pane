@@ -19,6 +19,15 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
   // public
   triggerVelocity: 0.25,
 
+  // fired whenever the active pane changes
+  onChange(){},
+
+  actions: {
+    changePane(element){
+      set(this, 'activeIndex', element.index);
+    }
+  },
+
   // private
   isDragging: false,
 
@@ -37,16 +46,22 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
     });
   }),
 
-  activeIndex: 0,
-  activeElement: computed('activeIndex', function(){
+  _activeIndex: 0,
+  activeIndex: computed({
+    get(){
+      return get(this, '_activeIndex');
+    },
+    set(key, value){
+      set(this, '_activeIndex', value);
+
+      get(this, 'onChange')(value);
+
+      return value;
+    }
+  }),
+  activePane: computed('childPanes.@each.elementId', 'activeIndex', function(){
     return get(this, 'childPanes').objectAt(get(this, 'activeIndex'));
   }),
-
-  actions: {
-    changePane(element){
-      set(this, 'activeIndex', element.index);
-    }
-  },
 
   scrollerStyle: computed('childPaneCount', 'activeIndex', 'isDragging', 'dx', function(){
     let style  = `width: ${get(this, 'childPaneCount') * 100}%;`;
@@ -62,6 +77,7 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
     return htmlSafe(style);
   }),
 
+  // gesture recognition -------------------------------------------------------
   _getMobilePaneWidth(){
     return get(this, 'element').clientWidth;
   },
@@ -75,7 +91,6 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
       && !(center.x === 0 && center.y === 0); // workaround for https://github.com/hammerjs/hammer.js/issues/1132
   },
 
-  // event handlers
   panStart(e){
     const {
       angle,
