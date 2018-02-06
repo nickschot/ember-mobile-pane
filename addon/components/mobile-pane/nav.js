@@ -15,7 +15,6 @@ export default Component.extend(ComponentParentMixin, {
 
   navOffsetChanged: observer('navOffset', 'childNavItems.@each.elementId', 'elementId', function(){
     const childNavItems = get(this, 'childNavItems');
-    const indicator = document.getElementById(`${get(this, 'elementId')}-nav__indicator`);
 
     if(childNavItems.length){
       const navOffset = get(this, 'navOffset');
@@ -38,6 +37,7 @@ export default Component.extend(ComponentParentMixin, {
         targetWidth = (1 - relativeOffset) * (e1Dims.width - e2Dims.width) + e2Dims.width;
       }
 
+      const indicator = document.getElementById(`${get(this, 'elementId')}-nav__indicator`);
       indicator.style.width = `${targetWidth}px`;
       indicator.style.left  = `${targetLeft}px`;
     }
