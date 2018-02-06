@@ -35,11 +35,11 @@ export default Component.extend(ComponentParentMixin, {
 
         // map relativeOffset to correct ranges
         targetLeft  = relativeOffset * (e2Dims.left - e1Dims.left) + e1Dims.left;
-        targetWidth       = (1 - relativeOffset) * (e1Dims.width - e2Dims.width) + e2Dims.width;
+        targetWidth = (1 - relativeOffset) * (e1Dims.width - e2Dims.width) + e2Dims.width;
       }
 
       indicator.style.width = `${targetWidth}px`;
-      indicator.style.left = `${targetLeft}px`;
+      indicator.style.left  = `${targetLeft}px`;
     }
   }),
 
