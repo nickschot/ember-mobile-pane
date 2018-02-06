@@ -65,6 +65,21 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
     return get(this, 'childPanes').objectAt(get(this, 'activeIndex'));
   }),
 
+  visiblePanes: computed('childPanes.@each.elementId', 'activeIndex', function(){
+    const activeIndex = get(this, 'activeIndex');
+    const visibleIndices = [activeIndex, activeIndex-1, activeIndex+1];
+
+    return get(this, 'childPanes')
+      .filter((item, index) => {
+        return visibleIndices.includes(index);
+      })
+      .map((item, index) => {
+        const result = item.getProperties('elementId');
+        result.index = index;
+        return result;
+      });
+  }),
+
   currentOffset: computed(
     'activeIndex',
     'dx',

@@ -20,34 +20,22 @@ export default Component.extend(ComponentParentMixin, {
     if(childNavItems.length){
       const navOffset = get(this, 'navOffset');
 
-      const elementLeftIndex = Math.floor(navOffset);
-      const elementRightIndex = Math.ceil(navOffset);
+      const e1Index = Math.floor(navOffset);
+      const e2Index = Math.ceil(navOffset);
 
-      // the "left" element is always present
-      const elementLeftDimensions  = get(childNavItems.objectAt(elementLeftIndex), 'element').getBoundingClientRect();
+      // the first element is always present
+      const e1Dims  = get(childNavItems.objectAt(e1Index), 'element').getBoundingClientRect();
 
-      let targetOffsetLeft = 0;
-      let targetWidth = 0;
+      let targetOffsetLeft = e1Dims.left;
+      let targetWidth = e1Dims.width;
 
-      if(elementLeftIndex !== elementRightIndex){
-        const elementRightDimensions = get(childNavItems.objectAt(elementRightIndex), 'element').getBoundingClientRect();
-
-        const relativeOffset = navOffset - elementLeftIndex;
-        let maxWidth = elementLeftDimensions.width;
-        let minWidth = elementRightDimensions.width;
-
-        // flip min/max when the left one is bigger
-        if(elementLeftDimensions.width > elementRightDimensions.width){
-          minWidth = elementRightDimensions.width;
-          maxWidth = elementLeftDimensions.width;
-        }
+      if(e1Index !== e2Index){
+        const e2Dims = get(childNavItems.objectAt(e2Index), 'element').getBoundingClientRect();
+        const relativeOffset = navOffset - e1Index;
 
         // map relativeOffset to correct ranges
-        targetOffsetLeft  = relativeOffset * (elementRightDimensions.left - elementLeftDimensions.left) + elementLeftDimensions.left;
-        targetWidth       = (1 - relativeOffset) * (maxWidth - minWidth) + minWidth;
-      } else {
-        targetOffsetLeft  = elementLeftDimensions.left;
-        targetWidth       = elementLeftDimensions.width;
+        targetOffsetLeft  = relativeOffset * (e2Dims.left - e1Dims.left) + e1Dims.left;
+        targetWidth       = (1 - relativeOffset) * (e1Dims.width - e2Dims.width) + e2Dims.width;
       }
 
       indicator.style.width = `${targetWidth}px`;
