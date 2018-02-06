@@ -26,20 +26,20 @@ export default Component.extend(ComponentParentMixin, {
       // the first element is always present
       const e1Dims  = get(childNavItems.objectAt(e1Index), 'element').getBoundingClientRect();
 
-      let targetOffsetLeft = e1Dims.left;
-      let targetWidth = e1Dims.width;
+      let targetLeft  = e1Dims.left;
+      let targetWidth       = e1Dims.width;
 
       if(e1Index !== e2Index){
         const e2Dims = get(childNavItems.objectAt(e2Index), 'element').getBoundingClientRect();
         const relativeOffset = navOffset - e1Index;
 
         // map relativeOffset to correct ranges
-        targetOffsetLeft  = relativeOffset * (e2Dims.left - e1Dims.left) + e1Dims.left;
+        targetLeft  = relativeOffset * (e2Dims.left - e1Dims.left) + e1Dims.left;
         targetWidth       = (1 - relativeOffset) * (e1Dims.width - e2Dims.width) + e2Dims.width;
       }
 
       indicator.style.width = `${targetWidth}px`;
-      indicator.style.left = `${targetOffsetLeft}px`;
+      indicator.style.left = `${targetLeft}px`;
     }
   }),
 
