@@ -18,7 +18,21 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
 
   // public
   triggerVelocity: 0.25,
-  lazyRendering: false,
+
+  /**
+   * Renders active pane and it's nearest neighbours
+   */
+  lazyRendering: true,
+
+  /**
+   * Renders panes only when they are in the current viewport
+   */
+  strictLazyRendering: false,
+
+  /**
+   * Deadzone for how far a pane must be in the viewport to be rendered
+   */
+  strictLazyRenderingDeadZone: 0.25,
 
   // fired whenever the active pane changes
   onChange(){},
@@ -32,6 +46,8 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
   // private
   isDragging: false,
   dx: 0,
+
+  _lazyRendering: computed.or('lazyRendering', 'strictLazyRendering'),
 
   childPanes: computed.filter('children', function(view) {
     return view instanceof Pane;
@@ -65,37 +81,43 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
     return get(this, 'childPanes').objectAt(get(this, 'activeIndex'));
   }),
 
-  visiblePanes: computed('childPanes.@each.elementId', 'activeIndex', function(){
+  /**
+   * Returns the panes which should be rendered when lazy rendering is enabled.
+   */
+  visiblePanes: computed('childPanes.@each.elementId', 'activeIndex', 'navOffset', function(){
     const activeIndex = get(this, 'activeIndex');
-    const visibleIndices = [activeIndex, activeIndex-1, activeIndex+1];
+    const visibleIndices = [activeIndex];
+
+    if(get(this, 'strictLazyRendering')){
+      const navOffset = get(this, 'navOffset');
+      const lazyOffset = navOffset - activeIndex;
+
+      if(Math.abs(lazyOffset) > get(this, 'strictLazyRenderingDeadZone')){
+        const visibleNeighborIndex = lazyOffset > 0
+          ? Math.ceil(navOffset)
+          : Math.floor(navOffset);
+
+        visibleIndices.push(visibleNeighborIndex);
+      }
+    } else {
+      visibleIndices.push(activeIndex-1, activeIndex+1);
+    }
 
     return get(this, 'childPanes')
-      .filter((item, index) => {
-        return visibleIndices.includes(index);
-      })
-      .map((item, index) => {
-        const result = item.getProperties('elementId');
-        result.index = index;
-        return result;
-      });
+      .filter((item, index) => visibleIndices.includes(index))
+      .map(item => item.getProperties('elementId'));
   }),
 
-  currentOffset: computed(
-    'activeIndex',
-    'dx',
-    'isDragging',
-    'childPaneCount',
-    function(){
-      const dx = get(this, 'isDragging')
-        ? get(this, 'dx')
-        : 0;
+  currentOffset: computed('activeIndex', 'dx', 'isDragging', 'childPaneCount', function(){
+    const dx = get(this, 'isDragging')
+      ? get(this, 'dx')
+      : 0;
 
-      // don't divide by 0
-      return get(this, 'childPaneCount') !== 0
-        ? get(this, 'activeIndex') * -100 / get(this, 'childPaneCount') + dx
-        : dx;
-    }
-  ),
+    // don't divide by 0
+    return get(this, 'childPaneCount') !== 0
+      ? get(this, 'activeIndex') * -100 / get(this, 'childPaneCount') + dx
+      : dx;
+  }),
   navOffset: computed('currentOffset', 'childPaneCount', function(){
     return Math.min(Math.max(get(this, 'currentOffset') * get(this, 'childPaneCount') / -100, 0), get(this, 'childPaneCount') - 1);
   }),

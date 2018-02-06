@@ -8,7 +8,12 @@
 <div class="mobile-pane__scroller" style={{scrollerStyle}}>
   {{yield
     (hash
-      pane=(component 'mobile-pane/pane' parent=this)
+      pane=(component 'mobile-pane/pane'
+        parent=this
+        paneCount=childPaneCount
+        visiblePanes=visiblePanes
+        lazyRendering=_lazyRendering
+      )
     )
   }}
 </div>
