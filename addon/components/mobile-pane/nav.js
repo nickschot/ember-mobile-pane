@@ -27,7 +27,7 @@ export default Component.extend(ComponentParentMixin, {
       const e1Dims  = get(childNavItems.objectAt(e1Index), 'element').getBoundingClientRect();
 
       let targetLeft  = e1Dims.left;
-      let targetWidth       = e1Dims.width;
+      let targetWidth = e1Dims.width;
 
       if(e1Index !== e2Index){
         const e2Dims = get(childNavItems.objectAt(e2Index), 'element').getBoundingClientRect();
