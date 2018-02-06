@@ -15,13 +15,15 @@ export default Component.extend(ComponentParentMixin, {
 
   navOffsetChanged: observer('navOffset', 'childNavItems.@each.elementId', 'elementId', function(){
     const childNavItems = get(this, 'childNavItems');
+    const navOffset = get(this, 'navOffset');
 
-    if(childNavItems.length){
-      const navOffset = get(this, 'navOffset');
+    const e1Index = Math.floor(navOffset);
+    const e2Index = Math.ceil(navOffset);
 
-      const e1Index = Math.floor(navOffset);
-      const e2Index = Math.ceil(navOffset);
-
+    if(childNavItems.length
+      && e1Index < childNavItems.length
+      && e2Index < childNavItems.length
+    ){
       // the first element is always present
       const e1Dims  = get(childNavItems.objectAt(e1Index), 'element').getBoundingClientRect();
 

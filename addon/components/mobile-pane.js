@@ -8,13 +8,23 @@ import Pane from 'ember-mobile-pane/components/mobile-pane/pane';
 import ComponentParentMixin from 'ember-mobile-pane/mixins/component-parent';
 
 import { htmlSafe } from '@ember/string';
+import { next } from '@ember/runloop';
 
 export default Component.extend(ComponentParentMixin, RecognizerMixin, {
   layout,
 
   classNames: ['mobile-pane'],
-  classNameBindings: ['isDragging:mobile-pane--dragging'],
+  classNameBindings: ['isDragging:mobile-pane--dragging', 'transitionsEnabled:mobile-pane--transitions'],
   recognizers: 'pan',
+
+  init(){
+    this._super(...arguments);
+
+    next(() => {
+      // delay transitions effects until the pane has fully initialized
+      set(this, 'transitionsEnabled', true);
+    });
+  },
 
   // public
   triggerVelocity: 0.25,
@@ -44,6 +54,7 @@ export default Component.extend(ComponentParentMixin, RecognizerMixin, {
   },
 
   // private
+  transitionsEnabled: false,
   isDragging: false,
   dx: 0,
 

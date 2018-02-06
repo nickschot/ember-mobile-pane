@@ -25,10 +25,10 @@ $transition-duration: 0.2s;
     }
   }
 
-  &:not(.mobile-pane--dragging) .mobile-pane__nav .nav__indicator{
+  &.mobile-pane--transitions:not(.mobile-pane--dragging) .mobile-pane__nav .nav__indicator{
     transition: left $transition-duration, width $transition-duration;
   }
-  &:not(.mobile-pane--dragging) .mobile-pane__scroller{
+  &.mobile-pane--transitions:not(.mobile-pane--dragging) .mobile-pane__scroller{
     transition: transform $transition-duration;
   }
 }
