@@ -1,14 +1,37 @@
 $transition-duration: 0.2s;
+$transition-ease: linear;
 
 .mobile-pane {
   .mobile-pane__nav {
     position: relative;
+    overflow-x: scroll;
+    overflow-y: hidden;
+
+    // hide the scrollbar
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav__scroller {
+      padding: 0;
+      margin: 0;
+      list-style:none;
+
+      display: flex;
+      flex-wrap: nowrap;
+
+      li {
+        white-space:nowrap;
+        text-transform: uppercase;
+      }
+    }
 
     .nav__indicator {
       position: absolute;
       bottom: 0;
       height: 3px;
-      background: red;
+      background: #AAA;
 
       will-change: left, width;
     }
@@ -26,10 +49,10 @@ $transition-duration: 0.2s;
   }
 
   &.mobile-pane--transitions:not(.mobile-pane--dragging) .mobile-pane__nav .nav__indicator{
-    transition: left $transition-duration, width $transition-duration;
+    transition: left $transition-ease $transition-duration, width $transition-ease $transition-duration;
   }
   &.mobile-pane--transitions:not(.mobile-pane--dragging) .mobile-pane__scroller{
-    transition: transform $transition-duration;
+    transition: transform $transition-ease $transition-duration;
   }
 }
 
