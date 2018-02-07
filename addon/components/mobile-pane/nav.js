@@ -47,8 +47,8 @@ export default Component.extend(ComponentParentMixin, {
       const parentLeft = get(this, 'element').getBoundingClientRect().left;
       const parentScrollLeft = get(this, 'element').scrollLeft;
 
-      //indicator.style.width = `${targetWidth}px`;
-      //indicator.style.left  = `${targetLeft - parentLeft + parentScrollLeft}px`;
+      indicator.style.width = `${targetWidth}px`;
+      indicator.style.left  = `${targetLeft - parentLeft + parentScrollLeft}px`;
 
       // make scroll follow pan and click
       const targetIsElement1 = navOffset - activeIndex < 0;
@@ -76,9 +76,6 @@ export default Component.extend(ComponentParentMixin, {
           get(this, 'element').scrollLeft -= navScrollLeftOffset - fromLeft;
         }
       }
-
-      indicator.style.width = `${targetWidth}px`;
-      indicator.style.left  = `${targetLeft - parentLeft + parentScrollLeft}px`;
     }
   }),
 

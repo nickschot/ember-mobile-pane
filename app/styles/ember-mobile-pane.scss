@@ -20,12 +20,15 @@
       display: flex;
       flex-wrap: nowrap;
 
-      li {
+      .nav__item {
         white-space:nowrap;
         text-transform: uppercase;
 
-        a {
+        .item__link {
+          display: block;
           color: $link-color;
+          text-decoration: none;
+          padding: 8px 16px;
 
           &.active {
             color: $active-link-color;

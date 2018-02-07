@@ -7,7 +7,7 @@ import { get } from '@ember/object';
 export default Component.extend(ComponentChildMixin, {
   layout,
   tagName: 'li',
-  classNames: ['nav-item'],
+  classNames: ['nav__item'],
 
   onClick(){},
 
