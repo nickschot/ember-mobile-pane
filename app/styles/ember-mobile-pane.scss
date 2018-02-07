@@ -1,5 +1,4 @@
-$transition-duration: 0.2s;
-$transition-ease: linear;
+@import "ember-mobile-pane/variables";
 
 .mobile-pane {
   .mobile-pane__nav {
@@ -24,6 +23,15 @@ $transition-ease: linear;
       li {
         white-space:nowrap;
         text-transform: uppercase;
+
+        a {
+          color: $link-color;
+
+          &.active {
+            color: $active-link-color;
+          }
+        }
+
       }
     }
 
@@ -31,7 +39,7 @@ $transition-ease: linear;
       position: absolute;
       bottom: 0;
       height: 3px;
-      background: #AAA;
+      background: $indicator-bg;
 
       will-change: left, width;
     }
