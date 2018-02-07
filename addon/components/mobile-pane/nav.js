@@ -58,24 +58,13 @@ export default Component.extend(ComponentParentMixin, {
         // activeIndex was not changed by panning
         // change scroll based on target position
         const targetElementLeft = targetIsElement1 ? e1Dims.left : e2Dims.left;
+        const targetScrollLeft = get(this, 'element').scrollLeft + (targetElementLeft - navScrollLeftOffset);
+
+        //TODO: remove this when animation loop has been implemented
         //get(this, 'element').scrollLeft += targetElementLeft - navScrollLeftOffset;
 
-        const targetScrollLeft = get(this, 'element').scrollLeft + (targetElementLeft - navScrollLeftOffset);
-        let currentScrollLeft = get(this, 'element').scrollLeft;
-        //set(this, 'startTS', performance.now());
-        //this.finishNavScrollTransition();
-
+        //TODO: replace with custom rAF animation loop
         $(this.element).animate({scrollLeft: targetScrollLeft}, 200, 'linear');
-
-
-
-        /*const targetElementScrollLeft = targetElementLeft - navScrollLeftOffset;
-        get(this, 'element').getElementsByTagName('ul')[0].style.transform = `translateX(${/!*get(this, 'element').scrollLeft + *!/targetElementScrollLeft}px)`;
-
-        setTimeout(() => {
-          get(this, 'element').getElementsByTagName('ul')[0].style.transform = 'translateX(0)px';
-          get(this, 'element').scrollLeft += targetElementScrollLeft;
-        }, 2000);*/
       } else {
         // activeIndex was changed by panning
         // change scroll based on indicator position
@@ -92,18 +81,6 @@ export default Component.extend(ComponentParentMixin, {
       indicator.style.left  = `${targetLeft - parentLeft + parentScrollLeft}px`;
     }
   }),
-
-  /*duration: 2000,
-  startTS: 0,
-  finishNavScrollTransition(timestamp){
-    //const targetScrollLeft: get(this, 'targetScrolLLeft');
-    const duration = get(this, 'duration');
-    const tsDiff = timestamp - get(this, 'startTS');
-
-    if(currentScrollLeft !== targetScrollLeft){
-      requestAnimationFrame(this.finishNavScrollTransition);
-    }
-  },*/
 
   childNavItems: computed.filter('children', function(view) {
     return view instanceof NavItem;
