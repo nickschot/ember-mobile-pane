@@ -6,15 +6,22 @@
   onItemClick=(action 'changePane')
 }}
 
-<div class="mobile-pane__scroller" style={{scrollerStyle}}>
-  {{yield
-    (hash
-      pane=(component 'mobile-pane/pane'
-        parent=this
-        paneCount=childPaneCount
-        visiblePanes=visiblePanes
-        lazyRendering=_lazyRendering
-      )
+{{#mobile-pane/scroller
+  triggerVelocity=triggerVelocity
+  paneContainerElement=paneContainerElement
+  paneCount=paneCount
+  currentOffset=currentOffset
+  activeIndex=activeIndex
+  onDragStart=(action 'onDragStart')
+  onDragMove=(action 'onDragMove')
+  onDragEnd=(action 'onDragEnd')
+as |mps|}}
+  {{yield (hash
+    pane=(component 'mobile-pane/pane'
+      parent=this
+      paneCount=childPaneCount
+      visiblePanes=visiblePanes
+      lazyRendering=_lazyRendering
     )
-  }}
-</div>
+  )}}
+{{/mobile-pane/scroller}}
