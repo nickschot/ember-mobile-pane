@@ -13,11 +13,13 @@ export default Component.extend(RecognizerMixin, {
   recognizers: 'pan',
 
   // protected
-  triggerVelocity: 0,
+  activeIndex: 0,
+  currentOffset: 0,
+  lazyRendering: true,
   paneContainerElement: null,
   paneCount: 0,
-  currentOffset: 0,
-  activeIndex: 0,
+  triggerVelocity: 0,
+  visiblePanes: null,
 
   // private
   isDragging: false,

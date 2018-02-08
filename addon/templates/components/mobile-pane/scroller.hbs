@@ -1,1 +1,7 @@
-{{yield}}
+{{yield (hash
+  pane=(component 'mobile-pane/pane'
+    lazyRendering=lazyRendering
+    paneCount=paneCount
+    visiblePanes=visiblePanes
+  )
+)}}

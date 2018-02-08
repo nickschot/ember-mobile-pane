@@ -1,27 +1,25 @@
-{{mobile-pane/nav
-  navItems=navItems
-  navOffset=navOffset
-  activePane=activePane
-  activeIndex=activeIndex
-  onItemClick=(action 'changePane')
-}}
+{{yield (hash
+  nav=(component 'mobile-pane/nav'
+    activeIndex=activeIndex
 
-{{#mobile-pane/scroller
-  triggerVelocity=triggerVelocity
-  paneContainerElement=paneContainerElement
-  paneCount=paneCount
-  currentOffset=currentOffset
-  activeIndex=activeIndex
-  onDragStart=(action 'onDragStart')
-  onDragMove=(action 'onDragMove')
-  onDragEnd=(action 'onDragEnd')
-as |mps|}}
-  {{yield (hash
-    pane=(component 'mobile-pane/pane'
-      parent=this
-      paneCount=childPaneCount
-      visiblePanes=visiblePanes
-      lazyRendering=_lazyRendering
-    )
-  )}}
-{{/mobile-pane/scroller}}
+    activePane=activePane
+    navItems=navItems
+    navOffset=navOffset
+
+    onItemClick=(action 'changePane')
+  )
+  scroller=(component 'mobile-pane/scroller'
+    activeIndex=activeIndex
+    lazyRendering=_lazyRendering
+    triggerVelocity=triggerVelocity
+
+    paneContainerElement=paneContainerElement
+    paneCount=paneCount
+    currentOffset=currentOffset
+    visiblePanes=visiblePanes
+
+    onDragStart=(action 'onDragStart')
+    onDragMove=(action 'onDragMove')
+    onDragEnd=(action 'onDragEnd')
+  )
+)}}
