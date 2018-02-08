@@ -8,8 +8,18 @@ export default Component.extend(ComponentChildMixin, {
   layout,
 
   classNames: ['mobile-pane__pane'],
+  classNameBindings: ['isActive:active'],
 
+  // public
   title: null,
+
+  // protected
+  activePane: null,
+
+  isActive: computed('activePane', function(){
+    return this === get(this, 'activePane');
+  }),
+
   renderContent: computed(
     'visiblePanes.@each.{elementId}',
     'elementId',

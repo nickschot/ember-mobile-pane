@@ -16,6 +16,8 @@ export default Component.extend(RecognizerMixin, {
   activeIndex: 0,
   currentOffset: 0,
   lazyRendering: true,
+
+  activePane: null,
   paneContainerElement: null,
   paneCount: 0,
   triggerVelocity: 0,
