@@ -37,6 +37,8 @@ export default Component.extend(ComponentParentMixin, {
    */
   strictLazyRendering: false,
 
+  //TODO: add "keepRendered" option to only lazyRender on initial render. Maybe do this on a per pane basis?
+
   /**
    * Deadzone for how far a pane must be in the viewport to be rendered
    */
