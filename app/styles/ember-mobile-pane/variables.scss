@@ -2,5 +2,9 @@ $transition-duration: 0.2s !default;
 $transition-ease:     ease-out !default;
 
 $link-color:          #333 !default;
+$link-opacity:        0.6 !default;
+
 $active-link-color:   #007bff !default;
+$active-link-opacity: 1 !default;
+
 $indicator-bg:        $active-link-color !default;

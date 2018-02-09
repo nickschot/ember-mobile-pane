@@ -29,12 +29,13 @@
           color: $link-color;
           text-decoration: none;
           padding: 8px 16px;
+          opacity: $link-opacity;
 
           &.active {
+            opacity: $active-link-opacity;
             color: $active-link-color;
           }
         }
-
       }
     }
 
