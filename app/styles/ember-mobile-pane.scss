@@ -1,70 +1,69 @@
 @import "ember-mobile-pane/variables";
 
-.mobile-pane {
-  .mobile-pane__nav {
-    position: relative;
-    overflow-x: scroll;
-    overflow-y: hidden;
+.mobile-pane__nav {
+  position: relative;
+  overflow-x: scroll;
+  overflow-y: hidden;
 
-    // hide the scrollbar
-    -ms-overflow-style: none;
-    &::-webkit-scrollbar {
-      display: none;
-    }
+  // hide the scrollbar
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
-    .nav__scroller {
-      padding: 0;
-      margin: 0;
-      list-style:none;
+  .nav__scroller {
+    padding: 0;
+    margin: 0;
+    list-style:none;
 
-      display: flex;
-      flex-wrap: nowrap;
+    display: flex;
+    flex-wrap: nowrap;
 
-      .nav__item {
-        white-space:nowrap;
-        text-transform: uppercase;
+    .nav__item {
+      white-space:nowrap;
+      text-transform: uppercase;
 
-        .item__link {
-          display: block;
-          color: $link-color;
-          text-decoration: none;
-          padding: 8px 16px;
-          opacity: $link-opacity;
+      .item__link {
+        display: block;
+        color: $mobile-pane-link-color;
+        text-decoration: none;
+        padding: 8px 16px;
+        opacity: $mobile-pane-link-opacity;
 
-          &.active, &:active {
-            opacity: $active-link-opacity;
-            color: $active-link-color;
-          }
+        &.active, &:active {
+          opacity: $mobile-pane-active-link-opacity;
+          color: $mobile-pane-active-link-color;
         }
       }
     }
-
-    .nav__indicator {
-      position: absolute;
-      bottom: 0;
-      height: 3px;
-      background: $indicator-bg;
-
-      will-change: left, width;
-    }
   }
 
-  .mobile-pane__scroller {
-    display: flex;
+  .nav__indicator {
+    position: absolute;
+    bottom: 0;
+    height: 3px;
+    background: $mobile-pane-indicator-bg;
 
-    will-change: transform;
+    will-change: left, width;
+  }
+}
 
-    .mobile-pane__pane {
-      width: 100%;
-    }
-  }
+.mobile-pane__scroller {
+  display: flex;
 
-  &.mobile-pane--transitions:not(.mobile-pane--dragging) .mobile-pane__nav .nav__indicator{
-    transition: left $transition-ease $transition-duration, width $transition-ease $transition-duration;
+  will-change: transform;
+
+  .mobile-pane__pane {
+    width: 100%;
   }
-  &.mobile-pane--transitions:not(.mobile-pane--dragging) .mobile-pane__scroller{
-    transition: transform $transition-ease $transition-duration;
-  }
+}
+
+.mobile-pane__nav--transitions:not(.mobile-pane__nav--dragging) .nav__indicator{
+  transition: left $mobile-pane-transition-ease $mobile-pane-transition-duration,
+              width $mobile-pane-transition-ease $mobile-pane-transition-duration;
+}
+.mobile-pane--transitions:not(.mobile-pane--dragging) .mobile-pane__scroller{
+  transition: transform $mobile-pane-transition-ease $mobile-pane-transition-duration;
 }
 
 .mobile-pane-old {
@@ -100,7 +99,7 @@
   }
 
   &.mobile-pane--transitioning .mobile-pane__container {
-    transition: transform $transition-duration;
+    transition: transform $mobile-pane-transition-duration;
   }
 
   &.mobile-pane--dragging {

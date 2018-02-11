@@ -3,17 +3,31 @@ import layout from '../../templates/components/mobile-pane/nav';
 
 import ComponentParentMixin from 'ember-mobile-pane/mixins/component-parent';
 import NavItem from 'ember-mobile-pane/components/mobile-pane/nav/item';
-import { computed, get, set, observer } from '@ember/object';
+import { computed, get, set } from '@ember/object';
+import { next } from '@ember/runloop';
 
 export default Component.extend(ComponentParentMixin, {
   layout,
   tagName: 'nav',
 
   classNames: ['mobile-pane__nav'],
+  classNameBindings: [
+    'isDragging:mobile-pane__nav--dragging',
+    'transitionsEnabled:mobile-pane__nav--transitions'
+  ],
+  attributeBindings: ['style'],
+
+  //protected
+  activeIndex: 0,
+  activePane: null,
+  isDragging: false,
+  navItems: null,
+  navOffset: 0,
+  transitionsEnabled: true,
 
   onItemClick(){},
 
-  navOffsetChanged: observer('navOffset', 'activeIndex', 'childNavItems.@each.elementId', 'elementId', function(){
+  style: computed('navOffset', 'activeIndex', 'childNavItems.@each.elementId', 'elementId', function(){
     const childNavItems = get(this, 'childNavItems');
     const navOffset = get(this, 'navOffset');
     const activeIndex = get(this, 'activeIndex');
@@ -47,8 +61,11 @@ export default Component.extend(ComponentParentMixin, {
       const parentLeft = get(this, 'element').getBoundingClientRect().left;
       const parentScrollLeft = get(this, 'element').scrollLeft;
 
-      indicator.style.width = `${targetWidth}px`;
-      indicator.style.left  = `${targetLeft - parentLeft + parentScrollLeft}px`;
+      // make sure the isDragging class binding came through
+      next(() => {
+        indicator.style.width = `${targetWidth}px`;
+        indicator.style.left  = `${targetLeft - parentLeft + parentScrollLeft}px`;
+      });
 
       // make scroll follow pan and click
       const targetIsElement1 = navOffset - activeIndex < 0;

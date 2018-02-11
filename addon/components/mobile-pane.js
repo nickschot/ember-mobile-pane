@@ -13,7 +13,10 @@ export default Component.extend(ComponentParentMixin, {
   layout,
 
   classNames: ['mobile-pane'],
-  classNameBindings: ['isDragging:mobile-pane--dragging', 'transitionsEnabled:mobile-pane--transitions'],
+  classNameBindings: [
+    'isDragging:mobile-pane--dragging',
+    'transitionsEnabled:mobile-pane--transitions'
+  ],
 
   init(){
     this._super(...arguments);
@@ -76,8 +79,8 @@ export default Component.extend(ComponentParentMixin, {
   panes: computed.filter('children', function(view) {
     return view instanceof Pane;
   }),
-  paneCount: computed('panes.[]', function(){
-    return get(this, 'panes').length;
+  paneCount: computed('panes.length', function(){
+    return get(this, 'panes.length');
   }),
 
   navItems: computed('panes.@each.{elementId,title}', function(){
