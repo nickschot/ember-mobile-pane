@@ -9,6 +9,8 @@ import ComponentParentMixin from 'ember-mobile-pane/mixins/component-parent';
 import { htmlSafe } from '@ember/string';
 import { next } from '@ember/runloop';
 
+//TODO: delay (normal) lazyRendering until after the animation has completed to prevent stutter
+
 export default Component.extend(ComponentParentMixin, {
   layout,
 
