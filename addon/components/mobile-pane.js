@@ -49,6 +49,11 @@ export default Component.extend(ComponentParentMixin, {
    */
   strictLazyRenderingDeadZone: 0.25,
 
+  /**
+   * Keep the pane content rendered after the initial render
+   */
+  keepRendered: false,
+
   // fired whenever the active pane changes
   onChange(){},
 
