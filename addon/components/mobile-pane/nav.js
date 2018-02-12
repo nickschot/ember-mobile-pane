@@ -27,6 +27,7 @@ export default Component.extend(ComponentParentMixin, {
 
   onItemClick(){},
 
+  //TODO: fix this binding
   style: computed('navOffset', 'activeIndex', 'childNavItems.@each.elementId', 'elementId', function(){
     const childNavItems = get(this, 'childNavItems');
     const navOffset = get(this, 'navOffset');
@@ -75,7 +76,7 @@ export default Component.extend(ComponentParentMixin, {
         // activeIndex was not changed by panning
         // change scroll based on target position
         const targetElementLeft = targetIsElement1 ? e1Dims.left : e2Dims.left;
-        const targetScrollLeft = get(this, 'element').scrollLeft + (targetElementLeft - navScrollLeftOffset);
+        const targetScrollLeft = get(this, 'element').scrollLeft + (targetElementLeft - navScrollLeftOffset) - parentLeft;
 
         //TODO: remove this when animation loop has been implemented
         //get(this, 'element').scrollLeft += targetElementLeft - navScrollLeftOffset;
