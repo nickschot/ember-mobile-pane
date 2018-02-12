@@ -1,37 +1,75 @@
-$transition-duration: 0.2s;
+@import "ember-mobile-pane/variables";
 
-.mobile-pane {
-  .mobile-pane__nav {
-    position: relative;
+.mobile-pane__nav {
+  position: relative;
+  overflow-x: scroll;
+  overflow-y: hidden;
 
-    .nav__indicator {
-      position: absolute;
-      bottom: 0;
-      height: 3px;
-      background: red;
-
-      will-change: left, width;
-    }
+  // hide the scrollbar
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
   }
 
-  .mobile-pane__scroller {
+  .nav__scroller {
+    padding: 0;
+    margin: 0;
+    list-style:none;
+
     display: flex;
+    flex-wrap: nowrap;
 
-    will-change: transform;
+    .nav__item {
+      white-space:nowrap;
+      text-transform: uppercase;
 
-    .mobile-pane__pane {
-      width: 100%;
-      border-right: 1px solid red;
+      .item__link {
+        display: block;
+        color: $mobile-pane-link-color;
+        text-decoration: none;
+        padding: 8px 16px;
+        opacity: $mobile-pane-link-opacity;
+
+        &.active, &:active {
+          opacity: $mobile-pane-active-link-opacity;
+          color: $mobile-pane-active-link-color;
+        }
+      }
     }
   }
 
-  &.mobile-pane--transitions:not(.mobile-pane--dragging) .mobile-pane__nav .nav__indicator{
-    transition: left $transition-duration, width $transition-duration;
-  }
-  &.mobile-pane--transitions:not(.mobile-pane--dragging) .mobile-pane__scroller{
-    transition: transform $transition-duration;
+  .nav__indicator {
+    position: absolute;
+    bottom: 0;
+    height: $mobile-pane-indicator-height;
+    background: $mobile-pane-indicator-bg;
+
+    will-change: left, width;
   }
 }
+
+.mobile-pane__scroller {
+  display: flex;
+
+  will-change: transform;
+
+  .mobile-pane__pane {
+    width: 100%;
+  }
+}
+
+.mobile-pane__nav--transitions:not(.mobile-pane__nav--dragging) .nav__indicator{
+  transition: left $mobile-pane-transition-ease $mobile-pane-transition-duration,
+              width $mobile-pane-transition-ease $mobile-pane-transition-duration;
+}
+.mobile-pane--transitions:not(.mobile-pane--dragging) .mobile-pane__scroller{
+  transition: transform $mobile-pane-transition-ease $mobile-pane-transition-duration;
+}
+
+
+
+
+
 
 .mobile-pane-old {
   position: relative;
@@ -66,7 +104,7 @@ $transition-duration: 0.2s;
   }
 
   &.mobile-pane--transitioning .mobile-pane__container {
-    transition: transform $transition-duration;
+    transition: transform $mobile-pane-transition-duration;
   }
 
   &.mobile-pane--dragging {

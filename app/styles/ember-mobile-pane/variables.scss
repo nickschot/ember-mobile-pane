@@ -1,0 +1,11 @@
+$mobile-pane-transition-duration: 0.2s !default;
+$mobile-pane-transition-ease:     ease-out !default;
+
+$mobile-pane-link-color:          #333 !default;
+$mobile-pane-link-opacity:        0.6 !default;
+
+$mobile-pane-active-link-color:   #007bff !default;
+$mobile-pane-active-link-opacity: 1 !default;
+
+$mobile-pane-indicator-bg:        $mobile-pane-active-link-color !default;
+$mobile-pane-indicator-height:    2px;
