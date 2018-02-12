@@ -41,7 +41,7 @@
   .nav__indicator {
     position: absolute;
     bottom: 0;
-    height: 3px;
+    height: 2px;
     background: $mobile-pane-indicator-bg;
 
     will-change: left, width;
@@ -65,6 +65,11 @@
 .mobile-pane--transitions:not(.mobile-pane--dragging) .mobile-pane__scroller{
   transition: transform $mobile-pane-transition-ease $mobile-pane-transition-duration;
 }
+
+
+
+
+
 
 .mobile-pane-old {
   position: relative;

@@ -13,7 +13,7 @@ import { scheduleOnce } from '@ember/runloop';
 export default Component.extend(RecognizerMixin, {
   layout,
 
-  classNames: ['mobile-pane'],
+  classNames: ['mobile-pane-old'],
   classNameBindings: ['isDragging:mobile-pane--dragging', 'finishAnimation:mobile-pane--transitioning'],
   recognizers: 'pan',
 
@@ -85,7 +85,6 @@ export default Component.extend(RecognizerMixin, {
       const windowWidth = this._getWindowWidth();
       const startOffset = 100 * center.x / windowWidth;
 
-      // only detect initial drag from left side of the window
       // only detect when angle is 30 deg or lower (fix for iOS)
       if(startOffset > this.get('leftOpenDetectionWidth')
         && ((angle > -25 && angle < 25) || (angle > 155 || angle < -155))
