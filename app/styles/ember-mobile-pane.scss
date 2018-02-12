@@ -41,7 +41,7 @@
   .nav__indicator {
     position: absolute;
     bottom: 0;
-    height: 2px;
+    height: $mobile-pane-indicator-height;
     background: $mobile-pane-indicator-bg;
 
     will-change: left, width;
