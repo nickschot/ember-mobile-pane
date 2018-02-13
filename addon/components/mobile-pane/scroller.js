@@ -12,6 +12,9 @@ export default Component.extend(RecognizerMixin, {
   attributeBindings: ['style'],
   recognizers: 'pan',
 
+  // public
+  overScrollFactor: 0.34, // between 0 and 1
+
   // protected
   activeIndex: 0,
   currentOffset: 0,
@@ -93,7 +96,7 @@ export default Component.extend(RecognizerMixin, {
         (activeIndex === 0 && targetOffset > 0)
         || (activeIndex === paneCount - 1 && targetOffset < 0)
       ) {
-        targetOffset /= 3;
+        targetOffset *= get(this, 'overScrollFactor');
       }
 
       this.set('dx', targetOffset);
