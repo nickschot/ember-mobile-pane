@@ -15,9 +15,12 @@ export default Component.extend(ComponentParentMixin, {
     'isDragging:mobile-pane__nav--dragging',
     'transitionsEnabled:mobile-pane__nav--transitions'
   ],
-  attributeBindings: ['style'],
+  attributeBindings: ['dataStyle'],
 
-  //protected
+  // public
+  navScrollOffset: 75,
+
+  // protected
   activeIndex: 0,
   activePane: null,
   isDragging: false,
@@ -25,14 +28,26 @@ export default Component.extend(ComponentParentMixin, {
   navOffset: 0,
   transitionsEnabled: true,
 
+  // private
+  indicator: null,
+
+  /**
+   * Fired when a nav item is clicked
+   */
   onItemClick(){},
 
+  // lifecycle
+  didInsertElement(){
+    set(this, 'indicator', document.getElementById(`${get(this, 'elementId')}-nav__indicator`));
+  },
+
   //TODO: fix this binding
-  style: computed('navOffset', 'activeIndex', 'childNavItems.@each.elementId', 'elementId', function(){
-    const childNavItems = get(this, 'childNavItems');
-    const navOffset = get(this, 'navOffset');
-    const activeIndex = get(this, 'activeIndex');
-    const navScrollLeftOffset = 75;
+  dataStyle: computed('navOffset', 'activeIndex', 'childNavItems.@each.elementId', 'elementId', function(){
+    const activeIndex     = get(this, 'activeIndex');
+    const childNavItems   = get(this, 'childNavItems');
+    const element         = get(this, 'element');
+    const navOffset       = get(this, 'navOffset');
+    const navScrollOffset = get(this, 'navScrollOffset');
 
     const e1Index = Math.floor(navOffset);
     const e2Index = Math.ceil(navOffset);
@@ -42,8 +57,11 @@ export default Component.extend(ComponentParentMixin, {
       && e2Index < childNavItems.length
     ){
       // the first element is always present
-      const e1Dims  = get(childNavItems.objectAt(e1Index), 'element').getBoundingClientRect();
-      const e2Dims = get(childNavItems.objectAt(e2Index), 'element').getBoundingClientRect();
+      const e1Dims            = get(childNavItems.objectAt(e1Index), 'element').getBoundingClientRect();
+      const e2Dims            = get(childNavItems.objectAt(e2Index), 'element').getBoundingClientRect();
+      const parentLeft        = element.getBoundingClientRect().left;
+      const parentScrollLeft  = element.scrollLeft;
+      const indicator         = get(this, 'indicator');
 
       let targetLeft  = e1Dims.left;
       let targetWidth = e1Dims.width;
@@ -56,43 +74,40 @@ export default Component.extend(ComponentParentMixin, {
         targetWidth = (1 - relativeOffset) * (e1Dims.width - e2Dims.width) + e2Dims.width;
       }
 
-      const indicator = document.getElementById(`${get(this, 'elementId')}-nav__indicator`);
-
       // correct for nav scroll and offset to viewport
-      const parentLeft = get(this, 'element').getBoundingClientRect().left;
-      const parentScrollLeft = get(this, 'element').scrollLeft;
-
-      // make sure the isDragging class binding came through
-      next(() => {
-        indicator.style.width = `${targetWidth}px`;
-        indicator.style.left  = `${targetLeft - parentLeft + parentScrollLeft}px`;
-      });
+      const targetScrollLeft    = targetLeft - parentLeft;
+      const indicatorLeft       = targetScrollLeft + parentScrollLeft;
+      const indicatorTransform  = `translateX(${indicatorLeft}px) scaleX(${targetWidth})`;
 
       // make scroll follow pan and click
       const targetIsElement1 = navOffset - activeIndex < 0;
       const targetElementIndex = targetIsElement1 ? e1Index : e2Index;
 
       if(targetElementIndex === activeIndex){
-        // activeIndex was not changed by panning
-        // change scroll based on target position
-        const targetElementLeft = targetIsElement1 ? e1Dims.left : e2Dims.left;
-        const targetScrollLeft = get(this, 'element').scrollLeft + (targetElementLeft - navScrollLeftOffset) - parentLeft;
+        // pan ended or a menu change happened (i.e. by click)
 
-        //TODO: remove this when animation loop has been implemented
-        //get(this, 'element').scrollLeft += targetElementLeft - navScrollLeftOffset;
+        // make sure the isDragging class binding came through after drag ended
+        //TODO: find out if we can do without the runloop hack
+        next(() => {
+          // change scroll based on target position
+          const targetElementLeft = targetIsElement1 ? e1Dims.left : e2Dims.left;
+          const targetScrollLeft  = element.scrollLeft + targetElementLeft - navScrollOffset - parentLeft;
 
-        //TODO: replace with custom rAF animation loop
-        $(this.element).animate({scrollLeft: targetScrollLeft}, 200, 'linear');
+          indicator.style.transform = indicatorTransform;
+          //TODO: replace with custom rAF animation loop
+          this.$().animate({scrollLeft: targetScrollLeft}, 200, 'linear');
+        });
       } else {
-        // activeIndex was changed by panning
-        // change scroll based on indicator position
-        const fromLeft = indicator.getBoundingClientRect().left - parentLeft;
+        // a pan is happening
 
-        if(fromLeft > 50){
-          get(this, 'element').scrollLeft += fromLeft - navScrollLeftOffset;
+        // change scroll based on indicator position
+        //const targetScrollLeft = indicatorLeft - parentScrollLeft;
+        if(targetScrollLeft > 50){
+          element.scrollLeft += targetScrollLeft - navScrollOffset;
         } else {
-          get(this, 'element').scrollLeft -= navScrollLeftOffset - fromLeft;
+          element.scrollLeft -= navScrollOffset - targetScrollLeft;
         }
+        indicator.style.transform = indicatorTransform;
       }
     }
   }),

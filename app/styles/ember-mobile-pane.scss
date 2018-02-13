@@ -40,11 +40,15 @@
 
   .nav__indicator {
     position: absolute;
+    left: 0;
     bottom: 0;
+
+    width: 1px;
     height: $mobile-pane-indicator-height;
     background: $mobile-pane-indicator-bg;
 
-    will-change: left, width;
+    transform-origin: 0 0 0;
+    will-change: transform;
   }
 }
 
@@ -58,14 +62,10 @@
   }
 }
 
-.mobile-pane__nav--transitions:not(.mobile-pane__nav--dragging) .nav__indicator{
-  transition: left $mobile-pane-transition-ease $mobile-pane-transition-duration,
-              width $mobile-pane-transition-ease $mobile-pane-transition-duration;
-}
-.mobile-pane--transitions:not(.mobile-pane--dragging) .mobile-pane__scroller{
+.mobile-pane__nav--transitions:not(.mobile-pane__nav--dragging) .nav__indicator,
+.mobile-pane--transitions:not(.mobile-pane--dragging) .mobile-pane__scroller {
   transition: transform $mobile-pane-transition-ease $mobile-pane-transition-duration;
 }
-
 
 
 
