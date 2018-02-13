@@ -10,6 +10,7 @@ import RecognizerMixin from 'ember-gestures/mixins/recognizers';
 import { scheduleOnce } from '@ember/runloop';
 
 //TODO: when transitioning in from some route wich doesn't match, reset scroll
+//TODO: add breakpoint support to disable rendering of left/right components
 export default Component.extend(RecognizerMixin, {
   layout,
 
