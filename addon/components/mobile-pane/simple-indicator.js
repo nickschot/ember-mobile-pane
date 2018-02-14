@@ -16,8 +16,7 @@ export default Component.extend({
   onClick(){},
 
   indicatorStyle: computed('currentOffset', function(){
-    //TODO: make this calculation more robust
-    return htmlSafe(`transform: translateX(${-4 * get(this, 'currentOffset')}%);`);
+    return htmlSafe(`transform: translateX(${-1 * get(this, 'currentOffset') * get(this, 'navItems.length')}%);`);
   }),
 
   actions: {
