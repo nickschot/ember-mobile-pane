@@ -62,12 +62,23 @@ export default Component.extend(RecognizerMixin, {
     if(this._isEnabled(e)){
       const {
         angle,
+        additionalEvent
       } = e.originalEvent.gesture;
 
-      // only detect initial drag from left side of the window
-      // only detect when angle is 30 deg or lower (fix for iOS)
-      if(((angle > -25 && angle < 25) || (angle > 155 || angle < -155))
+      const currentOffset = get(this, 'currentOffset');
+      const maxOffset = -100 / get(this, 'paneCount') ;
+
+      // Only detect when angle is 30 deg or lower (fix for iOS).
+      // Prevent capturing the pan events when overScroll is off and we're
+      // at the end of the scroller.
+      if(
+        ((angle > -25 && angle < 25) || (angle > 155 || angle < -155))
+        && !(get(this, 'overScrollFactor') === 0 && (
+             (currentOffset === 0 && additionalEvent === 'panright')
+          || (currentOffset === maxOffset && additionalEvent === 'panleft')
+        ))
       ){
+        e.stopPropagation();
         // add a dragging class so any css transitions are disabled
         // and the pan event is enabled
         this.set('isDragging', true);
@@ -79,6 +90,8 @@ export default Component.extend(RecognizerMixin, {
 
   pan(e){
     if(this._isEnabled(e) && this.get('isDragging')){
+      e.stopPropagation();
+
       const {
         deltaX
       } = e.originalEvent.gesture;
@@ -107,6 +120,8 @@ export default Component.extend(RecognizerMixin, {
 
   panEnd(e) {
     if(this._isEnabled(e) && this.get('isDragging', true)){
+      e.stopPropagation();
+
       const {
         overallVelocityX
       } = e.originalEvent.gesture;

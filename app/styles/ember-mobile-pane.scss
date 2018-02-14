@@ -62,8 +62,8 @@
   }
 }
 
-.mobile-pane__nav--transitions:not(.mobile-pane__nav--dragging) .nav__indicator,
-.mobile-pane--transitions:not(.mobile-pane--dragging) .mobile-pane__scroller {
+.mobile-pane__nav--transitions:not(.mobile-pane__nav--dragging) > .nav__indicator,
+.mobile-pane--transitions:not(.mobile-pane--dragging) > .mobile-pane__scroller {
   transition: transform $mobile-pane-transition-ease $mobile-pane-transition-duration;
 }
 
