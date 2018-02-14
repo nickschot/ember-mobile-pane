@@ -65,8 +65,7 @@ export default Component.extend(RecognizerMixin, {
         additionalEvent
       } = e.originalEvent.gesture;
 
-      const currentOffset = get(this, 'currentOffset');
-      const maxOffset = -100 / get(this, 'paneCount') ;
+      const activeIndex = get(this, 'activeIndex');
 
       // Only detect when angle is 30 deg or lower (fix for iOS).
       // Prevent capturing the pan events when overScroll is off and we're
@@ -74,8 +73,8 @@ export default Component.extend(RecognizerMixin, {
       if(
         ((angle > -25 && angle < 25) || (angle > 155 || angle < -155))
         && !(get(this, 'overScrollFactor') === 0 && (
-             (currentOffset === 0 && additionalEvent === 'panright')
-          || (currentOffset === maxOffset && additionalEvent === 'panleft')
+             (activeIndex === 0 && additionalEvent === 'panright')
+          || (activeIndex === get(this, 'paneCount') - 1 && additionalEvent === 'panleft')
         ))
       ){
         e.stopPropagation();
