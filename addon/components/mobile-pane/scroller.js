@@ -4,7 +4,7 @@ import layout from '../../templates/components/mobile-pane/scroller';
 import { computed, get, set } from '@ember/object';
 import { htmlSafe } from '@ember/string';
 
-import RecognizerMixin from 'ember-gestures/mixins/recognizers';
+import RecognizerMixin from 'ember-mobile-core/mixins/pan-recognizer';
 
 export default Component.extend(RecognizerMixin, {
   layout,
@@ -48,59 +48,46 @@ export default Component.extend(RecognizerMixin, {
   _getPaneWidth(){
     return get(this, 'paneContainerElement').clientWidth;
   },
-  _isEnabled(e){
+  didPanStart(e){
     const {
-      center,
-      pointerType
-    } = e.originalEvent.gesture;
+      angle,
+      additionalEvent
+    } = e.current;
+    console.log('pan pane', e);
 
-    return pointerType === 'touch'
-      && !(center.x === 0 && center.y === 0); // workaround for https://github.com/hammerjs/hammer.js/issues/1132
-  },
+    const activeIndex = get(this, 'activeIndex');
 
-  panStart(e){
-    if(this._isEnabled(e)){
-      const {
-        angle,
-        additionalEvent
-      } = e.originalEvent.gesture;
+    // Only detect when angle is 30 deg or lower (fix for iOS).
+    // Prevent capturing the pan events when overScroll is off and we're
+    // at the end of the scroller.
+    if(
+      ((angle > -25 && angle < 25) || (angle > 155 || angle < -155))
+      && !(get(this, 'overScrollFactor') === 0 && (
+           (activeIndex === 0 && additionalEvent === 'panright')
+        || (activeIndex === get(this, 'paneCount') - 1 && additionalEvent === 'panleft')
+      ))
+    ){
+      this.lockPan();
+      // add a dragging class so any css transitions are disabled
+      // and the pan event is enabled
+      this.set('isDragging', true);
 
-      const activeIndex = get(this, 'activeIndex');
-
-      // Only detect when angle is 30 deg or lower (fix for iOS).
-      // Prevent capturing the pan events when overScroll is off and we're
-      // at the end of the scroller.
-      if(
-        ((angle > -25 && angle < 25) || (angle > 155 || angle < -155))
-        && !(get(this, 'overScrollFactor') === 0 && (
-             (activeIndex === 0 && additionalEvent === 'panright')
-          || (activeIndex === get(this, 'paneCount') - 1 && additionalEvent === 'panleft')
-        ))
-      ){
-        e.stopPropagation();
-        // add a dragging class so any css transitions are disabled
-        // and the pan event is enabled
-        this.set('isDragging', true);
-
-        this.get('onDragStart')();
-      }
+      this.get('onDragStart')();
     }
   },
 
-  pan(e){
-    if(this._isEnabled(e) && this.get('isDragging')){
-      e.stopPropagation();
-
+  didPan(e){
+    if(this.get('isDragging')){
       const {
-        deltaX
-      } = e.originalEvent.gesture;
+        distanceX
+      } = e.current;
 
       const activeIndex = get(this, 'activeIndex');
       const paneWidth = this._getPaneWidth();
       const paneCount = get(this, 'paneCount');
 
       // limit dx to -1, +1 pane
-      const dx = Math.max(Math.min(deltaX, paneWidth), -paneWidth);
+      const dx = Math.max(Math.min(distanceX, paneWidth), -paneWidth);
       let targetOffset = 100 * dx / paneWidth / paneCount;
 
       // overscroll effect
@@ -117,13 +104,11 @@ export default Component.extend(RecognizerMixin, {
     }
   },
 
-  panEnd(e) {
-    if(this._isEnabled(e) && this.get('isDragging', true)){
-      e.stopPropagation();
-
+  didPanEnd(e) {
+    if(this.get('isDragging', true)){
       const {
-        overallVelocityX
-      } = e.originalEvent.gesture;
+        velocityX
+      } = e.current;
 
       this.set('isDragging', false);
 
@@ -135,9 +120,9 @@ export default Component.extend(RecognizerMixin, {
       let targetIndex = Math.max(Math.min(currentIndex + Math.round(rawTargetIndex), paneCount - 1), 0);
 
       if(targetIndex === currentIndex){
-        if(overallVelocityX < -1 * this.get('triggerVelocity') && targetIndex < paneCount - 1){
+        if(velocityX < -1 * this.get('triggerVelocity') && targetIndex < paneCount - 1){
           targetIndex++;
-        } else if(overallVelocityX > this.get('triggerVelocity') && targetIndex > 0){
+        } else if(velocityX > this.get('triggerVelocity') && targetIndex > 0){
           targetIndex--;
         }
       }
