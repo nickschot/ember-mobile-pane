@@ -10,7 +10,6 @@ export default Component.extend(RecognizerMixin, {
   layout,
   classNames: ['mobile-pane__scroller'],
   attributeBindings: ['style'],
-  recognizers: 'pan',
 
   // public
   overScrollFactor: 0.34, // between 0 and 1
@@ -51,9 +50,8 @@ export default Component.extend(RecognizerMixin, {
   didPanStart(e){
     const {
       angle,
-      additionalEvent
+      distanceX
     } = e.current;
-    console.log('pan pane', e);
 
     const activeIndex = get(this, 'activeIndex');
 
@@ -63,8 +61,8 @@ export default Component.extend(RecognizerMixin, {
     if(
       ((angle > -25 && angle < 25) || (angle > 155 || angle < -155))
       && !(get(this, 'overScrollFactor') === 0 && (
-           (activeIndex === 0 && additionalEvent === 'panright')
-        || (activeIndex === get(this, 'paneCount') - 1 && additionalEvent === 'panleft')
+           (activeIndex === 0 && distanceX > 0)
+        || (activeIndex === get(this, 'paneCount') - 1 && distanceX < 0)
       ))
     ){
       this.lockPan();

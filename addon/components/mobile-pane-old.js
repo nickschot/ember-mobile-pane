@@ -6,8 +6,8 @@ import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { A } from '@ember/array';
 import { getOwner } from "@ember/application";
-import RecognizerMixin from 'ember-gestures/mixins/recognizers';
 import { scheduleOnce } from '@ember/runloop';
+import RecognizerMixin from 'ember-mobile-core/mixins/pan-recognizer';
 
 //TODO: when transitioning in from some route wich doesn't match, reset scroll
 //TODO: add breakpoint support to disable rendering of left/right components
@@ -16,7 +16,6 @@ export default Component.extend(RecognizerMixin, {
 
   classNames: ['mobile-pane-old'],
   classNameBindings: ['isDragging:mobile-pane--dragging', 'finishAnimation:mobile-pane--transitioning'],
-  recognizers: 'pan',
 
   router: service(),
   memory: service('memory-scroll'),
@@ -68,23 +67,20 @@ export default Component.extend(RecognizerMixin, {
   }),
 
   // event handlers
-  panStart(e){
+  didPanStart(e){
     const {
-      center,
-      pointerType,
+      x,
       angle,
-    } = e.originalEvent.gesture;
+    } = e.current;
 
     // don't allow pan start while the animation is finishing (for now)
-    if(pointerType === 'touch' && !this.get('finishAnimation')){
-      // workaround for https://github.com/hammerjs/hammer.js/issues/1132
-      if (center.x === 0 && center.y === 0) return;
+    if(!this.get('finishAnimation')){
 
       // write scroll offset for prev/next children
       this.set('currentScroll', document.scrollingElement.scrollTop || document.documentElement.scrollTop);//elem.scrollTop;
 
       const windowWidth = this._getWindowWidth();
-      const startOffset = 100 * center.x / windowWidth;
+      const startOffset = 100 * x / windowWidth;
 
       // only detect when angle is 30 deg or lower (fix for iOS)
       if(startOffset > this.get('leftOpenDetectionWidth')
@@ -97,21 +93,16 @@ export default Component.extend(RecognizerMixin, {
     }
   },
 
-  pan(e){
+  didPan(e){
     const {
-      deltaX,
-      center,
-      pointerType
-    } = e.originalEvent.gesture;
+      distanceX
+    } = e.current;
 
-    if(pointerType === 'touch' && this.get('isDragging')){
-      // workaround for https://github.com/hammerjs/hammer.js/issues/1132
-      if (center.x === 0 && center.y === 0) return;
-
+    if(this.get('isDragging')){
       const windowWidth = this._getWindowWidth();
 
       // initial target offset calculation
-      let targetOffset = 100 * deltaX / windowWidth;
+      let targetOffset = 100 * distanceX / windowWidth;
 
       // overflow scrolling bounds
       const targetOffsetMin = this.get('nextModel')     ? -100 : -34;
@@ -121,7 +112,7 @@ export default Component.extend(RecognizerMixin, {
       if(  (!this.get('nextModel') && targetOffset < 0)
         || (!this.get('previousModel') && targetOffset > 0)
       ){
-        targetOffset = 100 * (deltaX / 3) / windowWidth;
+        targetOffset = 100 * (distanceX / 3) / windowWidth;
       }
 
       // pass the new position taking limits into account
@@ -135,18 +126,12 @@ export default Component.extend(RecognizerMixin, {
     }
   },
 
-  panEnd(e) {
+  didPanEnd(e) {
     const {
-      additionalEvent,
-      center,
-      overallVelocityX,
-      pointerType,
-    } = e.originalEvent.gesture;
+      velocityX
+    } = e.current;
 
-    if(pointerType === 'touch' && this.get('isDragging')){
-      // workaround for https://github.com/hammerjs/hammer.js/issues/1132
-      if (center.x === 0 && center.y === 0) return;
-
+    if(this.get('isDragging')){
       this.set('isDragging', false);
       this.set('finishAnimation', true);
 
@@ -164,8 +149,7 @@ export default Component.extend(RecognizerMixin, {
         currentPosition < -50
         || (
           this.get('nextModel')
-          && overallVelocityX < -1 * this.get('triggerVelocity')
-          && additionalEvent === 'panleft'
+          && velocityX < -1 * this.get('triggerVelocity')
         )
       ){
         this.set('currentPosition', -100);
@@ -179,8 +163,7 @@ export default Component.extend(RecognizerMixin, {
         currentPosition > 50
         || (
           this.get('previousModel')
-          && overallVelocityX > this.get('triggerVelocity')
-          && additionalEvent === 'panright'
+          && velocityX > this.get('triggerVelocity')
         )
       ){
         this.set('currentPosition', 100);
