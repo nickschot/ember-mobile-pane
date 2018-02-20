@@ -106,7 +106,7 @@ export default Component.extend(ComponentParentMixin, {
         const anim = new Tween((progress) => {
           this.element.scrollLeft   = scrollLeft + scrollDiff * progress;
           indicator.style.transform = `translateX(${indicatorLeft + indicatorLeftDiff * progress}px) scaleX(${indicatorWidth + indicatorWidthDiff * progress })`;
-        }, { duration: get(this, 'transitionDuration'), ease: 'easeInOut' });
+        }, { duration: get(this, 'transitionDuration')});
         anim.start();
       } else {
         // a pan is happening
