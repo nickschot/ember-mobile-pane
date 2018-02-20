@@ -1,10 +1,12 @@
 import Component from '@ember/component';
 import layout from '../../templates/components/mobile-pane/nav';
 
-import ComponentParentMixin from 'ember-mobile-pane/mixins/component-parent';
-import NavItem from 'ember-mobile-pane/components/mobile-pane/nav/item';
 import { computed, get, set } from '@ember/object';
 import { next } from '@ember/runloop';
+
+import ComponentParentMixin from 'ember-mobile-pane/mixins/component-parent';
+import NavItem from 'ember-mobile-pane/components/mobile-pane/nav/item';
+import Tween from 'ember-mobile-core/tween';
 
 export default Component.extend(ComponentParentMixin, {
   layout,
@@ -87,15 +89,22 @@ export default Component.extend(ComponentParentMixin, {
         // pan ended or a menu change happened (i.e. by click)
 
         // make sure the isDragging class binding came through after drag ended
-        //TODO: find out if we can do without the runloop hack
+        // TODO: find out if we can do without the runloop hack.
+        // TODO: Note: we can do the above if we remove the transform and just use the Tween
         next(() => {
           // change scroll based on target position
+          const scrollLeft = element.scrollLeft;
+          const maxScrollLeft = element.scrollWidth - element.getBoundingClientRect().width;
           const targetElementLeft = targetIsElement1 ? e1Dims.left : e2Dims.left;
-          const targetScrollLeft  = element.scrollLeft + targetElementLeft - navScrollOffset - parentLeft;
+          const targetScrollLeft  = Math.max(Math.min(scrollLeft + targetElementLeft - navScrollOffset - parentLeft, maxScrollLeft), 0);
 
           indicator.style.transform = indicatorTransform;
-          //TODO: replace with custom rAF animation loop
-          this.$().animate({scrollLeft: targetScrollLeft}, 200, 'linear');
+
+          const diff = targetScrollLeft - scrollLeft;
+          const anim = new Tween((progress) => {
+            this.element.scrollLeft = scrollLeft + diff * progress;
+          }, { duration: 200, ease: 'linear' });
+          anim.start();
         });
       } else {
         // a pan is happening
