@@ -21,6 +21,7 @@ export default Component.extend(ComponentParentMixin, {
 
   // public
   navScrollOffset: 75,
+  transitionDuration: 200,
 
   // protected
   activeIndex: 0,
@@ -59,27 +60,28 @@ export default Component.extend(ComponentParentMixin, {
       && e2Index < childNavItems.length
     ){
       // the first element is always present
+      const indicator         = get(this, 'indicator');
+      const indicatorDims     = indicator.getBoundingClientRect();
       const e1Dims            = get(childNavItems.objectAt(e1Index), 'element').getBoundingClientRect();
       const e2Dims            = get(childNavItems.objectAt(e2Index), 'element').getBoundingClientRect();
-      const parentLeft        = element.getBoundingClientRect().left;
+      const parentDims        = element.getBoundingClientRect();
+      const parentLeft        = parentDims.left;
       const parentScrollLeft  = element.scrollLeft;
-      const indicator         = get(this, 'indicator');
 
       let targetLeft  = e1Dims.left;
       let targetWidth = e1Dims.width;
 
-      const relativeOffset = navOffset - e1Index;
-
       if(e1Index !== e2Index){
+        const relativeOffset = navOffset - e1Index;
+
         // map relativeOffset to correct ranges
         targetLeft  = relativeOffset * (e2Dims.left - e1Dims.left) + e1Dims.left;
         targetWidth = (1 - relativeOffset) * (e1Dims.width - e2Dims.width) + e2Dims.width;
       }
 
       // correct for nav scroll and offset to viewport
-      const targetScrollLeft    = targetLeft - parentLeft;
-      const indicatorLeft       = targetScrollLeft + parentScrollLeft;
-      const indicatorTransform  = `translateX(${indicatorLeft}px) scaleX(${targetWidth})`;
+      const scrollLeftTarget    = targetLeft - parentLeft;
+      const indicatorLeftTarget = scrollLeftTarget + parentScrollLeft;
 
       // make scroll follow pan and click
       const targetIsElement1 = navOffset - activeIndex < 0;
@@ -88,35 +90,34 @@ export default Component.extend(ComponentParentMixin, {
       if(targetElementIndex === activeIndex){
         // pan ended or a menu change happened (i.e. by click)
 
-        // make sure the isDragging class binding came through after drag ended
-        // TODO: find out if we can do without the runloop hack.
-        // TODO: Note: we can do the above if we remove the transform and just use the Tween
-        next(() => {
-          // change scroll based on target position
-          const scrollLeft = element.scrollLeft;
-          const maxScrollLeft = element.scrollWidth - element.getBoundingClientRect().width;
-          const targetElementLeft = targetIsElement1 ? e1Dims.left : e2Dims.left;
-          const targetScrollLeft  = Math.max(Math.min(scrollLeft + targetElementLeft - navScrollOffset - parentLeft, maxScrollLeft), 0);
+        // change scroll based on target position
+        const indicatorLeft       = indicatorDims.left + parentScrollLeft;
+        const indicatorWidth      = indicatorDims.width;
 
-          indicator.style.transform = indicatorTransform;
+        const scrollLeft          = parentScrollLeft;
+        const scrollLeftMax       = element.scrollWidth - parentDims.width;
+        const targetElementLeft   = targetIsElement1 ? e1Dims.left : e2Dims.left;
+        const scrollLeftTarget    = Math.max(Math.min(scrollLeft + targetElementLeft - navScrollOffset - parentLeft, scrollLeftMax), 0);
 
-          const diff = targetScrollLeft - scrollLeft;
-          const anim = new Tween((progress) => {
-            this.element.scrollLeft = scrollLeft + diff * progress;
-          }, { duration: 200, ease: 'linear' });
-          anim.start();
-        });
+        const scrollDiff          = scrollLeftTarget - scrollLeft;
+        const indicatorLeftDiff   = indicatorLeftTarget - indicatorLeft;
+        const indicatorWidthDiff  = targetWidth - indicatorWidth;
+
+        const anim = new Tween((progress) => {
+          this.element.scrollLeft   = scrollLeft + scrollDiff * progress;
+          indicator.style.transform = `translateX(${indicatorLeft + indicatorLeftDiff * progress}px) scaleX(${indicatorWidth + indicatorWidthDiff * progress })`;
+        }, { duration: get(this, 'transitionDuration'), ease: 'easeInOut' });
+        anim.start();
       } else {
         // a pan is happening
 
         // change scroll based on indicator position
-        //const targetScrollLeft = indicatorLeft - parentScrollLeft;
-        if(targetScrollLeft > 50){
-          element.scrollLeft += targetScrollLeft - navScrollOffset;
+        if(scrollLeftTarget > 50){
+          element.scrollLeft += scrollLeftTarget - navScrollOffset;
         } else {
-          element.scrollLeft -= navScrollOffset - targetScrollLeft;
+          element.scrollLeft -= navScrollOffset - scrollLeftTarget;
         }
-        indicator.style.transform = indicatorTransform;
+        indicator.style.transform = `translateX(${indicatorLeftTarget}px) scaleX(${targetWidth})`;
       }
     }
   }),
