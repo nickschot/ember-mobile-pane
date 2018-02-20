@@ -60,10 +60,10 @@ export default Component.extend(ComponentParentMixin, {
       && e2Index < childNavItems.length
     ){
       // the first element is always present
-      const indicator         = get(this, 'indicator');
-      const indicatorDims     = indicator.getBoundingClientRect();
-      const e1Dims            = get(childNavItems.objectAt(e1Index), 'element').getBoundingClientRect();
-      const e2Dims            = get(childNavItems.objectAt(e2Index), 'element').getBoundingClientRect();
+      const indicator      = get(this, 'indicator');
+      const indicatorDims  = indicator.getBoundingClientRect();
+      const e1Dims         = get(childNavItems.objectAt(e1Index), 'element').getBoundingClientRect();
+      const e2Dims         = get(childNavItems.objectAt(e2Index), 'element').getBoundingClientRect();
       const navDims        = element.getBoundingClientRect();
       const navLeft        = navDims.left;
       const navScrollLeft  = element.scrollLeft;
