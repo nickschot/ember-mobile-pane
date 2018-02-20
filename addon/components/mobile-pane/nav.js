@@ -64,9 +64,10 @@ export default Component.extend(ComponentParentMixin, {
       const indicatorDims     = indicator.getBoundingClientRect();
       const e1Dims            = get(childNavItems.objectAt(e1Index), 'element').getBoundingClientRect();
       const e2Dims            = get(childNavItems.objectAt(e2Index), 'element').getBoundingClientRect();
-      const parentDims        = element.getBoundingClientRect();
-      const parentLeft        = parentDims.left;
-      const parentScrollLeft  = element.scrollLeft;
+      const navDims        = element.getBoundingClientRect();
+      const navLeft        = navDims.left;
+      const navScrollLeft  = element.scrollLeft;
+      const navScrollWidth = element.scrollWidth;
 
       let targetLeft  = e1Dims.left;
       let targetWidth = e1Dims.width;
@@ -80,8 +81,8 @@ export default Component.extend(ComponentParentMixin, {
       }
 
       // correct for nav scroll and offset to viewport
-      const scrollLeftTarget    = targetLeft - parentLeft;
-      const indicatorLeftTarget = scrollLeftTarget + parentScrollLeft;
+      const scrollLeftTarget    = targetLeft - navLeft;
+      const indicatorLeftTarget = scrollLeftTarget + navScrollLeft;
 
       // make scroll follow pan and click
       const targetIsElement1 = navOffset - activeIndex < 0;
@@ -91,20 +92,19 @@ export default Component.extend(ComponentParentMixin, {
         // pan ended or a menu change happened (i.e. by click)
 
         // change scroll based on target position
-        const indicatorLeft       = indicatorDims.left + parentScrollLeft;
+        const indicatorLeft       = indicatorDims.left + navScrollLeft;
         const indicatorWidth      = indicatorDims.width;
 
-        const scrollLeft          = parentScrollLeft;
-        const scrollLeftMax       = element.scrollWidth - parentDims.width;
+        const scrollLeftMax       = navScrollWidth - navDims.width;
         const targetElementLeft   = targetIsElement1 ? e1Dims.left : e2Dims.left;
-        const scrollLeftTarget    = Math.max(Math.min(scrollLeft + targetElementLeft - navScrollOffset - parentLeft, scrollLeftMax), 0);
+        const scrollLeftTarget    = Math.max(Math.min(navScrollLeft + targetElementLeft - navScrollOffset - navLeft, scrollLeftMax), 0);
 
-        const scrollDiff          = scrollLeftTarget - scrollLeft;
+        const scrollDiff          = scrollLeftTarget - navScrollLeft;
         const indicatorLeftDiff   = indicatorLeftTarget - indicatorLeft;
         const indicatorWidthDiff  = targetWidth - indicatorWidth;
 
         const anim = new Tween((progress) => {
-          this.element.scrollLeft   = scrollLeft + scrollDiff * progress;
+          element.scrollLeft = navScrollLeft + scrollDiff * progress;
           indicator.style.transform = `translateX(${indicatorLeft + indicatorLeftDiff * progress}px) scaleX(${indicatorWidth + indicatorWidthDiff * progress })`;
         }, { duration: get(this, 'transitionDuration')});
         anim.start();
