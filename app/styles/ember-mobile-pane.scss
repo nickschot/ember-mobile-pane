@@ -9,6 +9,7 @@
   position: relative;
   overflow-x: scroll;
   overflow-y: hidden;
+  touch-action: pan-x; //TODO: only apply this when pane is scrollable
 
   // hide the scrollbar
   -ms-overflow-style: none;
@@ -65,12 +66,6 @@
   .mobile-pane__pane {
     width: 100%;
   }
-}
-
-.mobile-pane__nav--transitions:not(.mobile-pane__nav--dragging) > .nav__indicator,
-.mobile-pane--transitions:not(.mobile-pane--dragging) > .mobile-pane__scroller,
-.mobile-pane--transitions:not(.mobile-pane--dragging) > .scroller__simple-indicator > .simple-indicator__indicator {
-  transition: transform $mobile-pane-transition-ease $mobile-pane-transition-duration;
 }
 
 .scroller__simple-indicator {

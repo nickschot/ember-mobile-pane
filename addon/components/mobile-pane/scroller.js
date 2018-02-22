@@ -5,6 +5,7 @@ import { computed, get, set } from '@ember/object';
 import { htmlSafe } from '@ember/string';
 
 import RecognizerMixin from 'ember-mobile-core/mixins/pan-recognizer';
+import Tween from 'ember-mobile-core/tween';
 
 export default Component.extend(RecognizerMixin, {
   layout,
@@ -16,9 +17,9 @@ export default Component.extend(RecognizerMixin, {
 
   // protected
   activeIndex: 0,
-  currentOffset: 0,
   lazyRendering: true,
   keepRendered: false,
+  transitionDuration: 0,
 
   activePane: null,
   paneContainerElement: null,
@@ -29,6 +30,8 @@ export default Component.extend(RecognizerMixin, {
   // private
   isDragging: false,
   dx: 0,
+  dxStart: 0,
+  runningAnimation: null,
 
   onDragStart(){},
   onDragMove(dx){},
@@ -59,7 +62,7 @@ export default Component.extend(RecognizerMixin, {
     // Prevent capturing the pan events when overScroll is off and we're
     // at the end of the scroller.
     if(
-      ((angle > -25 && angle < 25) || (angle > 155 || angle < -155))
+      ((angle > -25 && angle < 25) || (angle > 155 || angle < -155))//TODO: maybe move this into the pan detection
       && !(get(this, 'overScrollFactor') === 0 && (
            (activeIndex === 0 && distanceX > 0)
         || (activeIndex === get(this, 'paneCount') - 1 && distanceX < 0)
@@ -69,6 +72,15 @@ export default Component.extend(RecognizerMixin, {
       // add a dragging class so any css transitions are disabled
       // and the pan event is enabled
       this.set('isDragging', true);
+
+      const anim = get(this, 'runningAnimation');
+      if(anim){
+        anim.stop();
+        set(this, 'runningAnimation', null);
+        set(this, 'dxStart', get(this, 'dx'));
+      } else {
+        set(this, 'dxStart', 0);
+      }
 
       this.get('onDragStart')();
     }
@@ -84,8 +96,10 @@ export default Component.extend(RecognizerMixin, {
       const paneWidth = this._getPaneWidth();
       const paneCount = get(this, 'paneCount');
 
+      const targetDistanceX = get(this, 'dxStart') / 100 * paneWidth * paneCount + distanceX;
+
       // limit dx to -1, +1 pane
-      const dx = Math.max(Math.min(distanceX, paneWidth), -paneWidth);
+      const dx = Math.max(Math.min(targetDistanceX, paneWidth), -paneWidth);
       let targetOffset = 100 * dx / paneWidth / paneCount;
 
       // overscroll effect
@@ -125,9 +139,26 @@ export default Component.extend(RecognizerMixin, {
         }
       }
 
-      set(this, 'dx', 0);
-
-      this.get('onDragEnd')(targetIndex);
+      this.finishTransition(targetIndex);
     }
   },
+
+  async finishTransition(targetIndex){
+    const dx = get(this, 'dx');
+    const currentIndex = get(this, 'activeIndex');
+    const target = (targetIndex - currentIndex) * (-100 / get(this, 'paneCount')) - dx;
+
+    const anim = new Tween((progress) => {
+      const currentPos = dx + target * progress;
+      set(this, 'dx', currentPos);
+      this.onDragMove(currentPos);
+    }, { duration: get(this, 'transitionDuration')});
+    set(this, 'runningAnimation', anim);
+    await anim.start();
+
+    set(this, 'runningAnimation', null);
+    set(this, 'dx', 0);
+
+    this.get('onDragEnd')(targetIndex);
+  }
 });

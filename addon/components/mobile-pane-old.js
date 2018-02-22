@@ -9,7 +9,7 @@ import { getOwner } from "@ember/application";
 import { scheduleOnce } from '@ember/runloop';
 import RecognizerMixin from 'ember-mobile-core/mixins/pan-recognizer';
 
-//TODO: when transitioning in from some route wich doesn't match, reset scroll
+//TODO: when transitioning in from some route which doesn't match, reset scroll
 //TODO: add breakpoint support to disable rendering of left/right components
 export default Component.extend(RecognizerMixin, {
   layout,
@@ -39,19 +39,15 @@ export default Component.extend(RecognizerMixin, {
   }),
 
   previousModel: computed('slideableModels.[]', 'currentModelIndex', function(){
-    if(this.get('currentModelIndex') > 0){
-      return this.get('slideableModels').objectAt(this.get('currentModelIndex') - 1);
-    } else {
-      return null;
-    }
+    return this.get('currentModelIndex') > 0
+      ? this.get('slideableModels').objectAt(this.get('currentModelIndex') - 1)
+      : null;
   }),
 
   nextModel: computed('slideableModels.[]', 'currentModelIndex', function(){
-    if(this.get('currentModelIndex') + 1 < this.get('slideableModels.length')){
-      return this.get('slideableModels').objectAt(this.get('currentModelIndex') + 1);
-    } else {
-      return null;
-    }
+    return this.get('currentModelIndex') + 1 < this.get('slideableModels.length')
+      ? this.get('slideableModels').objectAt(this.get('currentModelIndex') + 1)
+      : null;
   }),
 
   containerStyle: computed('currentPosition', function(){
@@ -77,15 +73,13 @@ export default Component.extend(RecognizerMixin, {
     if(!this.get('finishAnimation')){
 
       // write scroll offset for prev/next children
-      this.set('currentScroll', document.scrollingElement.scrollTop || document.documentElement.scrollTop);//elem.scrollTop;
+      this.set('currentScroll', document.scrollingElement.scrollTop || document.documentElement.scrollTop);
 
       const windowWidth = this._getWindowWidth();
       const startOffset = 100 * x / windowWidth;
 
       // only detect when angle is 30 deg or lower (fix for iOS)
-      if(startOffset > this.get('leftOpenDetectionWidth')
-        && ((angle > -25 && angle < 25) || (angle > 155 || angle < -155))
-      ){
+      if((angle > -25 && angle < 25) || (angle > 155 || angle < -155)){
         // add a dragging class so any css transitions are disabled
         // and the pan event is enabled
         this.set('isDragging', true);

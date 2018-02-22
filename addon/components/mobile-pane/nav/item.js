@@ -13,7 +13,6 @@ export default Component.extend(ComponentChildMixin, {
 
   actions: {
     clickItem(){
-      //todo: pass item
       get(this, 'onClick')(get(this, 'navItem'));
     }
   }

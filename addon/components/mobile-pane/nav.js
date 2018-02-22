@@ -13,20 +13,15 @@ export default Component.extend(ComponentParentMixin, {
   tagName: 'nav',
 
   classNames: ['mobile-pane__nav'],
-  classNameBindings: [
-    'isDragging:mobile-pane__nav--dragging',
-    'transitionsEnabled:mobile-pane__nav--transitions'
-  ],
   attributeBindings: ['dataStyle'],
 
   // public
   navScrollOffset: 75,
-  transitionDuration: 200,
+  transitionDuration: 0,
 
   // protected
   activeIndex: 0,
   activePane: null,
-  isDragging: false,
   navItems: null,
   navOffset: 0,
   transitionsEnabled: true,

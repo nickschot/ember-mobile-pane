@@ -1,8 +1,7 @@
 {{yield (hash
   nav=(component 'mobile-pane/nav'
     activeIndex=activeIndex
-    isDragging=isDragging
-    transitionsEnabled=transitionsEnabled
+    transitionDuration=transitionDuration
 
     activePane=activePane
     navItems=navItems
@@ -10,10 +9,16 @@
 
     onItemClick=(action 'changePane')
   )
+  simple-indicator=(component 'mobile-pane/simple-indicator'
+    navItems=navItems
+    currentOffset=currentOffset
+    onClick=(action 'changePane')
+  )
   scroller=(component 'mobile-pane/scroller'
     activeIndex=activeIndex
     lazyRendering=_lazyRendering
     keepRendered=keepRendered
+    transitionDuration=transitionDuration
     triggerVelocity=triggerVelocity
 
     activePane=activePane
@@ -25,10 +30,5 @@
     onDragStart=(action 'onDragStart')
     onDragMove=(action 'onDragMove')
     onDragEnd=(action 'onDragEnd')
-  )
-  simple-indicator=(component 'mobile-pane/simple-indicator'
-    navItems=navItems
-    currentOffset=currentOffset
-    onClick=(action 'changePane')
   )
 )}}
