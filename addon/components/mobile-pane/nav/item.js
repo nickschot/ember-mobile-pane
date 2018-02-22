@@ -11,6 +11,10 @@ export default Component.extend(ComponentChildMixin, {
 
   onClick(){},
 
+  isActive: computed('navItem.elementId', 'activePane.elementId', function(){
+    return get(this, 'navItem.elementId') === get(this, 'activePane.elementId');
+  }),
+
   actions: {
     clickItem(){
       get(this, 'onClick')(get(this, 'navItem'));
