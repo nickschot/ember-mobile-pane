@@ -58,15 +58,15 @@ export default Component.extend(RecognizerMixin, {
 
     const activeIndex = get(this, 'activeIndex');
 
-    // Only detect when angle is 30 deg or lower (fix for iOS).
     // Prevent capturing the pan events when overScroll is off and we're
     // at the end of the scroller.
     if(
-      ((angle > -25 && angle < 25) || (angle > 155 || angle < -155))//TODO: maybe move this into the pan detection
-      && !(get(this, 'overScrollFactor') === 0 && (
-           (activeIndex === 0 && distanceX > 0)
-        || (activeIndex === get(this, 'paneCount') - 1 && distanceX < 0)
-      ))
+      !(get(this, 'overScrollFactor') === 0
+        && (
+             (activeIndex === 0 && distanceX > 0)
+          || (activeIndex === get(this, 'paneCount') - 1 && distanceX < 0)
+        )
+      )
     ){
       this.lockPan();
       // add a dragging class so any css transitions are disabled
