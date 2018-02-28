@@ -28,6 +28,7 @@ export default Component.extend(ComponentParentMixin, {
 
   // private
   indicator: null,
+  runningAnimation: null,
 
   /**
    * Fired when a nav item is clicked
@@ -49,6 +50,11 @@ export default Component.extend(ComponentParentMixin, {
 
     const e1Index = Math.floor(navOffset);
     const e2Index = Math.ceil(navOffset);
+
+    if(get(this, 'runningAnimation')){
+      get(this, 'runningAnimation').stop();
+      set(this, 'runningAnimation', null);
+    }
 
     if(childNavItems.length
       && e1Index < childNavItems.length
@@ -87,7 +93,7 @@ export default Component.extend(ComponentParentMixin, {
         // pan ended or a menu change happened (i.e. by click)
 
         // change scroll based on target position
-        const indicatorLeft       = indicatorDims.left + navScrollLeft;
+        const indicatorLeft       = indicatorDims.left + navScrollLeft - navDims.left;
         const indicatorWidth      = indicatorDims.width;
 
         const scrollLeftMax       = navScrollWidth - navDims.width;
@@ -98,11 +104,14 @@ export default Component.extend(ComponentParentMixin, {
         const indicatorLeftDiff   = indicatorLeftTarget - indicatorLeft;
         const indicatorWidthDiff  = targetWidth - indicatorWidth;
 
-        const anim = new Tween((progress) => {
-          element.scrollLeft = navScrollLeft + scrollDiff * progress;
-          indicator.style.transform = `translateX(${indicatorLeft + indicatorLeftDiff * progress}px) scaleX(${indicatorWidth + indicatorWidthDiff * progress })`;
-        }, { duration: get(this, 'transitionDuration')});
-        anim.start();
+        if(scrollDiff !== 0 || indicatorLeftDiff !== 0 || indicatorWidthDiff !== 0){
+          const anim = new Tween((progress) => {
+            element.scrollLeft = navScrollLeft + scrollDiff * progress;
+            indicator.style.transform = `translateX(${indicatorLeft + indicatorLeftDiff * progress}px) scaleX(${indicatorWidth + indicatorWidthDiff * progress })`;
+          }, { duration: get(this, 'transitionDuration')});
+          set(this, 'runningAnimation', anim);
+          anim.start();
+        }
       } else {
         // a pan is happening
 
