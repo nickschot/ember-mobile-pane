@@ -7,6 +7,7 @@ import { inject as service } from '@ember/service';
 import { A } from '@ember/array';
 import { getOwner } from "@ember/application";
 import { scheduleOnce } from '@ember/runloop';
+import getWindowWidth from 'ember-mobile-core/utils/get-window-width';
 import RecognizerMixin from 'ember-mobile-core/mixins/pan-recognizer';
 
 //TODO: when transitioning in from some route which doesn't match, reset scroll
@@ -75,7 +76,7 @@ export default Component.extend(RecognizerMixin, {
       // write scroll offset for prev/next children
       this.set('currentScroll', document.scrollingElement.scrollTop || document.documentElement.scrollTop);
 
-      const windowWidth = this._getWindowWidth();
+      const windowWidth = getWindowWidth();
       const startOffset = 100 * x / windowWidth;
 
       // only detect when angle is 30 deg or lower (fix for iOS)
@@ -93,7 +94,7 @@ export default Component.extend(RecognizerMixin, {
     } = e.current;
 
     if(this.get('isDragging')){
-      const windowWidth = this._getWindowWidth();
+      const windowWidth = getWindowWidth();
 
       // initial target offset calculation
       let targetOffset = 100 * distanceX / windowWidth;
@@ -209,10 +210,6 @@ export default Component.extend(RecognizerMixin, {
   },
 
   // utils
-  _getWindowWidth(){
-    return window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
-  },
-
   _buildMemoryKey(id){
     return `mobile-pane/${this.get('currentRouteName')}.${id}`;
   }
