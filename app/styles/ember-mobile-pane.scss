@@ -102,10 +102,16 @@
   }
 }
 
+.mobile-pane__infinite-scroller {
+  .mobile-pane__child {
+    &.mobile-pane__child--previous, &.mobile-pane__child--next {
+      max-height: 100vh;
+      overflow: hidden;
+    }
+  }
+}
 
-
-
-
+/*
 .mobile-pane-old {
   position: relative;
 
@@ -148,3 +154,4 @@
     }
   }
 }
+*/
