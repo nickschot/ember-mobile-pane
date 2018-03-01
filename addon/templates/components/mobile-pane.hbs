@@ -31,4 +31,21 @@
     onDragMove=(action 'onDragMove')
     onDragEnd=(action 'onDragEnd')
   )
+  infinite-scroller=(component 'mobile-pane/infinite-scroller'
+    activeIndex=activeIndex
+    lazyRendering=_lazyRendering
+    keepRendered=keepRendered
+    transitionDuration=transitionDuration
+    triggerVelocity=triggerVelocity
+
+    activePane=activePane
+    paneContainerElement=paneContainerElement
+    paneCount=paneCount
+    currentOffset=currentOffset
+    visiblePanes=visiblePanes
+
+    onDragStart=(action 'onDragStart')
+    onDragMove=(action 'onDragMove')
+    onDragEnd=(action 'onDragEnd')
+  )
 )}}
