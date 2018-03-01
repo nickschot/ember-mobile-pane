@@ -39,7 +39,6 @@ export default Component.extend(ComponentParentMixin, {
   // lifecycle
   didInsertElement(){
     set(this, 'indicator', document.getElementById(`${get(this, 'elementId')}-nav__indicator`));
-    set(this, 'initialRender', false);
   },
 
   //TODO: fix this binding
@@ -113,6 +112,7 @@ export default Component.extend(ComponentParentMixin, {
               indicatorLeft + indicatorLeftDiff,
               indicatorWidth + indicatorWidthDiff
             );
+            set(this, 'initialRender', false);
           } else {
             const anim = new Tween((progress) => {
               this._updateStyle(
