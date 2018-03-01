@@ -33,7 +33,6 @@ export default Component.extend({
   }),
 
   models: computed('previousModel', 'currentModel', 'nextModel', function(){
-    console.log(Boolean);
     return [get(this, 'previousModel'), get(this, 'currentModel'), get(this, 'nextModel')].filter(Boolean);
   }),
 
