@@ -9,7 +9,7 @@
   position: relative;
   overflow-x: scroll;
   overflow-y: hidden;
-  touch-action: pan-x; //TODO: only apply this when pane is scrollable
+  //touch-action: pan-x; //TODO: only apply this when pane is scrollable
 
   // hide the scrollbar
   -ms-overflow-style: none;
@@ -28,6 +28,7 @@
     .nav__item {
       white-space:nowrap;
       text-transform: uppercase;
+      text-align: center;
 
       .item__link {
         display: block;

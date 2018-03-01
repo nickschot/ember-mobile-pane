@@ -28,6 +28,7 @@ export default Component.extend(ComponentParentMixin, {
 
   // private
   indicator: null,
+  initialRender: true,
   runningAnimation: null,
 
   /**
@@ -38,6 +39,7 @@ export default Component.extend(ComponentParentMixin, {
   // lifecycle
   didInsertElement(){
     set(this, 'indicator', document.getElementById(`${get(this, 'elementId')}-nav__indicator`));
+    set(this, 'initialRender', false);
   },
 
   //TODO: fix this binding
@@ -105,12 +107,23 @@ export default Component.extend(ComponentParentMixin, {
         const indicatorWidthDiff  = targetWidth - indicatorWidth;
 
         if(scrollDiff !== 0 || indicatorLeftDiff !== 0 || indicatorWidthDiff !== 0){
-          const anim = new Tween((progress) => {
-            element.scrollLeft = navScrollLeft + scrollDiff * progress;
-            indicator.style.transform = `translateX(${indicatorLeft + indicatorLeftDiff * progress}px) scaleX(${indicatorWidth + indicatorWidthDiff * progress })`;
-          }, { duration: get(this, 'transitionDuration')});
-          set(this, 'runningAnimation', anim);
-          anim.start();
+          if(get(this, 'initialRender')){
+            this._updateStyle(
+              navScrollLeft + scrollDiff,
+              indicatorLeft + indicatorLeftDiff,
+              indicatorWidth + indicatorWidthDiff
+            );
+          } else {
+            const anim = new Tween((progress) => {
+              this._updateStyle(
+                navScrollLeft + scrollDiff * progress,
+                indicatorLeft + indicatorLeftDiff * progress,
+                indicatorWidth + indicatorWidthDiff * progress
+              );
+            }, { duration: get(this, 'transitionDuration')});
+            set(this, 'runningAnimation', anim);
+            anim.start();
+          }
         }
       } else {
         // a pan is happening
@@ -129,4 +142,9 @@ export default Component.extend(ComponentParentMixin, {
   childNavItems: computed.filter('children', function(view) {
     return view instanceof NavItem;
   }),
+
+  _updateStyle(scrollLeft, indicatorLeft, indicatorWidth){
+    get(this, 'element').scrollLeft = scrollLeft;
+    get(this, 'indicator').style.transform = `translateX(${indicatorLeft}px) scaleX(${indicatorWidth})`;
+  }
 });
