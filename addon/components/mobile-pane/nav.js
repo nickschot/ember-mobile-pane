@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import layout from '../../templates/components/mobile-pane/nav';
 
-import { computed, get, set } from '@ember/object';
+import { computed, get, set, observer } from '@ember/object';
 import { next } from '@ember/runloop';
 
 import ComponentParentMixin from 'ember-mobile-pane/mixins/component-parent';
@@ -13,7 +13,6 @@ export default Component.extend(ComponentParentMixin, {
   tagName: 'nav',
 
   classNames: ['mobile-pane__nav'],
-  attributeBindings: ['dataStyle'],
 
   // public
   navScrollOffset: 75,
@@ -41,8 +40,11 @@ export default Component.extend(ComponentParentMixin, {
     set(this, 'indicator', document.getElementById(`${get(this, 'elementId')}-nav__indicator`));
   },
 
-  //TODO: fix this binding
-  dataStyle: computed('navOffset', 'activeIndex', 'childNavItems.@each.elementId', 'elementId', function(){
+  childNavItems: computed.filter('children', function(view) {
+    return view instanceof NavItem;
+  }),
+
+  updateStyle: observer('navOffset', 'activeIndex', 'childNavItems.@each.elementId', 'elementId', function(){
     const activeIndex     = get(this, 'activeIndex');
     const childNavItems   = get(this, 'childNavItems');
     const element         = get(this, 'element');
@@ -62,14 +64,11 @@ export default Component.extend(ComponentParentMixin, {
       && e2Index < childNavItems.length
     ){
       // the first element is always present
-      const indicator      = get(this, 'indicator');
-      const indicatorDims  = indicator.getBoundingClientRect();
       const e1Dims         = get(childNavItems.objectAt(e1Index), 'element').getBoundingClientRect();
       const e2Dims         = get(childNavItems.objectAt(e2Index), 'element').getBoundingClientRect();
       const navDims        = element.getBoundingClientRect();
       const navLeft        = navDims.left;
       const navScrollLeft  = element.scrollLeft;
-      const navScrollWidth = element.scrollWidth;
 
       let targetLeft  = e1Dims.left;
       let targetWidth = e1Dims.width;
@@ -93,57 +92,63 @@ export default Component.extend(ComponentParentMixin, {
       if(targetElementIndex === activeIndex){
         // pan ended or a menu change happened (i.e. by click)
 
-        // change scroll based on target position
-        const indicatorLeft       = indicatorDims.left + navScrollLeft - navDims.left;
-        const indicatorWidth      = indicatorDims.width;
-
-        const scrollLeftMax       = navScrollWidth - navDims.width;
-        const targetElementLeft   = targetIsElement1 ? e1Dims.left : e2Dims.left;
-        const scrollLeftTarget    = Math.max(Math.min(navScrollLeft + targetElementLeft - navScrollOffset - navLeft, scrollLeftMax), 0);
-
-        const scrollDiff          = scrollLeftTarget - navScrollLeft;
-        const indicatorLeftDiff   = indicatorLeftTarget - indicatorLeft;
-        const indicatorWidthDiff  = targetWidth - indicatorWidth;
-
-        if(scrollDiff !== 0 || indicatorLeftDiff !== 0 || indicatorWidthDiff !== 0){
-          if(get(this, 'initialRender')){
-            this._updateStyle(
-              navScrollLeft + scrollDiff,
-              indicatorLeft + indicatorLeftDiff,
-              indicatorWidth + indicatorWidthDiff
-            );
-            set(this, 'initialRender', false);
-          } else {
-            const anim = new Tween((progress) => {
-              this._updateStyle(
-                navScrollLeft + scrollDiff * progress,
-                indicatorLeft + indicatorLeftDiff * progress,
-                indicatorWidth + indicatorWidthDiff * progress
-              );
-            }, { duration: get(this, 'transitionDuration')});
-            set(this, 'runningAnimation', anim);
-            anim.start();
-          }
-        }
+        this._finishTransition(navDims, e1Dims, e2Dims, navScrollLeft, navScrollOffset, indicatorLeftTarget, targetWidth, targetIsElement1);
       } else {
         // a pan is happening
 
-        // change scroll based on indicator position
-        if(scrollLeftTarget > 50){
-          element.scrollLeft += scrollLeftTarget - navScrollOffset;
-        } else {
-          element.scrollLeft -= navScrollOffset - scrollLeftTarget;
-        }
-        indicator.style.transform = `translateX(${indicatorLeftTarget}px) scaleX(${targetWidth})`;
+        this._followPan(scrollLeftTarget, navScrollOffset, indicatorLeftTarget, targetWidth);
       }
     }
   }),
 
-  childNavItems: computed.filter('children', function(view) {
-    return view instanceof NavItem;
-  }),
+  _finishTransition(navDims, e1Dims, e2Dims, navScrollLeft, navScrollOffset, indicatorLeftTarget, indicatorWidthTarget, targetIsElement1){
+    const indicatorDims  = get(this, 'indicator').getBoundingClientRect();
+    const navScrollWidth = get(this, 'element').scrollWidth;
 
-  _updateStyle(scrollLeft, indicatorLeft, indicatorWidth){
+    // change scroll based on target position
+    const indicatorLeft       = indicatorDims.left + navScrollLeft - navDims.left;
+    const indicatorWidth      = indicatorDims.width;
+
+    const scrollLeftMax       = navScrollWidth - navDims.width;
+    const targetElementLeft   = targetIsElement1 ? e1Dims.left : e2Dims.left;
+    const scrollLeftTarget    = Math.max(Math.min(navScrollLeft + targetElementLeft - navScrollOffset - navDims.left, scrollLeftMax), 0);
+
+    const scrollDiff          = scrollLeftTarget - navScrollLeft;
+    const indicatorLeftDiff   = indicatorLeftTarget - indicatorLeft;
+    const indicatorWidthDiff  = indicatorWidthTarget - indicatorWidth;
+
+    if(scrollDiff !== 0 || indicatorLeftDiff !== 0 || indicatorWidthDiff !== 0){
+      if(get(this, 'initialRender')){
+        this._applyStyle(
+          navScrollLeft + scrollDiff,
+          indicatorLeft + indicatorLeftDiff,
+          indicatorWidth + indicatorWidthDiff
+        );
+        set(this, 'initialRender', false);
+      } else {
+        const anim = new Tween((progress) => {
+          this._applyStyle(
+            navScrollLeft + scrollDiff * progress,
+            indicatorLeft + indicatorLeftDiff * progress,
+            indicatorWidth + indicatorWidthDiff * progress
+          );
+        }, { duration: get(this, 'transitionDuration')});
+        set(this, 'runningAnimation', anim);
+        anim.start();
+      }
+    }
+  },
+  _followPan(scrollLeftTarget, navScrollOffset, indicatorLeftTarget, indicatorWidthTarget){
+    // change scroll based on indicator position
+    if(scrollLeftTarget > 50){
+      get(this, 'element').scrollLeft += scrollLeftTarget - navScrollOffset;
+    } else {
+      get(this, 'element').scrollLeft -= navScrollOffset - scrollLeftTarget;
+    }
+    get(this, 'indicator').style.transform = `translateX(${indicatorLeftTarget}px) scaleX(${indicatorWidthTarget})`;
+  },
+
+  _applyStyle(scrollLeft, indicatorLeft, indicatorWidth){
     get(this, 'element').scrollLeft = scrollLeft;
     get(this, 'indicator').style.transform = `translateX(${indicatorLeft}px) scaleX(${indicatorWidth})`;
   }
