@@ -41,6 +41,7 @@ export default Component.extend({
     });
   }),
 
+  //TODO: there are still some small timing glitches after transition, likely due to scrollOffset style hook not being in sync, set that manually!
   _setupScroller(){
     const activeIndex = get(this, 'previousModel') ? 1 : 0;
     get(this, 'onDragEnd')(activeIndex);
