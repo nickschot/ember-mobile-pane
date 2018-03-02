@@ -20,9 +20,6 @@ export default Component.extend({
   currentModel: null,
   nextModel: null,
 
-  //private
-  currentScroll: 0,
-
   onDragStart(){},
   onDragMove(dx){},
   onDragEnd(activeIndex){},
@@ -41,28 +38,33 @@ export default Component.extend({
     });
   }),
 
-  //TODO: there are still some small timing glitches after transition, likely due to scrollOffset style hook not being in sync, set that manually!
   _setupScroller(){
-    const activeIndex = get(this, 'previousModel') ? 1 : 0;
-    get(this, 'onDragEnd')(activeIndex);
-
     //TODO: improve on this
     this.restoreScroll();
     next(() => this.restoreScroll());
+
+    const activeIndex = get(this, 'previousModel') ? 1 : 0;
+    get(this, 'onDragEnd')(activeIndex);
   },
 
   models: computed('previousModel', 'currentModel', 'nextModel', function(){
     return A([get(this, 'previousModel'), get(this, 'currentModel'), get(this, 'nextModel')].filter(Boolean));
   }),
 
-  scrollOffset: computed('currentScroll', function(){
-    return htmlSafe(`transform: translateY(${this.get('currentScroll')}px)`);
-  }),
+  _updateNeighbours(offsetTop){
+    const prev    = this.element.querySelector('.mobile-pane__child--previous');
+    const next    = this.element.querySelector('.mobile-pane__child--next');
+
+    const style = `translateY(${offsetTop}px)`;
+
+    if(prev) prev.style.transform = style;
+    if(next) next.style.transform = style;
+  },
 
   actions: {
     onDragStart(){
       // write scroll offset for prev/next children
-      this.set('currentScroll', document.scrollingElement.scrollTop || document.documentElement.scrollTop);
+      this._updateNeighbours(document.scrollingElement.scrollTop || document.documentElement.scrollTop);
 
       get(this, 'onDragStart')(...arguments);
     },
@@ -85,11 +87,9 @@ export default Component.extend({
   },
 
   storeScroll(){
-    if(!this.get('isFastBoot')){
-      const key = this._buildMemoryKey(this.get('currentModel.id'));
+    const key = this._buildMemoryKey(this.get('currentModel.id'));
 
-      this.get('memory')[key] = document.scrollingElement.scrollTop || document.documentElement.scrollTop;
-    }
+    this.get('memory')[key] = document.scrollingElement.scrollTop || document.documentElement.scrollTop;
   },
 
   restoreScroll(){
@@ -108,6 +108,6 @@ export default Component.extend({
 
   // utils
   _buildMemoryKey(id){
-    return `mobile-pane/${this.get('currentRouteName')}.${id}`;
+    return `mobile-pane/${this.get('router.currentRouteName')}.${id}`;
   }
 });

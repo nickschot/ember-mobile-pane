@@ -17,7 +17,7 @@
 as |mps|}}
   {{#if previousModel}}
     {{#mps.pane}}
-      <div class="mobile-pane__child mobile-pane__child--previous" style="{{scrollOffset}}">
+      <div class="mobile-pane__child mobile-pane__child--previous">
         {{~yield previousModel ~}}
       </div>
     {{/mps.pane}}
@@ -31,9 +31,11 @@ as |mps|}}
 
   {{#if nextModel}}
     {{#mps.pane}}
-      <div class="mobile-pane__child  mobile-pane__child--next" style="{{scrollOffset}}">
+      <div class="mobile-pane__child  mobile-pane__child--next">
         {{~yield nextModel ~}}
       </div>
     {{/mps.pane}}
+  {{else}}
+    {{log 'no next model'}}
   {{/if}}
 {{/mobile-pane/scroller}}
