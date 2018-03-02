@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import layout from '../../templates/components/mobile-pane/infinite-scroller';
 
 import { inject as service } from '@ember/service';
-import { get, set, computed } from '@ember/object';
+import { get, set, computed, observer } from '@ember/object';
 import { once } from '@ember/runloop';
 import { htmlSafe } from '@ember/string';
 import { A } from '@ember/array';
