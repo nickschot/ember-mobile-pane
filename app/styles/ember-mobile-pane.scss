@@ -69,6 +69,15 @@
   }
 }
 
+.mobile-pane__infinite-scroller {
+  .mobile-pane__child {
+    &.mobile-pane__child--previous, &.mobile-pane__child--next {
+      max-height: 100vh;
+      overflow: hidden;
+    }
+  }
+}
+
 .scroller__simple-indicator {
   position: absolute;
   left: 50%;
@@ -101,57 +110,3 @@
     will-change: transform;
   }
 }
-
-.mobile-pane__infinite-scroller {
-  .mobile-pane__child {
-    &.mobile-pane__child--previous, &.mobile-pane__child--next {
-      max-height: 100vh;
-      overflow: hidden;
-    }
-  }
-}
-
-/*
-.mobile-pane-old {
-  position: relative;
-
-  .mobile-pane__container {
-    will-change: transform;
-  }
-
-  .mobile-pane__child {
-    overflow: hidden;
-
-    &.child--previous, &.child--next {
-      position: fixed;
-      top: 0;
-      left: 0;
-      max-height: 100vh;
-    }
-
-    &.child--current {
-      touch-action: pan-y;
-      height: 100%;
-      overflow: auto;
-    }
-
-    &.child--previous {
-      transform: translateX(-100vw);
-    }
-
-    &.child--next {
-      transform: translateX(100vw);
-    }
-  }
-
-  &.mobile-pane--transitioning .mobile-pane__container {
-    transition: transform $mobile-pane-transition-duration;
-  }
-
-  &.mobile-pane--dragging {
-    .mobile-pane__container {
-      transition: none;
-    }
-  }
-}
-*/
