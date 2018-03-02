@@ -17,25 +17,35 @@
 as |mps|}}
   {{#if previousModel}}
     {{#mps.pane}}
-      <div class="mobile-pane__child mobile-pane__child--previous">
+      {{#mobile-pane/infinite-scroller/child
+        class="mobile-pane__child--previous"
+        offsetTop=childOffsetTop
+        scroll=prevChildScroll
+      }}
         {{~yield previousModel ~}}
-      </div>
+      {{/mobile-pane/infinite-scroller/child}}
     {{/mps.pane}}
   {{/if}}
 
   {{#mps.pane}}
-    <div class="mobile-pane__child mobile-pane__child--current">
+    {{#mobile-pane/infinite-scroller/child
+      class="mobile-pane__child--current"
+      scroll=currentChildScroll
+      setAsDocumentScroll=true
+    }}
       {{~yield currentModel ~}}
-    </div>
+    {{/mobile-pane/infinite-scroller/child}}
   {{/mps.pane}}
 
   {{#if nextModel}}
     {{#mps.pane}}
-      <div class="mobile-pane__child  mobile-pane__child--next">
+      {{#mobile-pane/infinite-scroller/child
+        class="mobile-pane__child--next"
+        offsetTop=childOffsetTop
+        scroll=nextChildScroll
+      }}
         {{~yield nextModel ~}}
-      </div>
+      {{/mobile-pane/infinite-scroller/child}}
     {{/mps.pane}}
-  {{else}}
-    {{log 'no next model'}}
   {{/if}}
 {{/mobile-pane/scroller}}

@@ -2,8 +2,8 @@ import Component from '@ember/component';
 import layout from '../../templates/components/mobile-pane/infinite-scroller';
 
 import { inject as service } from '@ember/service';
-import { get, computed, observer } from '@ember/object';
-import { once, next } from '@ember/runloop';
+import { get, set, computed } from '@ember/object';
+import { once } from '@ember/runloop';
 import { htmlSafe } from '@ember/string';
 import { A } from '@ember/array';
 
@@ -19,6 +19,12 @@ export default Component.extend({
   previousModel: null,
   currentModel: null,
   nextModel: null,
+
+  //private
+  prevChildScroll: 0,
+  currentChildScroll: 0,
+  nextChildScroll: 0,
+  childOffsetTop: 0,
 
   onDragStart(){},
   onDragMove(dx){},
@@ -39,9 +45,7 @@ export default Component.extend({
   }),
 
   _setupScroller(){
-    //TODO: improve on this
     this.restoreScroll();
-    next(() => this.restoreScroll());
 
     const activeIndex = get(this, 'previousModel') ? 1 : 0;
     get(this, 'onDragEnd')(activeIndex);
@@ -51,20 +55,10 @@ export default Component.extend({
     return A([get(this, 'previousModel'), get(this, 'currentModel'), get(this, 'nextModel')].filter(Boolean));
   }),
 
-  _updateNeighbours(offsetTop){
-    const prev    = this.element.querySelector('.mobile-pane__child--previous');
-    const next    = this.element.querySelector('.mobile-pane__child--next');
-
-    const style = `translateY(${offsetTop}px)`;
-
-    if(prev) prev.style.transform = style;
-    if(next) next.style.transform = style;
-  },
-
   actions: {
     onDragStart(){
       // write scroll offset for prev/next children
-      this._updateNeighbours(document.scrollingElement.scrollTop || document.documentElement.scrollTop);
+      set(this, 'childOffsetTop', document.scrollingElement.scrollTop || document.documentElement.scrollTop);
 
       get(this, 'onDragStart')(...arguments);
     },
@@ -88,7 +82,6 @@ export default Component.extend({
 
   storeScroll(){
     const key = this._buildMemoryKey(this.get('currentModel.id'));
-
     this.get('memory')[key] = document.scrollingElement.scrollTop || document.documentElement.scrollTop;
   },
 
@@ -97,13 +90,9 @@ export default Component.extend({
     const currentKey  = this._buildMemoryKey(this.get('currentModel.id'));
     const nextKey     = this._buildMemoryKey(this.get('nextModel.id'));
 
-    const prev    = this.element.querySelector('.mobile-pane__child--previous');
-    const current = document.scrollingElement || document.documentElement;
-    const next    = this.element.querySelector('.mobile-pane__child--next');
-
-    if(prev) prev.scrollTop = this.get('memory')[prevKey] || 0;
-    current.scrollTop       = this.get('memory')[currentKey] || 0;
-    if(next) next.scrollTop = this.get('memory')[nextKey] || 0;
+    set(this, 'prevChildScroll', this.get('memory')[prevKey] || 0);
+    set(this, 'currentChildScroll', this.get('memory')[currentKey] || 0);
+    set(this, 'nextChildScroll', this.get('memory')[nextKey] || 0);
   },
 
   // utils
