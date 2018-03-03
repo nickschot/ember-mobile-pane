@@ -22,7 +22,10 @@ as |mps|}}
         offsetTop=childOffsetTop
         scroll=prevChildScroll
       }}
-        {{~yield previousModel ~}}
+        {{~yield (hash
+          model=previousModel
+          isCurrentModel=false
+        ) ~}}
       {{/mobile-pane/infinite-scroller/child}}
     {{/mps.pane}}
   {{/if}}
@@ -33,7 +36,10 @@ as |mps|}}
       scroll=currentChildScroll
       setAsDocumentScroll=true
     }}
-      {{~yield currentModel ~}}
+      {{~yield (hash
+        model=currentModel
+        isCurrentModel=true
+      ) ~}}
     {{/mobile-pane/infinite-scroller/child}}
   {{/mps.pane}}
 
@@ -44,7 +50,10 @@ as |mps|}}
         offsetTop=childOffsetTop
         scroll=nextChildScroll
       }}
-        {{~yield nextModel ~}}
+        {{~yield (hash
+          model=nextModel
+          isCurrentModel=false
+        ) ~}}
       {{/mobile-pane/infinite-scroller/child}}
     {{/mps.pane}}
   {{/if}}
