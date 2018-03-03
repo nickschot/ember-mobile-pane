@@ -1,6 +1,6 @@
 <a href="#{{navItem.elementId}}"
    role="tab"
-   class="item__link {{if (eq navItem.elementId activePane.elementId) 'active'}}"
+   class="item__link {{if isActive 'active'}}"
    {{action 'clickItem'}}
 >
   {{navItem.title}}

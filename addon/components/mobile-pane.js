@@ -17,20 +17,16 @@ export default Component.extend(ComponentParentMixin, {
   classNames: ['mobile-pane'],
   classNameBindings: [
     'isDragging:mobile-pane--dragging',
-    'transitionsEnabled:mobile-pane--transitions'
   ],
 
   init(){
     this._super(...arguments);
-
-    next(() => {
-      // delay transitions effects until the pane has fully initialized
-      set(this, 'transitionsEnabled', true);
-    });
   },
 
   // public
+  activeIndex: 0,
   triggerVelocity: 0.25,
+  transitionDuration: 300,
 
   /**
    * Renders active pane and it's nearest neighbours
@@ -76,7 +72,6 @@ export default Component.extend(ComponentParentMixin, {
   },
 
   // private
-  transitionsEnabled: false,
   isDragging: false,
   dx: 0,
 
@@ -98,19 +93,6 @@ export default Component.extend(ComponentParentMixin, {
     });
   }),
 
-  _activeIndex: 0,
-  activeIndex: computed({
-    get(){
-      return get(this, '_activeIndex');
-    },
-    set(key, value){
-      set(this, '_activeIndex', value);
-
-      get(this, 'onChange')(value);
-
-      return value;
-    }
-  }),
   activePane: computed('panes.@each.elementId', 'activeIndex', function(){
     return get(this, 'panes').objectAt(get(this, 'activeIndex'));
   }),
@@ -142,16 +124,14 @@ export default Component.extend(ComponentParentMixin, {
       .map(item => item.getProperties('elementId'));
   }),
 
-  currentOffset: computed('activeIndex', 'dx', 'isDragging', 'paneCount', function(){
-    const dx = get(this, 'isDragging')
-      ? get(this, 'dx')
-      : 0;
-
+  currentOffset: computed('activeIndex', 'dx', 'paneCount', function(){
     // don't divide by 0
     return get(this, 'paneCount') !== 0
-      ? get(this, 'activeIndex') * -100 / get(this, 'paneCount') + dx
-      : dx;
+      ? get(this, 'activeIndex') * -100 / get(this, 'paneCount') + get(this, 'dx')
+      : get(this, 'dx');
   }),
+
+  //TODO: rename to something more akin of what the number represents (limitedOffset, boundedOffset)
   navOffset: computed('currentOffset', 'paneCount', function(){
     return Math.min(Math.max(get(this, 'currentOffset') * get(this, 'paneCount') / -100, 0), get(this, 'paneCount') - 1);
   })

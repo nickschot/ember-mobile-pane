@@ -9,6 +9,7 @@
   position: relative;
   overflow-x: scroll;
   overflow-y: hidden;
+  //touch-action: pan-x; //TODO: only apply this when pane is scrollable
 
   // hide the scrollbar
   -ms-overflow-style: none;
@@ -27,6 +28,7 @@
     .nav__item {
       white-space:nowrap;
       text-transform: uppercase;
+      text-align: center;
 
       .item__link {
         display: block;
@@ -67,10 +69,13 @@
   }
 }
 
-.mobile-pane__nav--transitions:not(.mobile-pane__nav--dragging) > .nav__indicator,
-.mobile-pane--transitions:not(.mobile-pane--dragging) > .mobile-pane__scroller,
-.mobile-pane--transitions:not(.mobile-pane--dragging) > .scroller__simple-indicator > .simple-indicator__indicator {
-  transition: transform $mobile-pane-transition-ease $mobile-pane-transition-duration;
+.mobile-pane__infinite-scroller {
+  .mobile-pane__child {
+    &.mobile-pane__child--previous, &.mobile-pane__child--next {
+      max-height: 100vh;
+      overflow: hidden;
+    }
+  }
 }
 
 .scroller__simple-indicator {
@@ -103,52 +108,5 @@
     }
 
     will-change: transform;
-  }
-}
-
-
-
-
-
-.mobile-pane-old {
-  position: relative;
-
-  .mobile-pane__container {
-    will-change: transform;
-  }
-
-  .mobile-pane__child {
-    overflow: hidden;
-
-    &.child--previous, &.child--next {
-      position: fixed;
-      top: 0;
-      left: 0;
-      max-height: 100vh;
-    }
-
-    &.child--current {
-      touch-action: pan-y;
-      height: 100%;
-      overflow: auto;
-    }
-
-    &.child--previous {
-      transform: translateX(-100vw);
-    }
-
-    &.child--next {
-      transform: translateX(100vw);
-    }
-  }
-
-  &.mobile-pane--transitioning .mobile-pane__container {
-    transition: transform $mobile-pane-transition-duration;
-  }
-
-  &.mobile-pane--dragging {
-    .mobile-pane__container {
-      transition: none;
-    }
   }
 }
