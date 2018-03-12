@@ -24,7 +24,7 @@
   "dependencies": {
     "ember-cli-babel": "^6.12.0",
     "ember-cli-htmlbars": "^2.0.1",
-    "ember-mobile-core": "git+https://github.com/nickschot/ember-mobile-core.git",
+    "ember-mobile-core": "0.1.0-alpha.1",
     "memory-scroll": "^0.9.1"
   },
   "devDependencies": {
