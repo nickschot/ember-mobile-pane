@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import layout from '../../templates/components/mobile-pane/nav';
 
 import { computed, get, set, observer } from '@ember/object';
-import { next } from '@ember/runloop';
+import { next, once } from '@ember/runloop';
 
 import ComponentParentMixin from 'ember-mobile-pane/mixins/component-parent';
 import NavItem from 'ember-mobile-pane/components/mobile-pane/nav/item';
@@ -37,14 +37,28 @@ export default Component.extend(ComponentParentMixin, {
 
   // lifecycle
   didInsertElement(){
+    this._super(...arguments);
+
     set(this, 'indicator', document.getElementById(`${get(this, 'elementId')}-nav__indicator`));
+
+    this._updateStyle();
   },
 
   childNavItems: computed.filter('children', function(view) {
     return view instanceof NavItem;
   }),
 
-  updateStyle: observer('navOffset', 'activeIndex', 'childNavItems.@each.elementId', 'elementId', function(){
+  updateStyle: observer(
+    'navOffset',
+    'activeIndex',
+    'childNavItems.@each.elementId',
+    'elementId',
+    function(){
+      once(this, this._updateStyle);
+    }
+  ),
+
+  _updateStyle(){
     const activeIndex     = get(this, 'activeIndex');
     const childNavItems   = get(this, 'childNavItems');
     const element         = get(this, 'element');
@@ -99,7 +113,7 @@ export default Component.extend(ComponentParentMixin, {
         this._followPan(scrollLeftTarget, navScrollOffset, indicatorLeftTarget, targetWidth);
       }
     }
-  }),
+  },
 
   _finishTransition(navDims, e1Dims, e2Dims, navScrollLeft, navScrollOffset, indicatorLeftTarget, indicatorWidthTarget, targetIsElement1){
     const indicatorDims  = get(this, 'indicator').getBoundingClientRect();
