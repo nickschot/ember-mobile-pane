@@ -25,7 +25,7 @@
     "ember-cli-babel": "^6.12.0",
     "ember-cli-htmlbars": "^2.0.1",
     "ember-maybe-import-regenerator": "^0.1.6",
-    "ember-mobile-core": "0.1.0-alpha.1",
+    "ember-mobile-core": "0.1.0-alpha.2",
     "memory-scroll": "^0.9.1"
   },
   "devDependencies": {

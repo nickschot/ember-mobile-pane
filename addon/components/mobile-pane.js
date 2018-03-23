@@ -25,7 +25,7 @@ export default Component.extend(ComponentParentMixin, {
 
   // public
   activeIndex: 0,
-  triggerVelocity: 0.25,
+  triggerVelocity: 0.3,
   transitionDuration: 300,
 
   /**
