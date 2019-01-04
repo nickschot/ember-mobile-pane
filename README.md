@@ -7,7 +7,7 @@ Installation
 ------------------------------------------------------------------------------
 
 ```
-ember install my-addon
+ember install ember-mobile-pane
 ```
 
 
