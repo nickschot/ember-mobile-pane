@@ -1,26 +1,23 @@
-# ember-mobile-pane
+ember-mobile-pane
+==============================================================================
 
-This README outlines the details of collaborating on this Ember addon.
+[Short description of the addon.]
 
-## Installation
+Installation
+------------------------------------------------------------------------------
 
-* `git clone <repository-url>` this repository
-* `cd ember-mobile-pane`
-* `npm install`
+```
+ember install my-addon
+```
 
-## Running
 
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+Usage
+------------------------------------------------------------------------------
 
-## Running Tests
+[Longer description of how to use the addon in apps.]
 
-* `npm test` (Runs `ember try:each` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
 
-## Building
+License
+------------------------------------------------------------------------------
 
-* `ember build`
-
-For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
+This project is licensed under the [MIT License](LICENSE.md).
