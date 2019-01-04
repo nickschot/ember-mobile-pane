@@ -49,6 +49,7 @@ export default Component.extend(ComponentParentMixin, {
 
   // fired whenever the active pane changes
   onChange(){},
+  onDragEnd(){},
 
   actions: {
     changePane(element){
@@ -65,6 +66,8 @@ export default Component.extend(ComponentParentMixin, {
       set(this, 'isDragging', false);
       set(this, 'activeIndex', activeIndex);
       set(this, 'dx', 0);
+
+      this.get('onDragEnd')(...arguments);
     }
   },
 

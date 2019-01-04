@@ -18,6 +18,7 @@ export default Component.extend({
   previousModel: null,
   currentModel: null,
   nextModel: null,
+  transitionAfterDrag: true,
 
   //private
   prevChildScroll: 0,
@@ -71,11 +72,13 @@ export default Component.extend({
         // store the scroll position of currentModel
         this.storeScroll();
 
-        // transition to the targetModel on the current route
-        get(this, 'router').transitionTo(get(this, 'router.currentRouteName'), targetModel);
+        if(this.get('transitionAfterDrag')){
+          // transition to the targetModel on the current route
+          get(this, 'router').transitionTo(get(this, 'router.currentRouteName'), targetModel);
+        }
       }
 
-      get(this, 'onDragEnd')(...arguments);
+      get(this, 'onDragEnd')(targetIndex, targetModel);
     }
   },
 
