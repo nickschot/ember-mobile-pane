@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import layout from '../../templates/components/mobile-pane/nav';
 
 import { computed, get, set, observer } from '@ember/object';
-import { next, once } from '@ember/runloop';
+import { once } from '@ember/runloop';
 
 import ComponentParentMixin from 'ember-mobile-pane/mixins/component-parent';
 import NavItem from 'ember-mobile-pane/components/mobile-pane/nav/item';

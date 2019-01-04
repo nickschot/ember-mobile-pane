@@ -27,6 +27,7 @@ export default Component.extend(ComponentChildMixin, {
     return this === get(this, 'activePane');
   }),
 
+  //TODO: refactor with ember-concurrency to solve the side effect issue (?)
   renderContent: computed(
     'lazyRendering',
     'keepRendered',
@@ -39,6 +40,7 @@ export default Component.extend(ComponentChildMixin, {
           .find(item => get(item, 'elementId') === get(this, 'elementId'));
 
         if(willRender){
+          // eslint-disable-next-line ember/no-side-effects
           set(this, 'didRender', true);
         }
 

@@ -34,8 +34,8 @@ export default Component.extend(RecognizerMixin, {
   runningAnimation: null,
 
   onDragStart(){},
-  onDragMove(dx){},
-  onDragEnd(activeIndex){},
+  onDragMove(dx){}, // eslint-disable-line no-unused-vars
+  onDragEnd(activeIndex){}, // eslint-disable-line no-unused-vars
 
   style: computed('paneCount', 'currentOffset', function(){
     let style  = `width: ${get(this, 'paneCount') * 100}%;`;
@@ -51,7 +51,6 @@ export default Component.extend(RecognizerMixin, {
   },
   didPanStart(e){
     const {
-      angle,
       distanceX
     } = e.current;
 

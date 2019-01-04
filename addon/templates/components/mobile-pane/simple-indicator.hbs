@@ -1,5 +1,5 @@
 {{#each navItems as |navItem|}}
-  <span {{action "onClick" navItem}}><i></i></span>
+  <button {{action "onClick" navItem}}><i></i></button>
 {{/each}}
 
-<span class="simple-indicator__indicator" style="{{indicatorStyle}}"><i></i></span>
+<span class="simple-indicator__indicator" style={{indicatorStyle}}><i></i></span>
