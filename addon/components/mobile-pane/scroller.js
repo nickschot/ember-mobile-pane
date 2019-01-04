@@ -42,7 +42,6 @@ export default Component.extend(RecognizerMixin, {
 
     style += `transform: translateX(${get(this, 'currentOffset')}%)`;
 
-    //TODO: don't use ember binds to set this
     return htmlSafe(style);
   }),
 
