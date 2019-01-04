@@ -1,5 +1,5 @@
 {{yield (hash
-  nav=(component 'mobile-pane/nav'
+  nav=(component "mobile-pane/nav"
     activeIndex=activeIndex
     transitionDuration=transitionDuration
 
@@ -7,14 +7,14 @@
     navItems=navItems
     navOffset=navOffset
 
-    onItemClick=(action 'changePane')
+    onItemClick=(action "changePane")
   )
-  simple-indicator=(component 'mobile-pane/simple-indicator'
+  simple-indicator=(component "mobile-pane/simple-indicator"
     navItems=navItems
     currentOffset=currentOffset
-    onClick=(action 'changePane')
+    onClick=(action "changePane")
   )
-  scroller=(component 'mobile-pane/scroller'
+  scroller=(component "mobile-pane/scroller"
     activeIndex=activeIndex
     lazyRendering=_lazyRendering
     keepRendered=keepRendered
@@ -27,11 +27,11 @@
     currentOffset=currentOffset
     visiblePanes=visiblePanes
 
-    onDragStart=(action 'onDragStart')
-    onDragMove=(action 'onDragMove')
-    onDragEnd=(action 'onDragEnd')
+    onDragStart=(action "onDragStart")
+    onDragMove=(action "onDragMove")
+    onDragEnd=(action "onDragEnd")
   )
-  infinite-scroller=(component 'mobile-pane/infinite-scroller'
+  infinite-scroller=(component "mobile-pane/infinite-scroller"
     activeIndex=activeIndex
     lazyRendering=_lazyRendering
     keepRendered=keepRendered
@@ -44,8 +44,8 @@
     currentOffset=currentOffset
     visiblePanes=visiblePanes
 
-    onDragStart=(action 'onDragStart')
-    onDragMove=(action 'onDragMove')
-    onDragEnd=(action 'onDragEnd')
+    onDragStart=(action "onDragStart")
+    onDragMove=(action "onDragMove")
+    onDragEnd=(action "onDragEnd")
   )
 )}}

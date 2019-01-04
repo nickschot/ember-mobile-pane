@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = {
-  name: 'ember-mobile-pane'
+  name: require('./package').name
 };
