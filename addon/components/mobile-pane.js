@@ -3,11 +3,15 @@ import layout from '../templates/components/mobile-pane';
 
 import { computed, get, set } from '@ember/object';
 
-import Pane from 'ember-mobile-pane/components/mobile-pane/pane';
+import PaneComponent from 'ember-mobile-pane/components/mobile-pane/pane';
 import ComponentParentMixin from 'ember-mobile-pane/mixins/component-parent';
 
 //TODO: delay (normal) lazyRendering until after the animation has completed to prevent stutter
 
+/**
+ * @class MobilePaneComponent
+ * @public
+ */
 export default Component.extend(ComponentParentMixin, {
   layout,
 
@@ -21,33 +25,79 @@ export default Component.extend(ComponentParentMixin, {
   },
 
   // public
+
+  /**
+   * Index of the active pane.
+   *
+   * @argument activeIndex
+   * @type {Number} Must be an integer
+   * @default 0
+   */
   activeIndex: 0,
+
+  /**
+   * Velocity necessary to trigger a "swipe".
+   *
+   * @argument triggerVelocity
+   * @type {Number}
+   * @default 0.3
+   */
   triggerVelocity: 0.3,
+
+  /**
+   * Duration of the finish animation in ms.
+   *
+   * @argument transitionDuration
+   * @type {Number}
+   * @default 300
+   */
   transitionDuration: 300,
 
   /**
-   * Renders active pane and it's nearest neighbours
+   * Renders the active pane and it's direct neighbours.
+   *
+   * @argument lazyRendering
+   * @type {Boolean}
+   * @default true
    */
   lazyRendering: true,
 
   /**
-   * Renders panes only when they are in the current viewport
+   * Renders panes only when they are in the current viewport.
+   *
+   * @argument strictLazyRendering
+   * @type {Boolean}
+   * @default false
    */
   strictLazyRendering: false,
 
   /**
    * Deadzone for how far a pane must be in the viewport to be rendered
+   *
+   * @argument strictLazyRenderingDeadZone
+   * @type {Number} between 0 and 1.0
+   * @default 0
    */
-  strictLazyRenderingDeadZone: 0.25,
+  strictLazyRenderingDeadZone: 0,
 
   /**
    * Keep the pane content rendered after the initial render
+   *
+   * @argument keepRendered
+   * @type {Boolean}
+   * @default false
    */
   keepRendered: false,
 
-  // fired whenever the active pane changes
-  onChange(){},
-  onDragEnd(){},
+  /**
+   * Hook fired when the active pane changed. If combined with the
+   * infinite-scroller, the new model is passed as the second argument.
+   *
+   * @argument onChange
+   * @type {Function}
+   * @default function(){}
+   */
+  onChange: function(activeIndex, newModel){},
 
   actions: {
     changePane(element){
@@ -65,19 +115,41 @@ export default Component.extend(ComponentParentMixin, {
       set(this, 'activeIndex', activeIndex);
       set(this, 'dx', 0);
 
-      this.get('onDragEnd')(...arguments);
+      this.get('onChange')(...arguments);
     }
   },
 
-  // private
+  /**
+   * True if the user is dragging in the pane.
+   *
+   * @property isDragging
+   * @type {Boolean}
+   * @default false
+   * @private
+   */
   isDragging: false,
+
+  /**
+   * Current offset in px.
+   *
+   * @property dx
+   * @type {Number}
+   * @default 0
+   * @private
+   */
   dx: 0,
 
+  /**
+   * True if lazy rendering is enabled.
+   *
+   * @property _lazyRendering
+   * @private
+   */
   _lazyRendering: computed.or('lazyRendering', 'strictLazyRendering'),
 
   paneContainerElement: computed.readOnly('element'),
   panes: computed.filter('children', function(view) {
-    return view instanceof Pane;
+    return view instanceof PaneComponent;
   }),
   paneCount: computed('panes.length', function(){
     return get(this, 'panes.length');
@@ -91,12 +163,22 @@ export default Component.extend(ComponentParentMixin, {
     });
   }),
 
+  /**
+   * Returns the active pane.
+   *
+   * @property activePane
+   * @type {PaneComponent}
+   * @private
+   */
   activePane: computed('panes.@each.elementId', 'activeIndex', function(){
     return get(this, 'panes').objectAt(get(this, 'activeIndex'));
   }),
 
   /**
    * Returns the panes which should be rendered when lazy rendering is enabled.
+   *
+   * @property visiblePanes
+   * @private
    */
   visiblePanes: computed('panes.@each.elementId', 'activeIndex', 'navOffset', function(){
     const activeIndex = get(this, 'activeIndex');

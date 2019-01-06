@@ -6,6 +6,9 @@ import { get, set, computed, observer } from '@ember/object';
 import { once } from '@ember/runloop';
 import { A } from '@ember/array';
 
+/**
+ * @class InfiniteScrollerComponent
+ */
 export default Component.extend({
   layout,
 
@@ -14,11 +17,38 @@ export default Component.extend({
   router: service(),
   memory: service('memory-scroll'),
 
-  //public
+  /**
+   * Model for the previous pane. Must be truthy to render the pane.
+   *
+   * @argument previousModel
+   * @default null
+   */
   previousModel: null,
+
+  /**
+   * Model for the current pane.
+   *
+   * @argument currentModel
+   * @required
+   */
   currentModel: null,
+
+  /**
+   * Model for the next pane.
+   *
+   * @argument nextModel
+   * @default null
+   */
   nextModel: null,
-  transitionAfterDrag: true,
+
+  /**
+   * Whether or not a router transition is triggered after pane change.
+   *
+   * @argument transitionAfterDrag
+   * @default false
+   * @private
+   */
+  transitionAfterDrag: false,
 
   //private
   prevChildScroll: 0,
