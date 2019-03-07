@@ -102,6 +102,8 @@ export default Component.extend(ComponentParentMixin, {
   actions: {
     changePane(element){
       set(this, 'activeIndex', element.index);
+
+      this.get('onChange')(...arguments);
     },
 
     onDragStart(){
