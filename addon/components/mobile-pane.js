@@ -95,9 +95,9 @@ export default Component.extend(ComponentParentMixin, {
    *
    * @argument onChange
    * @type {Function}
-   * @default function(){}
+   * @default function(activeIndex, newModel){}
    */
-  onChange: function(activeIndex, newModel){},
+  onChange: function(){},
 
   actions: {
     changePane(element){
