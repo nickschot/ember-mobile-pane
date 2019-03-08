@@ -57,7 +57,7 @@ export default Component.extend({
    * @param model The model that belongs to the new index
    * @param activeIndex The new index
    */
-  onChange(model, activeIndex){},
+  onChange(model, activeIndex){}, //eslint-disable-line no-unused-vars
 
   //private
   prevChildScroll: 0,
