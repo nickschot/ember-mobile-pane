@@ -7,12 +7,23 @@ import { htmlSafe } from '@ember/string';
 import RecognizerMixin from 'ember-mobile-core/mixins/pan-recognizer';
 import Tween from 'ember-mobile-core/tween';
 
+/**
+ * @class ScrollComponent
+ */
 export default Component.extend(RecognizerMixin, {
   layout,
   classNames: ['mobile-pane__scroller'],
   attributeBindings: ['style'],
 
   // public
+
+  /**
+   * The factor which the paneWidth is multiplied to get the over scroll amount.
+   *
+   * @argument overScrollFactor
+   * @type {Number} between 0 and 1.0
+   * @default 0.34
+   */
   overScrollFactor: 0.34, // between 0 and 1
 
   // protected

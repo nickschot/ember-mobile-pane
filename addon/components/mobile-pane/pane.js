@@ -4,6 +4,9 @@ import layout from '../../templates/components/mobile-pane/pane';
 import ComponentChildMixin from 'ember-mobile-pane/mixins/component-child';
 import { computed, get, set } from '@ember/object';
 
+/**
+ * @class PaneComponent
+ */
 export default Component.extend(ComponentChildMixin, {
   layout,
 
@@ -11,6 +14,14 @@ export default Component.extend(ComponentChildMixin, {
   classNameBindings: ['isActive:active'],
 
   // public
+
+  /**
+   * Title of the pane. Used in the NavComponent  if it's present.
+   *
+   * @argument title
+   * @type ''
+   * @default null
+   */
   title: null,
 
   // protected
@@ -20,9 +31,20 @@ export default Component.extend(ComponentChildMixin, {
   paneCount: 0,
   visiblePanes: null,
 
-  // private
+  /**
+   * Whether or not the pane was rendered before. Used for lazyRendering.
+   *
+   * @property didRender
+   * @private
+   */
   didRender: false,
 
+  /**
+   * True if this pane is the active pane.
+   *
+   * @property isActive
+   * @private
+   */
   isActive: computed('activePane', function(){
     return this === get(this, 'activePane');
   }),
