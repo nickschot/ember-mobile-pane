@@ -90,34 +90,38 @@ export default Component.extend(ComponentParentMixin, {
   keepRendered: false,
 
   /**
-   * Hook fired when the active pane changed. If combined with the
-   * infinite-scroller, the new model is passed as the second argument.
+   * Hook fired when the active pane changed.
    *
    * @argument onChange
    * @type {Function}
-   * @default function(activeIndex, newModel){}
+   * @default function(activeIndex){}
    */
-  onChange: function(){},
+  onChange(activeIndex){}, //eslint-disable-line no-unused-vars
+
+  onDragStart(){},
+  onDragMove(dx){}, //eslint-disable-line no-unused-vars
+  onDragEnd(activeIndex){}, //eslint-disable-line no-unused-vars
 
   actions: {
-    changePane(element){
-      set(this, 'activeIndex', element.index);
-
-      this.get('onChange')(...arguments);
-    },
-
     onDragStart(){
       set(this, 'isDragging', true);
+
+      this.get('onDragStart')();
     },
     onDragMove(dx){
       set(this, 'dx', dx);
+
+      this.get('onDragMove')(dx);
     },
     onDragEnd(activeIndex){
       set(this, 'isDragging', false);
-      set(this, 'activeIndex', activeIndex);
       set(this, 'dx', 0);
 
-      this.get('onChange')(...arguments);
+      this.get('onDragEnd')(activeIndex);
+
+      if(activeIndex !== this.get('activeIndex')){
+        this.get('onChange')(activeIndex);
+      }
     }
   },
 

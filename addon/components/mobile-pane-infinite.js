@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import layout from '../../templates/components/mobile-pane/infinite-scroller';
+import layout from '../templates/components/mobile-pane-infinite';
 
 import { inject as service } from '@ember/service';
 import { get, set, computed, observer } from '@ember/object';
@@ -7,7 +7,7 @@ import { once } from '@ember/runloop';
 import { A } from '@ember/array';
 
 /**
- * @class InfiniteScrollerComponent
+ * @class MobilePaneInfiniteComponent
  */
 export default Component.extend({
   layout,
@@ -50,6 +50,15 @@ export default Component.extend({
    */
   transitionAfterDrag: false,
 
+  /**
+   * Hook called when the active pane changes.
+   *
+   * @argument onChange
+   * @param model The model that belongs to the new index
+   * @param activeIndex The new index
+   */
+  onChange(model, activeIndex){},
+
   //private
   prevChildScroll: 0,
   currentChildScroll: 0,
@@ -64,22 +73,19 @@ export default Component.extend({
     this._super(...arguments);
 
     //TODO: purge scroll states if we came from a higher level route
-    this._setupScroller();
+    this.restoreScroll();
   },
 
   updateActiveIndex: observer('models.@each.id', function(){
     once(() => {
-      // we received new models, update activeIndex to the currentModel index
-      this._setupScroller();
+      // we received new models, restore the scroll
+      this.restoreScroll();
     });
   }),
 
-  _setupScroller(){
-    this.restoreScroll();
-
-    const activeIndex = get(this, 'previousModel') ? 1 : 0;
-    get(this, 'onDragEnd')(activeIndex);
-  },
+  activeIndex: computed('previousModel', function(){
+    return this.get('previousModel') ? 1 : 0;
+  }),
 
   models: computed('previousModel', 'currentModel', 'nextModel', function(){
     return A([get(this, 'previousModel'), get(this, 'currentModel'), get(this, 'nextModel')].filter(Boolean));
@@ -101,14 +107,12 @@ export default Component.extend({
       if(targetModel !== get(this, 'currentModel')){
         // store the scroll position of currentModel
         this.storeScroll();
-
-        if(this.get('transitionAfterDrag')){
-          // transition to the targetModel on the current route
-          get(this, 'router').transitionTo(get(this, 'router.currentRouteName'), targetModel);
-        }
       }
 
       get(this, 'onDragEnd')(targetIndex, targetModel);
+    },
+    onChange(index){
+      this.get('onChange')(this.get('models').objectAt(index), index);
     }
   },
 

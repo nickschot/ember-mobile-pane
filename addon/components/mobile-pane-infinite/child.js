@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import layout from '../../../templates/components/mobile-pane/infinite-scroller/child';
+import layout from '../../templates/components/mobile-pane-infinite/child';
 import { get, computed } from '@ember/object';
 import { htmlSafe } from '@ember/string';
 

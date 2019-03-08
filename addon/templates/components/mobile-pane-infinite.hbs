@@ -1,0 +1,54 @@
+{{#mobile-pane
+  activeIndex=activeIndex
+
+  onDragStart=(action "onDragStart")
+  onDragMove=(action "onDragMove")
+  onDragEnd=(action "onDragEnd")
+
+  onChange=(action "onChange")
+as |mp|}}
+  {{#mp.scroller as |mps|}}
+    {{#if previousModel}}
+      {{#mps.pane}}
+        {{#mobile-pane-infinite/child
+          class="mobile-pane__child--previous"
+          offsetTop=childOffsetTop
+          scroll=prevChildScroll
+        }}
+          {{~yield (hash
+                     model=previousModel
+                     isCurrentModel=false
+                   ) ~}}
+        {{/mobile-pane-infinite/child}}
+      {{/mps.pane}}
+    {{/if}}
+
+    {{#mps.pane}}
+      {{#mobile-pane-infinite/child
+        class="mobile-pane__child--current"
+        scroll=currentChildScroll
+        setAsDocumentScroll=true
+      }}
+        {{~yield (hash
+                   model=currentModel
+                   isCurrentModel=true
+                 ) ~}}
+      {{/mobile-pane-infinite/child}}
+    {{/mps.pane}}
+
+    {{#if nextModel}}
+      {{#mps.pane}}
+        {{#mobile-pane-infinite/child
+          class="mobile-pane__child--next"
+          offsetTop=childOffsetTop
+          scroll=nextChildScroll
+        }}
+          {{~yield (hash
+                     model=nextModel
+                     isCurrentModel=false
+                   ) ~}}
+        {{/mobile-pane-infinite/child}}
+      {{/mps.pane}}
+    {{/if}}
+  {{/mp.scroller}}
+{{/mobile-pane}}
