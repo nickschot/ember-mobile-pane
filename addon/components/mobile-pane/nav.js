@@ -14,9 +14,27 @@ export default Component.extend(ComponentParentMixin, {
 
   classNames: ['mobile-pane__nav'],
 
-  // public
+  /**
+   * @argument navScrollOffset
+   * @type {number}
+   * @default 75
+   */
   navScrollOffset: 75,
+
+  /**
+   * @argument transitionDuration
+   * @type {number}
+   * @default 0
+   */
   transitionDuration: 0,
+
+  /**
+   * Fired when a nav item is clicked
+   *
+   * @argument onItemClick
+   * @type {function}
+   */
+  onItemClick(){},
 
   // protected
   activeIndex: 0,
@@ -29,11 +47,6 @@ export default Component.extend(ComponentParentMixin, {
   indicator: null,
   initialRender: true,
   runningAnimation: null,
-
-  /**
-   * Fired when a nav item is clicked
-   */
-  onItemClick(){},
 
   // lifecycle
   didInsertElement(){
@@ -152,6 +165,7 @@ export default Component.extend(ComponentParentMixin, {
       }
     }
   },
+
   _followPan(scrollLeftTarget, navScrollOffset, indicatorLeftTarget, indicatorWidthTarget){
     // change scroll based on indicator position
     if(scrollLeftTarget > 50){
