@@ -8,6 +8,9 @@ import ComponentParentMixin from 'ember-mobile-pane/mixins/component-parent';
 import NavItem from 'ember-mobile-pane/components/mobile-pane/nav/item';
 import Tween from 'ember-mobile-core/tween';
 
+/**
+ * @class MobilePaneNavComponent
+ */
 export default Component.extend(ComponentParentMixin, {
   layout,
   tagName: 'nav',

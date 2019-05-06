@@ -4,19 +4,34 @@ import layout from '../../templates/components/mobile-pane/simple-indicator';
 import { htmlSafe } from '@ember/string';
 import { get, computed } from '@ember/object';
 
+/**
+ * @class MobilePaneSimpleIndicatorComponent
+ */
 export default Component.extend({
   layout,
 
   classNames: ['scroller__simple-indicator'],
 
   // public
+
+  /**
+   * Optional warp effect for indicator
+   *
+   * @argument warpEnabled
+   * @type {boolean}
+   * @default false
+   */
   warpEnabled: false,
+
+  /**
+   * @argument onClick
+   * @type {function}
+   */
+  onClick(){},
 
   // protected
   navItems: null,
   currentOffset: 0,
-
-  onClick(){},
 
   indicatorStyle: computed('currentOffset', function(){
     const offset = -1 * get(this, 'currentOffset') * get(this, 'navItems.length');
