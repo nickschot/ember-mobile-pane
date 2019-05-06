@@ -17,6 +17,7 @@
   },
   "scripts": {
     "build": "ember build",
+    "changelog": "npx lerna-changelog > CHANGELOG.md",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
     "start": "ember serve",
