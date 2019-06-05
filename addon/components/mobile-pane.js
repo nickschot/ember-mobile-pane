@@ -90,6 +90,15 @@ export default Component.extend(ComponentParentMixin, {
   keepRendered: false,
 
   /**
+   * Whether or not panning is enabled
+   *
+   * @argument disabled
+   * @type {boolean}
+   * @default false
+   */
+  disabled: false,
+
+  /**
    * Hook fired when the active pane changed.
    *
    * @argument onChange

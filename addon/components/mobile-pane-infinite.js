@@ -51,6 +51,15 @@ export default Component.extend({
   transitionAfterDrag: false,
 
   /**
+   * Whether or not panning is enabled
+   *
+   * @argument disabled
+   * @type {boolean}
+   * @default false
+   */
+  disabled: false,
+
+  /**
    * Hook called when the active pane changes.
    *
    * @argument onChange

@@ -27,6 +27,7 @@ export default Component.extend(RecognizerMixin, {
   overScrollFactor: 0.34, // between 0 and 1
 
   // protected
+  disabled: false,
   activeIndex: 0,
   lazyRendering: true,
   keepRendered: false,
@@ -61,37 +62,39 @@ export default Component.extend(RecognizerMixin, {
     return get(this, 'paneContainerElement').clientWidth;
   },
   didPanStart(e){
-    const {
-      distanceX
-    } = e.current;
+    if(!this.get('disabled')){
+      const {
+        distanceX
+      } = e.current;
 
-    const activeIndex = get(this, 'activeIndex');
+      const activeIndex = get(this, 'activeIndex');
 
-    // Prevent capturing the pan events when overScroll is off and we're
-    // at the end of the scroller.
-    if(
-      !(get(this, 'overScrollFactor') === 0
-        && (
-             (activeIndex === 0 && distanceX > 0)
-          || (activeIndex === get(this, 'paneCount') - 1 && distanceX < 0)
+      // Prevent capturing the pan events when overScroll is off and we're
+      // at the end of the scroller.
+      if(
+        !(get(this, 'overScrollFactor') === 0
+          && (
+               (activeIndex === 0 && distanceX > 0)
+            || (activeIndex === get(this, 'paneCount') - 1 && distanceX < 0)
+          )
         )
-      )
-    ){
-      this.lockPan();
-      // add a dragging class so any css transitions are disabled
-      // and the pan event is enabled
-      this.set('isDragging', true);
+      ){
+        this.lockPan();
+        // add a dragging class so any css transitions are disabled
+        // and the pan event is enabled
+        this.set('isDragging', true);
 
-      const anim = get(this, 'runningAnimation');
-      if(anim){
-        anim.stop();
-        set(this, 'runningAnimation', null);
-        set(this, 'dxStart', get(this, 'dx'));
-      } else {
-        set(this, 'dxStart', 0);
+        const anim = get(this, 'runningAnimation');
+        if(anim){
+          anim.stop();
+          set(this, 'runningAnimation', null);
+          set(this, 'dxStart', get(this, 'dx'));
+        } else {
+          set(this, 'dxStart', 0);
+        }
+
+        this.get('onDragStart')();
       }
-
-      this.get('onDragStart')();
     }
   },
 
