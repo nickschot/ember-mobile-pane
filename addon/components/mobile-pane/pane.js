@@ -19,7 +19,7 @@ export default Component.extend(ComponentChildMixin, {
    * Title of the pane. Used in the NavComponent  if it's present.
    *
    * @argument title
-   * @type ''
+   * @type {string}
    * @default null
    */
   title: null,
@@ -35,6 +35,7 @@ export default Component.extend(ComponentChildMixin, {
    * Whether or not the pane was rendered before. Used for lazyRendering.
    *
    * @property didRender
+   * @type {boolean}
    * @private
    */
   didRender: false,
@@ -43,6 +44,7 @@ export default Component.extend(ComponentChildMixin, {
    * True if this pane is the active pane.
    *
    * @property isActive
+   * @type {boolean}
    * @private
    */
   isActive: computed('activePane', function(){

@@ -8,15 +8,36 @@ import ComponentParentMixin from 'ember-mobile-pane/mixins/component-parent';
 import NavItem from 'ember-mobile-pane/components/mobile-pane/nav/item';
 import Tween from 'ember-mobile-core/tween';
 
+/**
+ * @class MobilePaneNavComponent
+ */
 export default Component.extend(ComponentParentMixin, {
   layout,
   tagName: 'nav',
 
   classNames: ['mobile-pane__nav'],
 
-  // public
+  /**
+   * @argument navScrollOffset
+   * @type {number}
+   * @default 75
+   */
   navScrollOffset: 75,
+
+  /**
+   * @argument transitionDuration
+   * @type {number}
+   * @default 0
+   */
   transitionDuration: 0,
+
+  /**
+   * Fired when a nav item is clicked
+   *
+   * @argument onItemClick
+   * @type {function}
+   */
+  onItemClick(){},
 
   // protected
   activeIndex: 0,
@@ -29,11 +50,6 @@ export default Component.extend(ComponentParentMixin, {
   indicator: null,
   initialRender: true,
   runningAnimation: null,
-
-  /**
-   * Fired when a nav item is clicked
-   */
-  onItemClick(){},
 
   // lifecycle
   didInsertElement(){
@@ -152,6 +168,7 @@ export default Component.extend(ComponentParentMixin, {
       }
     }
   },
+
   _followPan(scrollLeftTarget, navScrollOffset, indicatorLeftTarget, indicatorWidthTarget){
     // change scroll based on indicator position
     if(scrollLeftTarget > 50){

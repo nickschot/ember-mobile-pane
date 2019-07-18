@@ -33,6 +33,7 @@ import Mixin from '@ember/object/mixin';
  * @class ComponentParent
  * @namespace Mixins
  * @private
+ * @hide
  */
 export default Mixin.create({
 
@@ -54,7 +55,7 @@ export default Mixin.create({
    * Register a component as a child of this parent
    *
    * @method registerChild
-   * @param child
+   * @param {ComponentChild} child
    * @public
    */
   registerChild(child) {
@@ -67,7 +68,7 @@ export default Mixin.create({
    * Remove the child component from this parent component
    *
    * @method removeChild
-   * @param child
+   * @param {ComponentChild} child
    * @public
    */
   removeChild(child) {

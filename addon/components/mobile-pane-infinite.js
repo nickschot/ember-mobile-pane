@@ -8,11 +8,12 @@ import { A } from '@ember/array';
 
 /**
  * @class MobilePaneInfiniteComponent
+ * @public
  */
 export default Component.extend({
   layout,
 
-  classNames: ['mobile-pane__infinite-scroller'],
+  classNames: ['mobile-pane-infinite'],
 
   router: service(),
   memory: service('memory-scroll'),
