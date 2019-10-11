@@ -17,7 +17,8 @@ export default Component.extend(ComponentChildMixin, {
 
   actions: {
     clickItem(){
-      get(this, 'onClick')(get(this, 'navItem'));
+      // TODO: check if this is the proper fix
+      get(this, 'onClick')(get(this, 'navItem.index'));
     }
   }
 });
