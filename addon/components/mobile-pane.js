@@ -132,6 +132,12 @@ export default Component.extend(ComponentParentMixin, {
       if(activeIndex !== this.activeIndex){
         this.onChange(activeIndex);
       }
+    },
+    registerPane(child) {
+      this.registerChild(child);
+    },
+    unregisterPane(child) {
+      this.removeChild(child);
     }
   },
 
@@ -217,7 +223,7 @@ export default Component.extend(ComponentParentMixin, {
 
     return this.panes
       .filter((item, index) => visibleIndices.includes(index))
-      .map(item => item.getProperties('elementId'));
+      .map(item => ({ elementId: item.elementId }));
   }),
 
   currentOffset: computed('activeIndex', 'dx', 'paneCount', function(){

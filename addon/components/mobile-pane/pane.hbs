@@ -1,0 +1,8 @@
+<div
+  ...attributes
+  class="mobile-pane__pane {{if this.isActive "active"}}"
+>
+  {{#if this.renderContent}}
+    {{yield}}
+  {{/if}}
+</div>

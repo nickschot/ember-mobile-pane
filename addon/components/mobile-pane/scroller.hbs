@@ -6,12 +6,15 @@
 >
   {{yield (hash
     pane=(component "mobile-pane/pane"
-      lazyRendering=lazyRendering
-      keepRendered=keepRendered
+      lazyRendering=@lazyRendering
+      keepRendered=@keepRendered
 
-      activePane=activePane
-      paneCount=paneCount
-      visiblePanes=visiblePanes
+      activePane=@activePane
+      paneCount=@paneCount
+      visiblePanes=@visiblePanes
+
+      registerPane=@registerPane
+      unregisterPane=@unregisterPane
     )
   )}}
 </div>

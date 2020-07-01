@@ -1,20 +1,11 @@
-import Component from '@ember/component';
-import layout from '../../templates/components/mobile-pane/pane';
-
-import ComponentChildMixin from 'ember-mobile-pane/mixins/component-child';
-import { computed, get, set } from '@ember/object';
+import Component from '@glimmer/component';
+import { guidFor } from '@ember/object/internals';
 
 /**
  * @class PaneComponent
  */
-export default Component.extend(ComponentChildMixin, {
-  layout,
-
-  classNames: ['mobile-pane__pane'],
-  classNameBindings: ['isActive:active'],
-
+export default class PaneComponent extends Component {
   // public
-
   /**
    * Title of the pane. Used in the NavComponent  if it's present.
    *
@@ -22,14 +13,12 @@ export default Component.extend(ComponentChildMixin, {
    * @type ''
    * @default null
    */
-  title: null,
+  get title() {
+    return this.args.title ?? null;
+  }
 
-  // protected
-  activePane: null,
-  lazyRendering: true,
-  keepRendered: false,
-  paneCount: 0,
-  visiblePanes: null,
+  // private
+  elementId = guidFor(this);
 
   /**
    * Whether or not the pane was rendered before. Used for lazyRendering.
@@ -37,7 +26,17 @@ export default Component.extend(ComponentChildMixin, {
    * @property didRender
    * @private
    */
-  didRender: false,
+  didRender = false;
+
+  constructor() {
+    super(...arguments);
+    this.args.registerPane(this);
+  }
+
+  willDestroy() {
+    this.args.unregisterPane(this);
+    super.willDestroy(...arguments);
+  }
 
   /**
    * True if this pane is the active pane.
@@ -45,31 +44,22 @@ export default Component.extend(ComponentChildMixin, {
    * @property isActive
    * @private
    */
-  isActive: computed('activePane', function(){
-    return this === this.activePane;
-  }),
+  get isActive() {
+    return this === this.args.activePane;
+  }
 
-  //TODO: refactor with ember-concurrency to solve the side effect issue (?)
-  renderContent: computed(
-    'lazyRendering',
-    'keepRendered',
-    'didRender',
-    'visiblePanes.@each.{elementId}',
-    'elementId',
-    function(){
-      if(this.lazyRendering && !(this.keepRendered && this.didRender)){
-        const willRender = !!this.visiblePanes
-          .find(item => get(item, 'elementId') === this.elementId);
+  get renderContent(){
+    if(this.args.lazyRendering && !(this.args.keepRendered && this.didRender)){
+      const willRender = !!this.args.visiblePanes
+        .find(item => item.elementId === this.elementId);
 
-        if(willRender){
-          // eslint-disable-next-line ember/no-side-effects
-          set(this, 'didRender', true);
-        }
-
-        return willRender;
-      } else {
-        return true;
+      if(willRender){
+        this.didRender = true;
       }
+
+      return willRender;
     }
-  )
-});
+
+    return true;
+  }
+}
