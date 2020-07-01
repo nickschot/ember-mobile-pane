@@ -1,0 +1,14 @@
+@import "ember-mobile-pane";
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.mobile-pane__pane {
+  min-height: 50vh;
+  background: #ccd2e3;
+  border: 1px solid #FFF;
+  margin: 10px;
+  padding: 15px;
+}
