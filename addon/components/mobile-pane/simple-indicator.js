@@ -19,10 +19,10 @@ export default Component.extend({
   onClick(){},
 
   indicatorStyle: computed('currentOffset', function(){
-    const offset = -1 * get(this, 'currentOffset') * get(this, 'navItems.length');
+    const offset = -1 * this.currentOffset * get(this, 'navItems.length');
     let style = `transform: translateX(${offset}%)`;
 
-    if(get(this, 'warpEnabled')){
+    if(this.warpEnabled){
       // warp effect
       const fraction = offset % 100 / 100;
       const scale = (2 * fraction - 2 * Math.pow(fraction, 2));
@@ -37,7 +37,7 @@ export default Component.extend({
 
   actions: {
     onClick(navItem){
-      get(this, 'onClick')(navItem);
+      this.onClick(navItem);
     }
   }
 });

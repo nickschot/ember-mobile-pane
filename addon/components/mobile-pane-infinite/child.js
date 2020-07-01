@@ -17,15 +17,15 @@ export default Component.extend({
   didRender(){
     this._super(...arguments);
 
-    if(get(this, 'setAsDocumentScroll')){
+    if(this.setAsDocumentScroll){
       const current     = document.scrollingElement || document.documentElement;
-      current.scrollTop = get(this, 'scroll');
+      current.scrollTop = this.scroll;
     } else {
-      this.element.querySelector('.mobile-pane__child-transformable').style.transform = `translateY(-${get(this, 'scroll')}px)`;
+      this.element.querySelector('.mobile-pane__child-transformable').style.transform = `translateY(-${this.scroll}px)`;
     }
   },
 
   style: computed('offsetTop', function(){
-    return get(this, 'offsetTop') ? htmlSafe(`transform: translateY(${get(this, 'offsetTop')}px);`) : null;
+    return this.offsetTop ? htmlSafe(`transform: translateY(${this.offsetTop}px);`) : null;
   })
 });

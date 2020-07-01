@@ -1,3 +1,4 @@
+import { or, readOnly, filter } from '@ember/object/computed';
 import Component from '@ember/component';
 import layout from '../templates/components/mobile-pane';
 
@@ -115,21 +116,21 @@ export default Component.extend(ComponentParentMixin, {
     onDragStart(){
       set(this, 'isDragging', true);
 
-      this.get('onDragStart')();
+      this.onDragStart();
     },
     onDragMove(dx){
       set(this, 'dx', dx);
 
-      this.get('onDragMove')(dx);
+      this.onDragMove(dx);
     },
     onDragEnd(activeIndex){
       set(this, 'isDragging', false);
       set(this, 'dx', 0);
 
-      this.get('onDragEnd')(activeIndex);
+      this.onDragEnd(activeIndex);
 
-      if(activeIndex !== this.get('activeIndex')){
-        this.get('onChange')(activeIndex);
+      if(activeIndex !== this.activeIndex){
+        this.onChange(activeIndex);
       }
     }
   },
@@ -160,10 +161,10 @@ export default Component.extend(ComponentParentMixin, {
    * @property _lazyRendering
    * @private
    */
-  _lazyRendering: computed.or('lazyRendering', 'strictLazyRendering'),
+  _lazyRendering: or('lazyRendering', 'strictLazyRendering'),
 
-  paneContainerElement: computed.readOnly('element'),
-  panes: computed.filter('children', function(view) {
+  paneContainerElement: readOnly('element'),
+  panes: filter('children', function(view) {
     return view instanceof PaneComponent;
   }),
   paneCount: computed('panes.length', function(){
@@ -171,7 +172,7 @@ export default Component.extend(ComponentParentMixin, {
   }),
 
   navItems: computed('panes.@each.{elementId,title}', function(){
-    return get(this, 'panes').map((item, index) => {
+    return this.panes.map((item, index) => {
       const result = item.getProperties('elementId', 'title');
       result.index = index;
       return result;
@@ -186,7 +187,7 @@ export default Component.extend(ComponentParentMixin, {
    * @private
    */
   activePane: computed('panes.@each.elementId', 'activeIndex', function(){
-    return get(this, 'panes').objectAt(get(this, 'activeIndex'));
+    return this.panes.objectAt(this.activeIndex);
   }),
 
   /**
@@ -196,14 +197,14 @@ export default Component.extend(ComponentParentMixin, {
    * @private
    */
   visiblePanes: computed('panes.@each.elementId', 'activeIndex', 'navOffset', function(){
-    const activeIndex = get(this, 'activeIndex');
+    const activeIndex = this.activeIndex;
     const visibleIndices = [activeIndex];
 
-    if(get(this, 'strictLazyRendering')){
-      const navOffset = get(this, 'navOffset');
+    if(this.strictLazyRendering){
+      const navOffset = this.navOffset;
       const lazyOffset = navOffset - activeIndex;
 
-      if(Math.abs(lazyOffset) > get(this, 'strictLazyRenderingDeadZone')){
+      if(Math.abs(lazyOffset) > this.strictLazyRenderingDeadZone){
         const visibleNeighborIndex = lazyOffset > 0
           ? Math.ceil(navOffset)
           : Math.floor(navOffset);
@@ -214,20 +215,20 @@ export default Component.extend(ComponentParentMixin, {
       visibleIndices.push(activeIndex-1, activeIndex+1);
     }
 
-    return get(this, 'panes')
+    return this.panes
       .filter((item, index) => visibleIndices.includes(index))
       .map(item => item.getProperties('elementId'));
   }),
 
   currentOffset: computed('activeIndex', 'dx', 'paneCount', function(){
     // don't divide by 0
-    return get(this, 'paneCount') !== 0
-      ? get(this, 'activeIndex') * -100 / get(this, 'paneCount') + get(this, 'dx')
-      : get(this, 'dx');
+    return this.paneCount !== 0
+      ? this.activeIndex * -100 / this.paneCount + this.dx
+      : this.dx;
   }),
 
   //TODO: rename to something more akin of what the number represents (limitedOffset, boundedOffset)
   navOffset: computed('currentOffset', 'paneCount', function(){
-    return Math.min(Math.max(get(this, 'currentOffset') * get(this, 'paneCount') / -100, 0), get(this, 'paneCount') - 1);
+    return Math.min(Math.max(this.currentOffset * this.paneCount / -100, 0), this.paneCount - 1);
   })
 });

@@ -46,7 +46,7 @@ export default Component.extend(ComponentChildMixin, {
    * @private
    */
   isActive: computed('activePane', function(){
-    return this === get(this, 'activePane');
+    return this === this.activePane;
   }),
 
   //TODO: refactor with ember-concurrency to solve the side effect issue (?)
@@ -57,9 +57,9 @@ export default Component.extend(ComponentChildMixin, {
     'visiblePanes.@each.{elementId}',
     'elementId',
     function(){
-      if(get(this, 'lazyRendering') && !(get(this, 'keepRendered') && get(this, 'didRender'))){
-        const willRender = !!get(this, 'visiblePanes')
-          .find(item => get(item, 'elementId') === get(this, 'elementId'));
+      if(this.lazyRendering && !(this.keepRendered && this.didRender)){
+        const willRender = !!this.visiblePanes
+          .find(item => get(item, 'elementId') === this.elementId);
 
         if(willRender){
           // eslint-disable-next-line ember/no-side-effects

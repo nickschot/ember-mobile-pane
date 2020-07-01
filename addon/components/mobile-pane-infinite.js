@@ -93,11 +93,11 @@ export default Component.extend({
   }),
 
   activeIndex: computed('previousModel', function(){
-    return this.get('previousModel') ? 1 : 0;
+    return this.previousModel ? 1 : 0;
   }),
 
   models: computed('previousModel', 'currentModel', 'nextModel', function(){
-    return A([get(this, 'previousModel'), get(this, 'currentModel'), get(this, 'nextModel')].filter(Boolean));
+    return A([this.previousModel, this.currentModel, this.nextModel].filter(Boolean));
   }),
 
   actions: {
@@ -105,29 +105,29 @@ export default Component.extend({
       // write scroll offset for prev/next children
       set(this, 'childOffsetTop', document.scrollingElement.scrollTop || document.documentElement.scrollTop);
 
-      get(this, 'onDragStart')(...arguments);
+      this.onDragStart(...arguments);
     },
     onDragMove(){
-      get(this, 'onDragMove')(...arguments);
+      this.onDragMove(...arguments);
     },
     onDragEnd(targetIndex){
       // transition to previous or next model
-      const targetModel = get(this, 'models').objectAt(targetIndex);
-      if(targetModel !== get(this, 'currentModel')){
+      const targetModel = this.models.objectAt(targetIndex);
+      if(targetModel !== this.currentModel){
         // store the scroll position of currentModel
         this.storeScroll();
       }
 
-      get(this, 'onDragEnd')(targetIndex, targetModel);
+      this.onDragEnd(targetIndex, targetModel);
     },
     onChange(index){
-      this.get('onChange')(this.get('models').objectAt(index), index);
+      this.onChange(this.models.objectAt(index), index);
     }
   },
 
   storeScroll(){
     const key = this._buildMemoryKey(this.get('currentModel.id'));
-    this.get('memory')[key] = document.scrollingElement.scrollTop || document.documentElement.scrollTop;
+    this.memory[key] = document.scrollingElement.scrollTop || document.documentElement.scrollTop;
   },
 
   restoreScroll(){
@@ -135,9 +135,9 @@ export default Component.extend({
     const currentKey  = this._buildMemoryKey(this.get('currentModel.id'));
     const nextKey     = this._buildMemoryKey(this.get('nextModel.id'));
 
-    set(this, 'prevChildScroll', this.get('memory')[prevKey] || 0);
-    set(this, 'currentChildScroll', this.get('memory')[currentKey] || 0);
-    set(this, 'nextChildScroll', this.get('memory')[nextKey] || 0);
+    set(this, 'prevChildScroll', this.memory[prevKey] || 0);
+    set(this, 'currentChildScroll', this.memory[currentKey] || 0);
+    set(this, 'nextChildScroll', this.memory[nextKey] || 0);
   },
 
   // utils

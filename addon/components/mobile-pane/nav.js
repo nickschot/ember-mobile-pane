@@ -1,3 +1,4 @@
+import { filter } from '@ember/object/computed';
 import Component from '@ember/component';
 import layout from '../../templates/components/mobile-pane/nav';
 
@@ -39,12 +40,12 @@ export default Component.extend(ComponentParentMixin, {
   didInsertElement(){
     this._super(...arguments);
 
-    set(this, 'indicator', document.getElementById(`${get(this, 'elementId')}-nav__indicator`));
+    set(this, 'indicator', document.getElementById(`${this.elementId}-nav__indicator`));
 
     this._updateStyle();
   },
 
-  childNavItems: computed.filter('children', function(view) {
+  childNavItems: filter('children', function(view) {
     return view instanceof NavItem;
   }),
 
@@ -59,17 +60,17 @@ export default Component.extend(ComponentParentMixin, {
   ),
 
   _updateStyle(){
-    const activeIndex     = get(this, 'activeIndex');
-    const childNavItems   = get(this, 'childNavItems');
-    const element         = get(this, 'element');
-    const navOffset       = get(this, 'navOffset');
-    const navScrollOffset = get(this, 'navScrollOffset');
+    const activeIndex     = this.activeIndex;
+    const childNavItems   = this.childNavItems;
+    const element         = this.element;
+    const navOffset       = this.navOffset;
+    const navScrollOffset = this.navScrollOffset;
 
     const e1Index = Math.floor(navOffset);
     const e2Index = Math.ceil(navOffset);
 
-    if(get(this, 'runningAnimation')){
-      get(this, 'runningAnimation').stop();
+    if(this.runningAnimation){
+      this.runningAnimation.stop();
       set(this, 'runningAnimation', null);
     }
 
@@ -116,8 +117,8 @@ export default Component.extend(ComponentParentMixin, {
   },
 
   _finishTransition(navDims, e1Dims, e2Dims, navScrollLeft, navScrollOffset, indicatorLeftTarget, indicatorWidthTarget, targetIsElement1){
-    const indicatorDims  = get(this, 'indicator').getBoundingClientRect();
-    const navScrollWidth = get(this, 'element').scrollWidth;
+    const indicatorDims  = this.indicator.getBoundingClientRect();
+    const navScrollWidth = this.element.scrollWidth;
 
     // change scroll based on target position
     const indicatorLeft       = indicatorDims.left + navScrollLeft - navDims.left;
@@ -132,7 +133,7 @@ export default Component.extend(ComponentParentMixin, {
     const indicatorWidthDiff  = indicatorWidthTarget - indicatorWidth;
 
     if(scrollDiff !== 0 || indicatorLeftDiff !== 0 || indicatorWidthDiff !== 0){
-      if(get(this, 'initialRender')){
+      if(this.initialRender){
         this._applyStyle(
           navScrollLeft + scrollDiff,
           indicatorLeft + indicatorLeftDiff,
@@ -146,7 +147,7 @@ export default Component.extend(ComponentParentMixin, {
             indicatorLeft + indicatorLeftDiff * progress,
             indicatorWidth + indicatorWidthDiff * progress
           );
-        }, { duration: get(this, 'transitionDuration')});
+        }, { duration: this.transitionDuration});
         set(this, 'runningAnimation', anim);
         anim.start();
       }
@@ -155,15 +156,15 @@ export default Component.extend(ComponentParentMixin, {
   _followPan(scrollLeftTarget, navScrollOffset, indicatorLeftTarget, indicatorWidthTarget){
     // change scroll based on indicator position
     if(scrollLeftTarget > 50){
-      get(this, 'element').scrollLeft += scrollLeftTarget - navScrollOffset;
+      this.element.scrollLeft += scrollLeftTarget - navScrollOffset;
     } else {
-      get(this, 'element').scrollLeft -= navScrollOffset - scrollLeftTarget;
+      this.element.scrollLeft -= navScrollOffset - scrollLeftTarget;
     }
-    get(this, 'indicator').style.transform = `translateX(${indicatorLeftTarget}px) scaleX(${indicatorWidthTarget})`;
+    this.indicator.style.transform = `translateX(${indicatorLeftTarget}px) scaleX(${indicatorWidthTarget})`;
   },
 
   _applyStyle(scrollLeft, indicatorLeft, indicatorWidth){
-    get(this, 'element').scrollLeft = scrollLeft;
-    get(this, 'indicator').style.transform = `translateX(${indicatorLeft}px) scaleX(${indicatorWidth})`;
+    this.element.scrollLeft = scrollLeft;
+    this.indicator.style.transform = `translateX(${indicatorLeft}px) scaleX(${indicatorWidth})`;
   }
 });

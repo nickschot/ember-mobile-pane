@@ -59,7 +59,7 @@ export default Mixin.create({
    */
   registerChild(child) {
     schedule('actions', this, function() {
-      this.get('children').addObject(child);
+      this.children.addObject(child);
     });
   },
 
@@ -72,7 +72,7 @@ export default Mixin.create({
    */
   removeChild(child) {
     schedule('actions', this, function() {
-      this.get('children').removeObject(child);
+      this.children.removeObject(child);
     });
   }
 });

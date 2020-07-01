@@ -50,32 +50,32 @@ export default Component.extend(RecognizerMixin, {
   onDragEnd(activeIndex){}, // eslint-disable-line no-unused-vars
 
   style: computed('paneCount', 'currentOffset', function(){
-    let style  = `width: ${get(this, 'paneCount') * 100}%;`;
+    let style  = `width: ${this.paneCount * 100}%;`;
 
-    style += `transform: translateX(${get(this, 'currentOffset')}%)`;
+    style += `transform: translateX(${this.currentOffset}%)`;
 
     return htmlSafe(style);
   }),
 
   // gesture recognition -------------------------------------------------------
   _getPaneWidth(){
-    return get(this, 'paneContainerElement').clientWidth;
+    return this.paneContainerElement.clientWidth;
   },
   didPanStart(e){
-    if(!this.get('disabled')){
+    if(!this.disabled){
       const {
         distanceX
       } = e.current;
 
-      const activeIndex = get(this, 'activeIndex');
+      const activeIndex = this.activeIndex;
 
       // Prevent capturing the pan events when overScroll is off and we're
       // at the end of the scroller.
       if(
-        !(get(this, 'overScrollFactor') === 0
+        !(this.overScrollFactor === 0
           && (
                (activeIndex === 0 && distanceX > 0)
-            || (activeIndex === get(this, 'paneCount') - 1 && distanceX < 0)
+            || (activeIndex === this.paneCount - 1 && distanceX < 0)
           )
         )
       ){
@@ -84,31 +84,31 @@ export default Component.extend(RecognizerMixin, {
         // and the pan event is enabled
         this.set('isDragging', true);
 
-        const anim = get(this, 'runningAnimation');
+        const anim = this.runningAnimation;
         if(anim){
           anim.stop();
           set(this, 'runningAnimation', null);
-          set(this, 'dxStart', get(this, 'dx'));
+          set(this, 'dxStart', this.dx);
         } else {
           set(this, 'dxStart', 0);
         }
 
-        this.get('onDragStart')();
+        this.onDragStart();
       }
     }
   },
 
   didPan(e){
-    if(this.get('isDragging')){
+    if(this.isDragging){
       const {
         distanceX
       } = e.current;
 
-      const activeIndex = get(this, 'activeIndex');
+      const activeIndex = this.activeIndex;
       const paneWidth = this._getPaneWidth();
-      const paneCount = get(this, 'paneCount');
+      const paneCount = this.paneCount;
 
-      const targetDistanceX = get(this, 'dxStart') / 100 * paneWidth * paneCount + distanceX;
+      const targetDistanceX = this.dxStart / 100 * paneWidth * paneCount + distanceX;
 
       // limit dx to -1, +1 pane
       const dx = Math.max(Math.min(targetDistanceX, paneWidth), -paneWidth);
@@ -119,12 +119,12 @@ export default Component.extend(RecognizerMixin, {
         (activeIndex === 0 && targetOffset > 0)
         || (activeIndex === paneCount - 1 && targetOffset < 0)
       ) {
-        targetOffset *= get(this, 'overScrollFactor');
+        targetOffset *= this.overScrollFactor;
       }
 
       this.set('dx', targetOffset);
 
-      this.get('onDragMove')(targetOffset);
+      this.onDragMove(targetOffset);
     }
   },
 
@@ -136,17 +136,17 @@ export default Component.extend(RecognizerMixin, {
 
       this.set('isDragging', false);
 
-      const dx = get(this, 'dx');
-      const paneCount = get(this, 'paneCount');
-      const currentIndex = get(this, 'activeIndex');
+      const dx = this.dx;
+      const paneCount = this.paneCount;
+      const currentIndex = this.activeIndex;
       const rawTargetIndex = dx * paneCount / -100;
 
       let targetIndex = Math.max(Math.min(currentIndex + Math.round(rawTargetIndex), paneCount - 1), 0);
 
       if(targetIndex === currentIndex){
-        if(velocityX < -1 * this.get('triggerVelocity') && targetIndex < paneCount - 1){
+        if(velocityX < -1 * this.triggerVelocity && targetIndex < paneCount - 1){
           targetIndex++;
-        } else if(velocityX > this.get('triggerVelocity') && targetIndex > 0){
+        } else if(velocityX > this.triggerVelocity && targetIndex > 0){
           targetIndex--;
         }
       }
@@ -156,21 +156,21 @@ export default Component.extend(RecognizerMixin, {
   },
 
   async finishTransition(targetIndex){
-    const dx = get(this, 'dx');
-    const currentIndex = get(this, 'activeIndex');
-    const target = (targetIndex - currentIndex) * (-100 / get(this, 'paneCount')) - dx;
+    const dx = this.dx;
+    const currentIndex = this.activeIndex;
+    const target = (targetIndex - currentIndex) * (-100 / this.paneCount) - dx;
 
     const anim = new Tween((progress) => {
       const currentPos = dx + target * progress;
       set(this, 'dx', currentPos);
       this.onDragMove(currentPos);
-    }, { duration: get(this, 'transitionDuration')});
+    }, { duration: this.transitionDuration});
     set(this, 'runningAnimation', anim);
     await anim.start();
 
     set(this, 'runningAnimation', null);
     set(this, 'dx', 0);
 
-    this.get('onDragEnd')(targetIndex);
+    this.onDragEnd(targetIndex);
   }
 });

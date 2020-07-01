@@ -1,12 +1,7 @@
 <ul class="nav__scroller">
   {{!-- TODO: make it yieldable if there is a block --}}
   {{#each navItems as |navItem|}}
-    {{mobile-pane/nav/item
-      navItem=navItem
-      activePane=activePane
-
-      onClick=onItemClick
-    }}
+    <MobilePane::Nav::Item @navItem={{navItem}} @activePane={{activePane}} @onClick={{onItemClick}} />
   {{/each}}
 </ul>
 <span class="nav__indicator" id="{{this.elementId}}-nav__indicator"></span>
