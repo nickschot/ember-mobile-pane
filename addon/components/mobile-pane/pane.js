@@ -28,11 +28,6 @@ export default class PaneComponent extends Component {
    */
   didRender = false;
 
-  constructor() {
-    super(...arguments);
-    this.args.registerPane(this);
-  }
-
   willDestroy() {
     this.args.unregisterPane(this);
     super.willDestroy(...arguments);

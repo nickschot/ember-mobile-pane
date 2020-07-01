@@ -1,6 +1,7 @@
 <div
   ...attributes
   class="mobile-pane__pane {{if this.isActive "active"}}"
+  {{did-insert (fn @registerPane this)}}
 >
   {{#if this.renderContent}}
     {{yield}}

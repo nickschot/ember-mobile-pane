@@ -1,11 +1,9 @@
-import { or, readOnly, filter } from '@ember/object/computed';
-import Component from '@ember/component';
-import layout from '../templates/components/mobile-pane';
-
-import { computed, get, set } from '@ember/object';
-
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { assert } from '@ember/debug';
+import { TrackedArray } from 'tracked-built-ins';
 import PaneComponent from 'ember-mobile-pane/components/mobile-pane/pane';
-import ComponentParentMixin from 'ember-mobile-pane/mixins/component-parent';
 
 //TODO: delay (normal) lazyRendering until after the animation has completed to prevent stutter
 
@@ -13,18 +11,7 @@ import ComponentParentMixin from 'ember-mobile-pane/mixins/component-parent';
  * @class MobilePaneComponent
  * @public
  */
-export default Component.extend(ComponentParentMixin, {
-  layout,
-
-  classNames: ['mobile-pane'],
-  classNameBindings: [
-    'isDragging:mobile-pane--dragging',
-  ],
-
-  init(){
-    this._super(...arguments);
-  },
-
+export default class MobilePaneComponent extends Component {
   // public
 
   /**
@@ -34,7 +21,9 @@ export default Component.extend(ComponentParentMixin, {
    * @type {Number} Must be an integer
    * @default 0
    */
-  activeIndex: 0,
+  get activeIndex() {
+    return this.args.activeIndex ?? 0;
+  }
 
   /**
    * Velocity necessary to trigger a "swipe".
@@ -43,7 +32,9 @@ export default Component.extend(ComponentParentMixin, {
    * @type {Number}
    * @default 0.3
    */
-  triggerVelocity: 0.3,
+  get triggerVelocity() {
+    return this.args.triggerVelocity ?? 0.3;
+  }
 
   /**
    * Duration of the finish animation in ms.
@@ -52,7 +43,9 @@ export default Component.extend(ComponentParentMixin, {
    * @type {Number}
    * @default 300
    */
-  transitionDuration: 300,
+  get transitionDuration() {
+    return this.args.transitionDuration ?? 300
+  }
 
   /**
    * Renders the active pane and it's direct neighbours.
@@ -61,7 +54,9 @@ export default Component.extend(ComponentParentMixin, {
    * @type {Boolean}
    * @default true
    */
-  lazyRendering: true,
+  get lazyRendering() {
+    return this.args.lazyRendering ?? true;
+  }
 
   /**
    * Renders panes only when they are in the current viewport.
@@ -70,7 +65,9 @@ export default Component.extend(ComponentParentMixin, {
    * @type {Boolean}
    * @default false
    */
-  strictLazyRendering: false,
+  get strictLazyRendering() {
+    return this.args.strictLazyRendering ?? false;
+  }
 
   /**
    * Deadzone for how far a pane must be in the viewport to be rendered
@@ -79,7 +76,9 @@ export default Component.extend(ComponentParentMixin, {
    * @type {Number} between 0 and 1.0
    * @default 0
    */
-  strictLazyRenderingDeadZone: 0,
+  get strictLazyRenderingDeadZone() {
+    return this.args.strictLazyRenderingDeadZone ?? 0;
+  }
 
   /**
    * Keep the pane content rendered after the initial render
@@ -88,7 +87,9 @@ export default Component.extend(ComponentParentMixin, {
    * @type {Boolean}
    * @default false
    */
-  keepRendered: false,
+  get keepRendered() {
+    return this.args.keepRendered ?? false;
+  }
 
   /**
    * Whether or not panning is enabled
@@ -97,7 +98,9 @@ export default Component.extend(ComponentParentMixin, {
    * @type {boolean}
    * @default false
    */
-  disabled: false,
+  get disabled() {
+    return this.args.disabled ?? false;
+  }
 
   /**
    * Hook fired when the active pane changed.
@@ -106,40 +109,30 @@ export default Component.extend(ComponentParentMixin, {
    * @type {Function}
    * @default function(activeIndex){}
    */
-  onChange(activeIndex){}, //eslint-disable-line no-unused-vars
 
-  onDragStart(){},
-  onDragMove(dx){}, //eslint-disable-line no-unused-vars
-  onDragEnd(activeIndex){}, //eslint-disable-line no-unused-vars
+  /**
+   * Hook fired when a drag started.
+   *
+   * @argument onDragStart
+   * @type {Function}
+   * @default function(){}
+   */
 
-  actions: {
-    onDragStart(){
-      set(this, 'isDragging', true);
+  /**
+   * Hook fired when a drag moved.
+   *
+   * @argument onDragMove
+   * @type {Function}
+   * @default function(dx){}
+   */
 
-      this.onDragStart();
-    },
-    onDragMove(dx){
-      set(this, 'dx', dx);
-
-      this.onDragMove(dx);
-    },
-    onDragEnd(activeIndex){
-      set(this, 'isDragging', false);
-      set(this, 'dx', 0);
-
-      this.onDragEnd(activeIndex);
-
-      if(activeIndex !== this.activeIndex){
-        this.onChange(activeIndex);
-      }
-    },
-    registerPane(child) {
-      this.registerChild(child);
-    },
-    unregisterPane(child) {
-      this.removeChild(child);
-    }
-  },
+  /**
+   * Hook fired when a drag ended.
+   *
+   * @argument onDragEnd
+   * @type {Function}
+   * @default function(activeIndex){}
+   */
 
   /**
    * True if the user is dragging in the pane.
@@ -149,7 +142,7 @@ export default Component.extend(ComponentParentMixin, {
    * @default false
    * @private
    */
-  isDragging: false,
+  @tracked isDragging = false;
 
   /**
    * Current offset in px.
@@ -159,7 +152,10 @@ export default Component.extend(ComponentParentMixin, {
    * @default 0
    * @private
    */
-  dx: 0,
+  @tracked dx = 0;
+
+  @tracked paneContainerElement = null;
+  panes = new TrackedArray();
 
   /**
    * True if lazy rendering is enabled.
@@ -167,23 +163,21 @@ export default Component.extend(ComponentParentMixin, {
    * @property _lazyRendering
    * @private
    */
-  _lazyRendering: or('lazyRendering', 'strictLazyRendering'),
+  get _lazyRendering() {
+    return this.lazyRendering || this.strictLazyRendering;
+  }
 
-  paneContainerElement: readOnly('element'),
-  panes: filter('children', function(view) {
-    return view instanceof PaneComponent;
-  }),
-  paneCount: computed('panes.length', function(){
-    return get(this, 'panes.length');
-  }),
+  get paneCount() {
+    return this.panes.length;
+  }
 
-  navItems: computed('panes.@each.{elementId,title}', function(){
-    return this.panes.map((item, index) => {
-      const result = item.getProperties('elementId', 'title');
-      result.index = index;
-      return result;
-    });
-  }),
+  get navItems() {
+    return this.panes.map((item, index) => ({
+      elementId: item.elementId,
+      title: item.title,
+      index
+    }));
+  }
 
   /**
    * Returns the active pane.
@@ -192,9 +186,9 @@ export default Component.extend(ComponentParentMixin, {
    * @type {PaneComponent}
    * @private
    */
-  activePane: computed('panes.@each.elementId', 'activeIndex', function(){
-    return this.panes.objectAt(this.activeIndex);
-  }),
+  get activePane() {
+    return this.panes[this.activeIndex];
+  }
 
   /**
    * Returns the panes which should be rendered when lazy rendering is enabled.
@@ -202,7 +196,7 @@ export default Component.extend(ComponentParentMixin, {
    * @property visiblePanes
    * @private
    */
-  visiblePanes: computed('panes.@each.elementId', 'activeIndex', 'navOffset', function(){
+  get visiblePanes() {
     const activeIndex = this.activeIndex;
     const visibleIndices = [activeIndex];
 
@@ -224,17 +218,61 @@ export default Component.extend(ComponentParentMixin, {
     return this.panes
       .filter((item, index) => visibleIndices.includes(index))
       .map(item => ({ elementId: item.elementId }));
-  }),
+  }
 
-  currentOffset: computed('activeIndex', 'dx', 'paneCount', function(){
+  get currentOffset (){
     // don't divide by 0
     return this.paneCount !== 0
       ? this.activeIndex * -100 / this.paneCount + this.dx
       : this.dx;
-  }),
+  }
 
   //TODO: rename to something more akin of what the number represents (limitedOffset, boundedOffset)
-  navOffset: computed('currentOffset', 'paneCount', function(){
+  get navOffset (){
     return Math.min(Math.max(this.currentOffset * this.paneCount / -100, 0), this.paneCount - 1);
-  })
-});
+  }
+
+  @action
+  onDragStart(){
+    this.isDragging = true;
+
+    if (this.args.onDragStart) {
+      this.args.onDragStart();
+    }
+  }
+
+  @action
+  onDragMove(dx){
+    this.dx = dx;
+
+    if (this.args.onDragMove) {
+      this.args.onDragMove(dx);
+    }
+  }
+
+  @action
+  onDragEnd(activeIndex){
+    this.isDragging = false;
+    this.dx = 0;
+
+    if (this.args.onDragEnd) {
+      this.args.onDragEnd(activeIndex);
+    }
+
+    if(activeIndex !== this.activeIndex && this.args.onChange){
+      this.args.onChange(activeIndex);
+    }
+  }
+
+  @action
+  registerPane(child) {
+    assert('passed child instance must be a pane', child instanceof PaneComponent);
+    this.panes.push(child);
+  }
+
+  @action
+  unregisterPane(child) {
+    assert('passed child instance must be a pane', child instanceof PaneComponent);
+    this.panes.splice(this.panes.indexOf(child), 1);
+  }
+}
