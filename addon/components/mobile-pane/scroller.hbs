@@ -1,0 +1,17 @@
+<div
+  class="mobile-pane__scroller"
+  ...attributes
+  style={{this.style}}
+  {{did-pan onPanStart=this.didPanStart onPan=this.didPan onPanEnd=this.didPanEnd}}
+>
+  {{yield (hash
+    pane=(component "mobile-pane/pane"
+      lazyRendering=lazyRendering
+      keepRendered=keepRendered
+
+      activePane=activePane
+      paneCount=paneCount
+      visiblePanes=visiblePanes
+    )
+  )}}
+</div>
