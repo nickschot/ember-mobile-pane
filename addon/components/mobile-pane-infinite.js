@@ -142,6 +142,7 @@ export default class MobilePaneInfiniteComponent extends Component {
   }
 
   //TODO: purge scroll states if we came from a higher level route
+  //TODO: make this function more robust & optional
   @action
   restoreScroll(){
     const prevKey     = this._buildMemoryKey(this.args.previousModel.id);
