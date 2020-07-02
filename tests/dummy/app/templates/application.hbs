@@ -3,14 +3,15 @@
 {{outlet}}
 
 <MobilePane @activeIndex={{this.activeIndex}} @onChange={{fn (mut this.activeIndex)}} @strictLazyRendering={{true}} as |mp|>
+  <mp.Nav/>
   <mp.Scroller as |mps|>
-    <mps.Pane>
+    <mps.Pane @title="Pane 1">
       Pane 1
     </mps.Pane>
-    <mps.Pane>
+    <mps.Pane @title="Pane 2">
       Pane 2
     </mps.Pane>
-    <mps.Pane>
+    <mps.Pane @title="Pane 3">
       Pane 3
     </mps.Pane>
   </mp.Scroller>

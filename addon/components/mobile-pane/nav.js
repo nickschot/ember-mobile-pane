@@ -166,5 +166,15 @@ export default Component.extend(ComponentParentMixin, {
   _applyStyle(scrollLeft, indicatorLeft, indicatorWidth){
     this.element.scrollLeft = scrollLeft;
     this.indicator.style.transform = `translateX(${indicatorLeft}px) scaleX(${indicatorWidth})`;
+  },
+
+  actions: {
+    registerItem(child) {
+      this.registerChild(child);
+    },
+
+    unregisterItem(child) {
+      this.unregisterChild(child);
+    }
   }
 });

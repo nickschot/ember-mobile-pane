@@ -1,23 +1,20 @@
-import Component from '@ember/component';
-import layout from '../../../templates/components/mobile-pane/nav/item';
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
 
-import ComponentChildMixin from 'ember-mobile-pane/mixins/component-child';
-import { get, computed } from '@ember/object';
+export default class NavItemComponent extends Component {
+  willDestroy() {
+    this.args.unregisterItem(this);
+    super.willDestroy(...arguments);
+  }
 
-export default Component.extend(ComponentChildMixin, {
-  layout,
-  tagName: 'li',
-  classNames: ['nav__item'],
+  get isActive() {
+    return this.args.navItem.elementId === this.args.activePane.elementId;
+  }
 
-  onClick(){},
-
-  isActive: computed('navItem.elementId', 'activePane.elementId', function(){
-    return get(this, 'navItem.elementId') === get(this, 'activePane.elementId');
-  }),
-
-  actions: {
-    clickItem(){
-      this.onClick(this.navItem);
+  @action
+  clickItem(){
+    if (this.args.onClick) {
+      this.args.onClick(this.args.navItem.index);
     }
   }
-});
+}

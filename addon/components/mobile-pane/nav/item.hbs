@@ -1,0 +1,13 @@
+<li
+  ...attributes
+  class="nav__item"
+  {{did-insert (fn @registerItem this)}}
+>
+  <a href="#{{@navItem.elementId}}"
+     role="tab"
+     class="item__link {{if this.isActive "active"}}"
+     {{on "click" this.clickItem}}
+  >
+    {{@navItem.title}}
+  </a>
+</li>
