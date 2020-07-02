@@ -1,0 +1,51 @@
+<MobilePane
+  ...attributes
+  @disabled={{@disabled}}
+  @activeIndex={{this.activeIndex}}
+  @triggerVelocity={{@triggerVelocity}}
+  @transitionDuration={{@transitionDuration}}
+  @lazyRendering={{@lazyRendering}}
+  @strictLazyRendering={{@strictLazyRendering}}
+  @strictLazyRenderingDeadZone={{@strictLazyRenderingDeadZone}}
+  @keepRendered={{@keepRendered}}
+  @onDragStart={{this.onDragStart}}
+  @onDragMove={{this.onDragMove}}
+  @onDragEnd={{this.onDragEnd}}
+  @onChange={{this.onChange}}
+  class="mobile-pane__infinite-scroller"
+  {{did-insert this.restoreScroll}}
+  {{did-update this.updateActiveIndex this.models}}
+as |mp|>
+  <mp.Scroller as |mps|>
+    {{#if @previousModel}}
+      <mps.Pane>
+        <MobilePaneInfinite::Child class="mobile-pane__child--previous" @offsetTop={{this.childOffsetTop}} @scroll={{this.prevChildScroll}}>
+          {{~yield (hash
+             model=@previousModel
+             isCurrentModel=false
+           ) ~}}
+        </MobilePaneInfinite::Child>
+      </mps.Pane>
+    {{/if}}
+
+    <mps.Pane>
+      <MobilePaneInfinite::Child class="mobile-pane__child--current" @scroll={{this.currentChildScroll}} @setAsDocumentScroll={{true}}>
+        {{~yield (hash
+           model=@currentModel
+           isCurrentModel=true
+         ) ~}}
+      </MobilePaneInfinite::Child>
+    </mps.Pane>
+
+    {{#if @nextModel}}
+      <mps.Pane>
+        <MobilePaneInfinite::Child class="mobile-pane__child--next" @offsetTop={{this.childOffsetTop}} @scroll={{this.nextChildScroll}}>
+          {{~yield (hash
+             model=@nextModel
+             isCurrentModel=false
+           ) ~}}
+        </MobilePaneInfinite::Child>
+      </mps.Pane>
+    {{/if}}
+  </mp.Scroller>
+</MobilePane>
