@@ -1,0 +1,22 @@
+<nav
+  ...attributes
+  class="mobile-pane__nav"
+  {{did-insert (fn (mut this.element))}}
+  {{did-update this.updateStyle @navOffset}}
+  {{did-update this.updateStyle @activeIndex}}
+  {{did-update this.updateStyle this.items}}
+>
+  <ul class="nav__scroller">
+    {{!-- TODO: make it yieldable if there is a block --}}
+    {{#each @navItems as |navItem|}}
+      <MobilePane::Nav::Item
+        @navItem={{navItem}}
+        @activePane={{@activePane}}
+        @onClick={{@onItemClick}}
+        @registerItem={{this.registerItem}}
+        @unregisterItem={{this.unregisterItem}}
+      />
+    {{/each}}
+  </ul>
+  <span class="nav__indicator" {{did-insert this.setupIndicator}}></span>
+</nav>

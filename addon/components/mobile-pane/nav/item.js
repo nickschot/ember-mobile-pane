@@ -2,6 +2,8 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
 export default class NavItemComponent extends Component {
+  element = null;
+
   willDestroy() {
     this.args.unregisterItem(this);
     super.willDestroy(...arguments);
@@ -12,7 +14,9 @@ export default class NavItemComponent extends Component {
   }
 
   @action
-  clickItem(){
+  clickItem(e){
+    e.preventDefault();
+
     if (this.args.onClick) {
       this.args.onClick(this.args.navItem.index);
     }
