@@ -14,6 +14,23 @@
     <mps.Pane @title="Pane 3">
       Pane 3
     </mps.Pane>
+    <mps.Pane @title="Pane 4">
+      Pane 4
+    </mps.Pane>
+    <mps.Pane @title="Pane 5">
+      Pane 5
+    </mps.Pane>
+    <mps.Pane @title="Pane 6">
+      Pane 6
+    </mps.Pane>
   </mp.Scroller>
   <mp.SimpleIndicator/>
 </MobilePane>
+
+<MobilePaneInfinite
+  @previousModel="1"
+  @currentModel="2"
+  @nextModel="3"
+as |mpi|>
+  Pane {{mpi.model}}
+</MobilePaneInfinite>

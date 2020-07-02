@@ -1,34 +1,47 @@
-<MobilePane @disabled={{disabled}} @activeIndex={{activeIndex}} @triggerVelocity={{triggerVelocity}} @transitionDuration={{transitionDuration}} @lazyRendering={{lazyRendering}} @strictLazyRendering={{strictLazyRendering}} @strictLazyRenderingDeadZone={{strictLazyRenderingDeadZone}} @keepRendered={{keepRendered}} @onDragStart={{action "onDragStart"}} @onDragMove={{action "onDragMove"}} @onDragEnd={{action "onDragEnd"}} @onChange={{action "onChange"}} as |mp|>
-  <mp.scroller as |mps|>
+<MobilePane
+  @disabled={{disabled}}
+  @activeIndex={{activeIndex}}
+  @triggerVelocity={{triggerVelocity}}
+  @transitionDuration={{transitionDuration}}
+  @lazyRendering={{lazyRendering}}
+  @strictLazyRendering={{strictLazyRendering}}
+  @strictLazyRenderingDeadZone={{strictLazyRenderingDeadZone}}
+  @keepRendered={{keepRendered}}
+  @onDragStart={{action "onDragStart"}}
+  @onDragMove={{action "onDragMove"}}
+  @onDragEnd={{action "onDragEnd"}}
+  @onChange={{action "onChange"}}
+as |mp|>
+  <mp.Scroller as |mps|>
     {{#if previousModel}}
-      <mps.pane>
-        <MobilePaneInfinite::Child @class="mobile-pane__child--previous" @offsetTop={{childOffsetTop}} @scroll={{prevChildScroll}}>
+      <mps.Pane>
+        <MobilePaneInfinite::Child class="mobile-pane__child--previous" @offsetTop={{childOffsetTop}} @scroll={{prevChildScroll}}>
           {{~yield (hash
-                     model=previousModel
-                     isCurrentModel=false
-                   ) ~}}
+             model=previousModel
+             isCurrentModel=false
+           ) ~}}
         </MobilePaneInfinite::Child>
-      </mps.pane>
+      </mps.Pane>
     {{/if}}
 
-    <mps.pane>
-      <MobilePaneInfinite::Child @class="mobile-pane__child--current" @scroll={{currentChildScroll}} @setAsDocumentScroll={{true}}>
+    <mps.Pane>
+      <MobilePaneInfinite::Child class="mobile-pane__child--current" @scroll={{currentChildScroll}} @setAsDocumentScroll={{true}}>
         {{~yield (hash
-                   model=currentModel
-                   isCurrentModel=true
-                 ) ~}}
+           model=currentModel
+           isCurrentModel=true
+         ) ~}}
       </MobilePaneInfinite::Child>
-    </mps.pane>
+    </mps.Pane>
 
     {{#if nextModel}}
-      <mps.pane>
-        <MobilePaneInfinite::Child @class="mobile-pane__child--next" @offsetTop={{childOffsetTop}} @scroll={{nextChildScroll}}>
+      <mps.Pane>
+        <MobilePaneInfinite::Child class="mobile-pane__child--next" @offsetTop={{childOffsetTop}} @scroll={{nextChildScroll}}>
           {{~yield (hash
-                     model=nextModel
-                     isCurrentModel=false
-                   ) ~}}
+             model=nextModel
+             isCurrentModel=false
+           ) ~}}
         </MobilePaneInfinite::Child>
-      </mps.pane>
+      </mps.Pane>
     {{/if}}
-  </mp.scroller>
+  </mp.Scroller>
 </MobilePane>
