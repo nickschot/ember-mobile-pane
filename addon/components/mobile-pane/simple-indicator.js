@@ -1,28 +1,21 @@
-import Component from '@ember/component';
-import layout from '../../templates/components/mobile-pane/simple-indicator';
-
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
 import { htmlSafe } from '@ember/string';
-import { get, computed } from '@ember/object';
 
-export default Component.extend({
-  layout,
+export default class SimpleIndicatorComponent extends Component {
+  /**
+   * When enabled a warp effect will be used for the indicator.
+   *
+   * @argument warpEnabled
+   * @type boolean
+   * @default false
+   */
 
-  classNames: ['scroller__simple-indicator'],
-
-  // public
-  warpEnabled: false,
-
-  // protected
-  navItems: null,
-  currentOffset: 0,
-
-  onClick(){},
-
-  indicatorStyle: computed('currentOffset', function(){
-    const offset = -1 * get(this, 'currentOffset') * get(this, 'navItems.length');
+  get style() {
+    const offset = -1 * this.args.currentOffset * this.args.navItems.length;
     let style = `transform: translateX(${offset}%)`;
 
-    if(get(this, 'warpEnabled')){
+    if (this.args.warpEnabled) {
       // warp effect
       const fraction = offset % 100 / 100;
       const scale = (2 * fraction - 2 * Math.pow(fraction, 2));
@@ -33,11 +26,12 @@ export default Component.extend({
     style += ';';
 
     return htmlSafe(style);
-  }),
+  }
 
-  actions: {
-    onClick(navItem){
-      get(this, 'onClick')(navItem);
+  @action
+  onClick({ index }){
+    if (this.args.onClick) {
+      this.args.onClick(index);
     }
   }
-});
+}

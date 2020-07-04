@@ -1,0 +1,40 @@
+<div ...attributes class="mobile-pane {{if this.isDragging "mobile-pane--dragging"}}" {{did-insert (fn (mut this.paneContainerElement))}}>
+  {{yield (hash
+    Nav=(component "mobile-pane/nav"
+      activeIndex=this.activeIndex
+      transitionDuration=this.transitionDuration
+
+      activePane=this.activePane
+      navItems=this.navItems
+      navOffset=this.navOffset
+
+      onItemClick=@onChange
+    )
+    SimpleIndicator=(component "mobile-pane/simple-indicator"
+      navItems=this.navItems
+      currentOffset=this.currentOffset
+      onClick=@onChange
+    )
+    Scroller=(component "mobile-pane/scroller"
+      disabled=this.disabled
+      activeIndex=this.activeIndex
+      lazyRendering=this._lazyRendering
+      keepRendered=this.keepRendered
+      transitionDuration=this.transitionDuration
+      triggerVelocity=this.triggerVelocity
+
+      activePane=this.activePane
+      paneContainerElement=this.paneContainerElement
+      paneCount=this.paneCount
+      currentOffset=this.currentOffset
+      visiblePanes=this.visiblePanes
+
+      onDragStart=this.onDragStart
+      onDragMove=this.onDragMove
+      onDragEnd=this.onDragEnd
+
+      registerPane=this.registerPane
+      unregisterPane=this.unregisterPane
+    )
+  )}}
+</div>

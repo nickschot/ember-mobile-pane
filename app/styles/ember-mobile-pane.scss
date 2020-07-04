@@ -86,9 +86,11 @@
   bottom: 15px;
   display: flex;
 
-  span {
-    cursor: pointer; // necessary to detect click on iOS
+  button, span {
+    margin: 0;
     padding: 5px;
+    border: none;
+    background: none;
 
     i {
       display: block;

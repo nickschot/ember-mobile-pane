@@ -1,76 +1,56 @@
-import Component from '@ember/component';
-import layout from '../../templates/components/mobile-pane/nav';
-
-import { computed, get, set, observer } from '@ember/object';
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
+import { guidFor } from '@ember/object/internals';
 import { once } from '@ember/runloop';
+import { assert } from '@ember/debug';
+import { TrackedArray } from 'tracked-built-ins';
 
-import ComponentParentMixin from 'ember-mobile-pane/mixins/component-parent';
-import NavItem from 'ember-mobile-pane/components/mobile-pane/nav/item';
+import NavItemComponent from './nav/item';
 import Tween from 'ember-mobile-core/tween';
 
-export default Component.extend(ComponentParentMixin, {
-  layout,
-  tagName: 'nav',
-
-  classNames: ['mobile-pane__nav'],
+export default class NavComponent extends Component {
+  element = null;
+  elementId = guidFor(this);
 
   // public
-  navScrollOffset: 75,
-  transitionDuration: 0,
-
-  // protected
-  activeIndex: 0,
-  activePane: null,
-  navItems: null,
-  navOffset: 0,
-  transitionsEnabled: true,
+  get navScrollOffset () {
+    return this.args.navScrollOffset ?? 75;
+  }
+  get transitionDuration() {
+    return this.args.transitionDuration ?? 0;
+  }
 
   // private
-  indicator: null,
-  initialRender: true,
-  runningAnimation: null,
-
-  /**
-   * Fired when a nav item is clicked
-   */
-  onItemClick(){},
+  indicator = null;
+  initialRender = true;
+  runningAnimation = null;
+  items = new TrackedArray();
 
   // lifecycle
-  didInsertElement(){
-    this._super(...arguments);
-
-    set(this, 'indicator', document.getElementById(`${get(this, 'elementId')}-nav__indicator`));
-
+  @action
+  setupIndicator(element) {
+    this.indicator = element;
     this._updateStyle();
-  },
+  }
 
-  childNavItems: computed.filter('children', function(view) {
-    return view instanceof NavItem;
-  }),
-
-  updateStyle: observer(
-    'navOffset',
-    'activeIndex',
-    'childNavItems.@each.elementId',
-    'elementId',
-    function(){
-      once(this, this._updateStyle);
-    }
-  ),
+  @action
+  updateStyle(){
+    once(this, this._updateStyle);
+  }
 
   _updateStyle(){
-    const activeIndex     = get(this, 'activeIndex');
-    const childNavItems   = get(this, 'childNavItems');
-    const element         = get(this, 'element');
-    const navOffset       = get(this, 'navOffset');
-    const navScrollOffset = get(this, 'navScrollOffset');
+    const activeIndex     = this.args.activeIndex;
+    const childNavItems   = this.items;
+    const element         = this.element;
+    const navOffset       = this.args.navOffset;
+    const navScrollOffset = this.navScrollOffset;
 
     const e1Index = Math.floor(navOffset);
     const e2Index = Math.ceil(navOffset);
 
-    if(get(this, 'runningAnimation')){
-      get(this, 'runningAnimation').stop();
-      set(this, 'runningAnimation', null);
+    if(this.runningAnimation){
+      this.runningAnimation.stop();
+      this.runningAnimation = null;
     }
 
     if(childNavItems.length
@@ -78,8 +58,8 @@ export default Component.extend(ComponentParentMixin, {
       && e2Index < childNavItems.length
     ){
       // the first element is always present
-      const e1Dims         = get(childNavItems.objectAt(e1Index), 'element').getBoundingClientRect();
-      const e2Dims         = get(childNavItems.objectAt(e2Index), 'element').getBoundingClientRect();
+      const e1Dims         = childNavItems[e1Index].element.getBoundingClientRect();
+      const e2Dims         = childNavItems[e2Index].element.getBoundingClientRect();
       const navDims        = element.getBoundingClientRect();
       const navLeft        = navDims.left;
       const navScrollLeft  = element.scrollLeft;
@@ -113,11 +93,11 @@ export default Component.extend(ComponentParentMixin, {
         this._followPan(scrollLeftTarget, navScrollOffset, indicatorLeftTarget, targetWidth);
       }
     }
-  },
+  }
 
   _finishTransition(navDims, e1Dims, e2Dims, navScrollLeft, navScrollOffset, indicatorLeftTarget, indicatorWidthTarget, targetIsElement1){
-    const indicatorDims  = get(this, 'indicator').getBoundingClientRect();
-    const navScrollWidth = get(this, 'element').scrollWidth;
+    const indicatorDims  = this.indicator.getBoundingClientRect();
+    const navScrollWidth = this.element.scrollWidth;
 
     // change scroll based on target position
     const indicatorLeft       = indicatorDims.left + navScrollLeft - navDims.left;
@@ -132,13 +112,13 @@ export default Component.extend(ComponentParentMixin, {
     const indicatorWidthDiff  = indicatorWidthTarget - indicatorWidth;
 
     if(scrollDiff !== 0 || indicatorLeftDiff !== 0 || indicatorWidthDiff !== 0){
-      if(get(this, 'initialRender')){
+      if(this.initialRender){
         this._applyStyle(
           navScrollLeft + scrollDiff,
           indicatorLeft + indicatorLeftDiff,
           indicatorWidth + indicatorWidthDiff
         );
-        set(this, 'initialRender', false);
+        this.initialRender = false;
       } else {
         const anim = new Tween((progress) => {
           this._applyStyle(
@@ -146,24 +126,37 @@ export default Component.extend(ComponentParentMixin, {
             indicatorLeft + indicatorLeftDiff * progress,
             indicatorWidth + indicatorWidthDiff * progress
           );
-        }, { duration: get(this, 'transitionDuration')});
-        set(this, 'runningAnimation', anim);
+        }, { duration: this.transitionDuration});
+        this.runningAnimation = anim;
         anim.start();
       }
     }
-  },
+  }
+
   _followPan(scrollLeftTarget, navScrollOffset, indicatorLeftTarget, indicatorWidthTarget){
     // change scroll based on indicator position
     if(scrollLeftTarget > 50){
-      get(this, 'element').scrollLeft += scrollLeftTarget - navScrollOffset;
+      this.element.scrollLeft += scrollLeftTarget - navScrollOffset;
     } else {
-      get(this, 'element').scrollLeft -= navScrollOffset - scrollLeftTarget;
+      this.element.scrollLeft -= navScrollOffset - scrollLeftTarget;
     }
-    get(this, 'indicator').style.transform = `translateX(${indicatorLeftTarget}px) scaleX(${indicatorWidthTarget})`;
-  },
+    this.indicator.style.transform = `translateX(${indicatorLeftTarget}px) scaleX(${indicatorWidthTarget})`;
+  }
 
   _applyStyle(scrollLeft, indicatorLeft, indicatorWidth){
-    get(this, 'element').scrollLeft = scrollLeft;
-    get(this, 'indicator').style.transform = `translateX(${indicatorLeft}px) scaleX(${indicatorWidth})`;
+    this.element.scrollLeft = scrollLeft;
+    this.indicator.style.transform = `translateX(${indicatorLeft}px) scaleX(${indicatorWidth})`;
   }
-});
+
+  @action
+  registerItem(child) {
+    assert('passed child instance must be a NavItemComponent', child instanceof NavItemComponent);
+    this.items.push(child);
+  }
+
+  @action
+  unregisterItem(child) {
+    assert('passed child instance must be a NavItemComponent', child instanceof NavItemComponent);
+    this.items.splice(this.items.indexOf(child), 1);
+  }
+}

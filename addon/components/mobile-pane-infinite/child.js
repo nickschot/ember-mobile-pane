@@ -1,31 +1,22 @@
-import Component from '@ember/component';
-import layout from '../../templates/components/mobile-pane-infinite/child';
-import { get, computed } from '@ember/object';
+import Component from '@glimmer/component';
 import { htmlSafe } from '@ember/string';
+import { action } from '@ember/object';
 
-export default Component.extend({
-  layout,
+export default class ChildComponent extends Component {
+  // private
+  transformableElement = null;
 
-  classNames: ['mobile-pane__child'],
-  attributeBindings: ['style'],
-
-  // protected
-  setAsDocumentScroll: false,
-  scroll: 0,
-  offsetTop: 0,
-
-  didRender(){
-    this._super(...arguments);
-
-    if(get(this, 'setAsDocumentScroll')){
+  @action
+  setScrollOffset(){
+    if(this.args.setAsDocumentScroll){
       const current     = document.scrollingElement || document.documentElement;
-      current.scrollTop = get(this, 'scroll');
+      current.scrollTop = this.args.scroll;
     } else {
-      this.element.querySelector('.mobile-pane__child-transformable').style.transform = `translateY(-${get(this, 'scroll')}px)`;
+      this.transformableElement.style.transform = `translateY(-${this.args.scroll}px)`;
     }
-  },
+  }
 
-  style: computed('offsetTop', function(){
-    return get(this, 'offsetTop') ? htmlSafe(`transform: translateY(${get(this, 'offsetTop')}px);`) : null;
-  })
-});
+  get style() {
+    return this.args.offsetTop ? htmlSafe(`transform: translateY(${this.args.offsetTop}px);`) : null;
+  }
+}

@@ -1,20 +1,13 @@
-import Component from '@ember/component';
-import layout from '../../templates/components/mobile-pane/scroller';
-
-import { computed, get, set } from '@ember/object';
+import Component from '@glimmer/component';
 import { htmlSafe } from '@ember/string';
+import { action } from '@ember/object';
 
-import RecognizerMixin from 'ember-mobile-core/mixins/pan-recognizer';
 import Tween from 'ember-mobile-core/tween';
 
 /**
  * @class ScrollComponent
  */
-export default Component.extend(RecognizerMixin, {
-  layout,
-  classNames: ['mobile-pane__scroller'],
-  attributeBindings: ['style'],
-
+export default class ScrollerComponent extends Component {
   // public
 
   /**
@@ -24,91 +17,75 @@ export default Component.extend(RecognizerMixin, {
    * @type {Number} between 0 and 1.0
    * @default 0.34
    */
-  overScrollFactor: 0.34, // between 0 and 1
-
-  // protected
-  disabled: false,
-  activeIndex: 0,
-  lazyRendering: true,
-  keepRendered: false,
-  transitionDuration: 0,
-
-  activePane: null,
-  paneContainerElement: null,
-  paneCount: 0,
-  triggerVelocity: 0,
-  visiblePanes: null,
+  get overScrollFactor () {
+    return this.args.overScrollFactor ?? 0.34;
+  }
 
   // private
-  isDragging: false,
-  dx: 0,
-  dxStart: 0,
-  runningAnimation: null,
+  isDragging = false;
+  dx = 0;
+  dxStart = 0;
+  runningAnimation = null;
 
-  onDragStart(){},
-  onDragMove(dx){}, // eslint-disable-line no-unused-vars
-  onDragEnd(activeIndex){}, // eslint-disable-line no-unused-vars
-
-  style: computed('paneCount', 'currentOffset', function(){
-    let style  = `width: ${get(this, 'paneCount') * 100}%;`;
-
-    style += `transform: translateX(${get(this, 'currentOffset')}%)`;
-
-    return htmlSafe(style);
-  }),
+  get style() {
+    return htmlSafe(`width: ${this.args.paneCount * 100}%; transform: translateX(${this.args.currentOffset}%);`);
+  }
 
   // gesture recognition -------------------------------------------------------
   _getPaneWidth(){
-    return get(this, 'paneContainerElement').clientWidth;
-  },
+    return this.args.paneContainerElement.clientWidth;
+  }
+
+  @action
   didPanStart(e){
-    if(!this.get('disabled')){
+    if(!this.args.disabled){
       const {
         distanceX
       } = e.current;
 
-      const activeIndex = get(this, 'activeIndex');
+      const activeIndex = this.args.activeIndex;
 
       // Prevent capturing the pan events when overScroll is off and we're
       // at the end of the scroller.
       if(
-        !(get(this, 'overScrollFactor') === 0
+        !(this.overScrollFactor === 0
           && (
                (activeIndex === 0 && distanceX > 0)
-            || (activeIndex === get(this, 'paneCount') - 1 && distanceX < 0)
+            || (activeIndex === this.args.paneCount - 1 && distanceX < 0)
           )
         )
       ){
-        this.lockPan();
+        // TODO: this.lockPan();
         // add a dragging class so any css transitions are disabled
         // and the pan event is enabled
-        this.set('isDragging', true);
+        this.isDragging = true;
 
-        const anim = get(this, 'runningAnimation');
+        const anim = this.runningAnimation;
         if(anim){
           anim.stop();
-          set(this, 'runningAnimation', null);
-          set(this, 'dxStart', get(this, 'dx'));
+          this.runningAnimation = null;
+          this.dxStart = this.dx;
         } else {
-          set(this, 'dxStart', 0);
+          this.dxStart = 0;
         }
 
-        this.get('onDragStart')();
+        this.args.onDragStart();
       }
     }
-  },
+  }
 
+  @action
   didPan(e){
-    if(this.get('isDragging')){
+    if(this.isDragging){
       const {
         distanceX
       } = e.current;
 
-      const activeIndex = get(this, 'activeIndex');
+      const activeIndex = this.args.activeIndex;
       const paneWidth = this._getPaneWidth();
-      const paneCount = get(this, 'paneCount');
+      const paneCount = this.args.paneCount;
 
-      const targetDistanceX = get(this, 'dxStart') / 100 * paneWidth * paneCount + distanceX;
+      const targetDistanceX = this.dxStart / 100 * paneWidth * paneCount + distanceX;
 
       // limit dx to -1, +1 pane
       const dx = Math.max(Math.min(targetDistanceX, paneWidth), -paneWidth);
@@ -119,58 +96,58 @@ export default Component.extend(RecognizerMixin, {
         (activeIndex === 0 && targetOffset > 0)
         || (activeIndex === paneCount - 1 && targetOffset < 0)
       ) {
-        targetOffset *= get(this, 'overScrollFactor');
+        targetOffset *= this.overScrollFactor;
       }
 
-      this.set('dx', targetOffset);
-
-      this.get('onDragMove')(targetOffset);
+      this.dx = targetOffset;
+      this.args.onDragMove(targetOffset);
     }
-  },
+  }
 
+  @action
   didPanEnd(e) {
-    if(this.get('isDragging', true)){
+    if(this.isDragging){
       const {
         velocityX
       } = e.current;
 
-      this.set('isDragging', false);
+      this.isDragging = false;
 
-      const dx = get(this, 'dx');
-      const paneCount = get(this, 'paneCount');
-      const currentIndex = get(this, 'activeIndex');
+      const dx = this.dx;
+      const paneCount = this.args.paneCount;
+      const currentIndex = this.args.activeIndex;
       const rawTargetIndex = dx * paneCount / -100;
 
       let targetIndex = Math.max(Math.min(currentIndex + Math.round(rawTargetIndex), paneCount - 1), 0);
 
       if(targetIndex === currentIndex){
-        if(velocityX < -1 * this.get('triggerVelocity') && targetIndex < paneCount - 1){
+        if(velocityX < -1 * this.args.triggerVelocity && targetIndex < paneCount - 1){
           targetIndex++;
-        } else if(velocityX > this.get('triggerVelocity') && targetIndex > 0){
+        } else if(velocityX > this.args.triggerVelocity && targetIndex > 0){
           targetIndex--;
         }
       }
 
       this.finishTransition(targetIndex);
     }
-  },
+  }
 
   async finishTransition(targetIndex){
-    const dx = get(this, 'dx');
-    const currentIndex = get(this, 'activeIndex');
-    const target = (targetIndex - currentIndex) * (-100 / get(this, 'paneCount')) - dx;
+    const dx = this.dx;
+    const currentIndex = this.args.activeIndex;
+    const target = (targetIndex - currentIndex) * (-100 / this.args.paneCount) - dx;
 
     const anim = new Tween((progress) => {
       const currentPos = dx + target * progress;
-      set(this, 'dx', currentPos);
-      this.onDragMove(currentPos);
-    }, { duration: get(this, 'transitionDuration')});
-    set(this, 'runningAnimation', anim);
+      this.dx = currentPos;
+      this.args.onDragMove(currentPos);
+    }, { duration: this.transitionDuration});
+    this.runningAnimation = anim;
     await anim.start();
 
-    set(this, 'runningAnimation', null);
-    set(this, 'dx', 0);
+    this.runningAnimation = null;
+    this.dx = 0;
 
-    this.get('onDragEnd')(targetIndex);
+    this.args.onDragEnd(targetIndex);
   }
-});
+}

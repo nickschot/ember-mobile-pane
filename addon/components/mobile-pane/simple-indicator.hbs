@@ -1,0 +1,7 @@
+<div ...attributes class="scroller__simple-indicator">
+  {{#each @navItems as |navItem|}}
+    <button {{on "click" (fn this.onClick navItem)}} type="button"><i></i></button>
+  {{/each}}
+
+  <span class="simple-indicator__indicator" style={{this.style}}><i></i></span>
+</div>
