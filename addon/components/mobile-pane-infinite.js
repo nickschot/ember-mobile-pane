@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+import { guidFor } from '@ember/object/internals';
 import { inject as service } from '@ember/service';
 import { once } from '@ember/runloop';
 
@@ -135,7 +136,7 @@ export default class MobilePaneInfiniteComponent extends Component {
   }
 
   storeScroll(){
-    const key = this._buildMemoryKey(this.args.currentModel.id);
+    const key = this._buildMemoryKey(this.args.currentModel);
     this.memory[key] = document.scrollingElement.scrollTop || document.documentElement.scrollTop;
   }
 
@@ -143,9 +144,9 @@ export default class MobilePaneInfiniteComponent extends Component {
   //TODO: make this function more robust & optional
   @action
   restoreScroll(){
-    const prevKey     = this._buildMemoryKey(this.args.previousModel.id);
-    const currentKey  = this._buildMemoryKey(this.args.currentModel.id);
-    const nextKey     = this._buildMemoryKey(this.args.nextModel.id);
+    const prevKey     = this._buildMemoryKey(this.args.previousModel);
+    const currentKey  = this._buildMemoryKey(this.args.currentModel);
+    const nextKey     = this._buildMemoryKey(this.args.nextModel);
 
     this.prevChildScroll = this.memory[prevKey] || 0;
     this.currentChildScroll = this.memory[currentKey] || 0;
@@ -153,7 +154,7 @@ export default class MobilePaneInfiniteComponent extends Component {
   }
 
   // utils
-  _buildMemoryKey(id){
-    return `mobile-pane/${this.router.currentRouteName}.${id}`;
+  _buildMemoryKey(model){
+    return `mobile-pane/${this.router.currentRouteName}.${guidFor(model)}`;
   }
 }
