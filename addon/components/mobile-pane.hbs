@@ -6,13 +6,13 @@
 
       activePane=this.activePane
       navItems=this.navItems
-      navOffset=this.navOffset
+      relativeOffset=this.relativeOffset
 
-      onItemClick=@onChange
+      onItemClick=this.moveToPane
     )
     SimpleIndicator=(component "mobile-pane/simple-indicator"
       navItems=this.navItems
-      currentOffset=this.currentOffset
+      offset=this.relativeOffset
       onClick=@onChange
     )
     Scroller=(component "mobile-pane/scroller"

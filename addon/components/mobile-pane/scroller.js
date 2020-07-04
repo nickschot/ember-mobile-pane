@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { htmlSafe } from '@ember/string';
 import { action } from '@ember/object';
 
-import Tween from 'ember-mobile-core/tween';
+import Spring from '../../spring';
 
 /**
  * @class ScrollComponent
@@ -136,22 +136,27 @@ export default class ScrollerComponent extends Component {
     }
   }
 
-  async finishTransition(targetIndex) {
-    const dx = this.dx;
+  async finishTransition(targetIndex, currentVelocity = 0){
     const currentIndex = this.args.activeIndex;
-    const target =
-      (targetIndex - currentIndex) * (-100 / this.args.paneCount) - dx;
 
-    const anim = new Tween(
-      (progress) => {
-        const currentPos = dx + target * progress;
-        this.dx = currentPos;
-        this.args.onDragMove(currentPos);
-      },
-      { duration: this.transitionDuration }
-    );
-    this.runningAnimation = anim;
-    await anim.start();
+    const startPos = this.dx;
+    const endPos = (targetIndex - currentIndex) * (-100 / this.args.paneCount);
+
+    const spring = new Spring(s => {
+      this.dx = s.currentValue;
+      this.args.onDragMove(s.currentValue);
+    }, {
+      stiffness: 250,
+      overshootClamping: true,
+
+      fromValue: startPos,
+      toValue: endPos,
+
+      initialVelocity: currentVelocity
+    });
+
+    this.runningAnimation = spring;
+    await spring.start();
 
     this.runningAnimation = null;
     this.dx = 0;

@@ -4,6 +4,7 @@ import { action } from '@ember/object';
 import { assert } from '@ember/debug';
 import { TrackedArray } from 'tracked-built-ins';
 import PaneComponent from 'ember-mobile-pane/components/mobile-pane/pane';
+import Spring from '../spring';
 
 //TODO: delay (normal) lazyRendering until after the animation has completed to prevent stutter
 
@@ -190,6 +191,17 @@ export default class MobilePaneComponent extends Component {
     return this.panes[this.activeIndex];
   }
 
+  get currentOffset (){
+    // don't divide by 0
+    return this.paneCount !== 0
+      ? this.activeIndex * -100 / this.paneCount + this.dx
+      : this.dx;
+  }
+
+  get relativeOffset (){
+    return Math.min(Math.max(this.currentOffset * this.paneCount / -100, 0), this.paneCount - 1);
+  }
+
   /**
    * Returns the panes which should be rendered when lazy rendering is enabled.
    *
@@ -201,12 +213,11 @@ export default class MobilePaneComponent extends Component {
     const visibleIndices = [activeIndex];
 
     if (this.strictLazyRendering) {
-      const navOffset = this.navOffset;
-      const lazyOffset = navOffset - activeIndex;
+      const lazyOffset = this.relativeOffset - activeIndex;
 
       if (Math.abs(lazyOffset) > this.strictLazyRenderingDeadZone) {
         const visibleNeighborIndex =
-          lazyOffset > 0 ? Math.ceil(navOffset) : Math.floor(navOffset);
+          lazyOffset > 0 ? Math.ceil(this.relativeOffset) : Math.floor(this.relativeOffset);
 
         visibleIndices.push(visibleNeighborIndex);
       }
@@ -217,21 +228,6 @@ export default class MobilePaneComponent extends Component {
     return this.panes
       .filter((item, index) => visibleIndices.includes(index))
       .map((item) => ({ elementId: item.elementId }));
-  }
-
-  get currentOffset() {
-    // don't divide by 0
-    return this.paneCount !== 0
-      ? (this.activeIndex * -100) / this.paneCount + this.dx
-      : this.dx;
-  }
-
-  //TODO: rename to something more akin of what the number represents (limitedOffset, boundedOffset)
-  get navOffset() {
-    return Math.min(
-      Math.max((this.currentOffset * this.paneCount) / -100, 0),
-      this.paneCount - 1
-    );
   }
 
   @action
@@ -264,6 +260,34 @@ export default class MobilePaneComponent extends Component {
     if (activeIndex !== this.activeIndex && this.args.onChange) {
       this.args.onChange(activeIndex);
     }
+  }
+
+  @action
+  async moveToPane(index) {
+    await this.finishTransition(index);
+    this.args.onChange(...arguments)
+  }
+
+  async finishTransition(targetIndex, currentVelocity = 0){
+    const currentIndex = this.activeIndex;
+
+    const startPos = this.dx;
+    const endPos = (targetIndex - currentIndex) * (-100 / this.paneCount);
+
+    const spring = new Spring(s => {
+      this.dx = s.currentValue;
+    }, {
+      stiffness: 250,
+      overshootClamping: true,
+
+      fromValue: startPos,
+      toValue: endPos,
+
+      initialVelocity: currentVelocity
+    });
+
+    await spring.start();
+    this.dx = 0;
   }
 
   @action
