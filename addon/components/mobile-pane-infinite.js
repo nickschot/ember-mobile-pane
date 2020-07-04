@@ -84,10 +84,8 @@ export default class MobilePaneInfiniteComponent extends Component {
 
   @action
   updateActiveIndex(){
-    once(() => {
-      // we received new models, restore the scroll
-      this.restoreScroll();
-    });
+    // we received new models, restore the scroll
+    once(this.restoreScroll);
   }
 
   get activeIndex(){

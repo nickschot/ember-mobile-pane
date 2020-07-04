@@ -8,12 +8,12 @@
       navItems=this.navItems
       navOffset=this.navOffset
 
-      onItemClick=this.args.onChange
+      onItemClick=@onChange
     )
     SimpleIndicator=(component "mobile-pane/simple-indicator"
       navItems=this.navItems
       currentOffset=this.currentOffset
-      onClick=this.args.onChange
+      onClick=@onChange
     )
     Scroller=(component "mobile-pane/scroller"
       disabled=this.disabled
