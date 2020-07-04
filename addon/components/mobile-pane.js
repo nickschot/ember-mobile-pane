@@ -45,7 +45,7 @@ export default class MobilePaneComponent extends Component {
    * @default 300
    */
   get transitionDuration() {
-    return this.args.transitionDuration ?? 300;
+    return this.args.transitionDuration ?? 300
   }
 
   /**
@@ -176,7 +176,7 @@ export default class MobilePaneComponent extends Component {
     return this.panes.map((item, index) => ({
       elementId: item.elementId,
       title: item.title,
-      index,
+      index
     }));
   }
 
@@ -212,26 +212,27 @@ export default class MobilePaneComponent extends Component {
     const activeIndex = this.activeIndex;
     const visibleIndices = [activeIndex];
 
-    if (this.strictLazyRendering) {
+    if(this.strictLazyRendering){
       const lazyOffset = this.relativeOffset - activeIndex;
 
-      if (Math.abs(lazyOffset) > this.strictLazyRenderingDeadZone) {
-        const visibleNeighborIndex =
-          lazyOffset > 0 ? Math.ceil(this.relativeOffset) : Math.floor(this.relativeOffset);
+      if(Math.abs(lazyOffset) > this.strictLazyRenderingDeadZone){
+        const visibleNeighborIndex = lazyOffset > 0
+          ? Math.ceil(this.relativeOffset)
+          : Math.floor(this.relativeOffset);
 
         visibleIndices.push(visibleNeighborIndex);
       }
     } else {
-      visibleIndices.push(activeIndex - 1, activeIndex + 1);
+      visibleIndices.push(activeIndex-1, activeIndex+1);
     }
 
     return this.panes
       .filter((item, index) => visibleIndices.includes(index))
-      .map((item) => ({ elementId: item.elementId }));
+      .map(item => ({ elementId: item.elementId }));
   }
 
   @action
-  onDragStart() {
+  onDragStart(){
     this.isDragging = true;
 
     if (this.args.onDragStart) {
@@ -240,7 +241,7 @@ export default class MobilePaneComponent extends Component {
   }
 
   @action
-  onDragMove(dx) {
+  onDragMove(dx){
     this.dx = dx;
 
     if (this.args.onDragMove) {
@@ -249,7 +250,11 @@ export default class MobilePaneComponent extends Component {
   }
 
   @action
-  onDragEnd(activeIndex) {
+  async onDragEnd(activeIndex, finishTransition = false){
+    if (finishTransition) {
+      await this.finishTransition(activeIndex);
+    }
+
     this.isDragging = false;
     this.dx = 0;
 
@@ -257,7 +262,7 @@ export default class MobilePaneComponent extends Component {
       this.args.onDragEnd(activeIndex);
     }
 
-    if (activeIndex !== this.activeIndex && this.args.onChange) {
+    if(activeIndex !== this.activeIndex && this.args.onChange){
       this.args.onChange(activeIndex);
     }
   }
@@ -292,19 +297,13 @@ export default class MobilePaneComponent extends Component {
 
   @action
   registerPane(child) {
-    assert(
-      'passed child instance must be a pane',
-      child instanceof PaneComponent
-    );
+    assert('passed child instance must be a pane', child instanceof PaneComponent);
     this.panes.push(child);
   }
 
   @action
   unregisterPane(child) {
-    assert(
-      'passed child instance must be a pane',
-      child instanceof PaneComponent
-    );
+    assert('passed child instance must be a pane', child instanceof PaneComponent);
     this.panes.splice(this.panes.indexOf(child), 1);
   }
 }
