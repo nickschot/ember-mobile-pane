@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { assert } from '@ember/debug';
 import { TrackedArray } from 'tracked-built-ins';
+import { task } from 'ember-concurrency';
 import PaneComponent from 'ember-mobile-pane/components/mobile-pane/pane';
 import Spring from '../spring';
 
@@ -154,8 +155,9 @@ export default class MobilePaneComponent extends Component {
    * @private
    */
   @tracked dx = 0;
+  preservedDx = 0;
 
-  @tracked paneContainerElement = null;
+  @tracked paneWidth = 0;
   panes = new TrackedArray();
 
   /**
@@ -191,7 +193,7 @@ export default class MobilePaneComponent extends Component {
     return this.panes[this.activeIndex];
   }
 
-  get currentOffset (){
+  get procentualOffset (){
     // don't divide by 0
     return this.paneCount !== 0
       ? this.activeIndex * -100 / this.paneCount + this.dx
@@ -199,7 +201,7 @@ export default class MobilePaneComponent extends Component {
   }
 
   get relativeOffset (){
-    return Math.min(Math.max(this.currentOffset * this.paneCount / -100, 0), this.paneCount - 1);
+    return Math.min(Math.max(this.procentualOffset * this.paneCount / -100, 0), this.paneCount - 1);
   }
 
   /**
@@ -234,6 +236,9 @@ export default class MobilePaneComponent extends Component {
   @action
   onDragStart(){
     this.isDragging = true;
+    if (this.finishTransitionTask.isRunning) {
+      this.finishTransitionTask.cancelAll();
+    }
 
     if (this.args.onDragStart) {
       this.args.onDragStart();
@@ -242,7 +247,7 @@ export default class MobilePaneComponent extends Component {
 
   @action
   onDragMove(dx){
-    this.dx = dx;
+    this.dx = dx + this.preservedDx;
 
     if (this.args.onDragMove) {
       this.args.onDragMove(dx);
@@ -273,16 +278,16 @@ export default class MobilePaneComponent extends Component {
     this.args.onChange(...arguments)
   }
 
-  async finishTransition(targetIndex, currentVelocity = 0){
-    const currentIndex = this.activeIndex;
-
+  @(task(function*(targetIndex, currentVelocity){
     const startPos = this.dx;
-    const endPos = (targetIndex - currentIndex) * (-100 / this.paneCount);
+    const endPos = (targetIndex - this.activeIndex) * (-100 / this.paneCount);
 
     const spring = new Spring(s => {
       this.dx = s.currentValue;
     }, {
-      stiffness: 250,
+      stiffness: 1000,
+      mass: 1,
+      damping: 100,
       overshootClamping: true,
 
       fromValue: startPos,
@@ -291,8 +296,24 @@ export default class MobilePaneComponent extends Component {
       initialVelocity: currentVelocity
     });
 
-    await spring.start();
-    this.dx = 0;
+    try {
+      yield spring.start();
+      this.dx = 0;
+    } finally {
+      spring.stop();
+      this.preservedDx = this.dx;
+    }
+  }))
+  finishTransitionTask;
+
+  @action
+  async finishTransition(targetIndex, currentVelocity = 0) {
+    return this.finishTransitionTask.perform(targetIndex, currentVelocity);
+  }
+
+  @action
+  onResize({ contentRect: { width }}) {
+    this.paneWidth = width;
   }
 
   @action

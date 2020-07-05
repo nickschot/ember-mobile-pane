@@ -1,4 +1,8 @@
-<div ...attributes class="mobile-pane {{if this.isDragging "mobile-pane--dragging"}}" {{did-insert (fn (mut this.paneContainerElement))}}>
+<div
+  ...attributes
+  class="mobile-pane {{if this.isDragging "mobile-pane--dragging"}}"
+  {{on-resize this.onResize}}
+>
   {{yield (hash
     Nav=(component "mobile-pane/nav"
       activeIndex=this.activeIndex
@@ -24,10 +28,10 @@
       triggerVelocity=this.triggerVelocity
 
       activePane=this.activePane
-      paneContainerElement=this.paneContainerElement
+      paneWidth=this.paneWidth
       paneCount=this.paneCount
       relativeOffset=this.relativeOffset
-      currentOffset=this.currentOffset
+      procentualOffset=this.procentualOffset
       visiblePanes=this.visiblePanes
 
       onDragStart=this.onDragStart

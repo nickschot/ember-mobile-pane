@@ -70,7 +70,7 @@ export default class NavComponent extends Component {
       const scrollLeftTarget    = targetLeft - navLeft;
       const indicatorLeftTarget = scrollLeftTarget + navScrollLeft;
 
-      // TODO: don't do this if the target index is already in range
+      // TODO: don't do this if the target index is already in range -> don't scroll back
       // change scroll based on indicator position
       if(scrollLeftTarget > 50){
         this.element.scrollLeft += scrollLeftTarget - this.navScrollOffset;

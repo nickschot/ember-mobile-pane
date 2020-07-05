@@ -25,14 +25,10 @@ export default class ScrollerComponent extends Component {
   isDragging = false;
 
   get style() {
-    return htmlSafe(`width: ${this.args.paneCount * 100}%; transform: translateX(${this.args.currentOffset}%);`);
+    return htmlSafe(`width: ${this.args.paneCount * 100}%; transform: translateX(${this.args.procentualOffset}%);`);
   }
 
   // gesture recognition -------------------------------------------------------
-  _getPaneWidth(){
-    return this.args.paneContainerElement.clientWidth;
-  }
-
   @action
   didPanStart(e){
     if(!this.args.disabled){
@@ -70,7 +66,7 @@ export default class ScrollerComponent extends Component {
       } = e.current;
 
       const activeIndex = this.args.activeIndex;
-      const paneWidth = this._getPaneWidth();
+      const paneWidth = this.args.paneWidth;
       const paneCount = this.args.paneCount;
 
       // limit dx to -1, +1 pane
