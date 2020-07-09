@@ -274,6 +274,9 @@ export default class MobilePaneComponent extends Component {
 
   @action
   async moveToPane(index) {
+    if (this.finishTransitionTask.isRunning) {
+      this.finishTransitionTask.cancelAll();
+    }
     await this.finishTransition(index);
     this.args.onChange(...arguments)
   }
