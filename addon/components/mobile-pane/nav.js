@@ -24,8 +24,8 @@ export default class NavComponent extends Component {
 
   // private
   indicator = null;
-  runningAnimation = null;
   items = new TrackedArray();
+  isScrolling = false;
 
   // lifecycle
   @action
@@ -39,11 +39,6 @@ export default class NavComponent extends Component {
     const e1Index = Math.floor(this.args.relativeOffset);
     const e2Index = Math.ceil(this.args.relativeOffset);
 
-    if(this.runningAnimation){
-      this.runningAnimation.stop();
-      this.runningAnimation = null;
-    }
-
     if(this.items.length
       && e1Index < this.items.length
       && e2Index < this.items.length
@@ -51,8 +46,7 @@ export default class NavComponent extends Component {
       // the first element is always present
       const e1Dims         = this.items[e1Index].element.getBoundingClientRect();
       const e2Dims         = this.items[e2Index].element.getBoundingClientRect();
-      const navDims        = this.element.getBoundingClientRect();
-      const navLeft        = navDims.left;
+      const navLeft        = this.element.getBoundingClientRect().left;
       const navScrollLeft  = this.element.scrollLeft;
 
       let targetLeft  = e1Dims.left;
@@ -70,12 +64,15 @@ export default class NavComponent extends Component {
       const scrollLeftTarget    = targetLeft - navLeft;
       const indicatorLeftTarget = scrollLeftTarget + navScrollLeft;
 
+      // TODO: stop updating scroll when the user initiates a scroll on the nav
       // TODO: don't do this if the target index is already in range -> don't scroll back
-      // change scroll based on indicator position
-      if(scrollLeftTarget > 50){
-        this.element.scrollLeft += scrollLeftTarget - this.navScrollOffset;
-      } else {
-        this.element.scrollLeft -= this.navScrollOffset - scrollLeftTarget;
+      if (this.args.isDragging && !this.isScrolling) {
+        // change scroll based on indicator position
+        if(scrollLeftTarget > 50){
+          this.element.scrollLeft += scrollLeftTarget - this.navScrollOffset;
+        } else {
+          this.element.scrollLeft -= this.navScrollOffset - scrollLeftTarget;
+        }
       }
       this.indicator.style.transform = `translateX(${indicatorLeftTarget}px) scaleX(${targetWidth})`;
     }
