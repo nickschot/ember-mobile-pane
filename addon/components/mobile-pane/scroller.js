@@ -95,12 +95,10 @@ export default class ScrollerComponent extends Component {
       this.isDragging = false;
 
       let targetIndex = Math.round(this.args.relativeOffset);
-      if(targetIndex === this.args.activeIndex){
-        if(velocityX < -1 * this.args.triggerVelocity && targetIndex < this.args.paneCount - 1){
-          targetIndex++;
-        } else if(velocityX > this.args.triggerVelocity && targetIndex > 0){
-          targetIndex--;
-        }
+      if(velocityX < -1 * this.args.triggerVelocity && targetIndex < this.args.paneCount - 1){
+        targetIndex++;
+      } else if(velocityX > this.args.triggerVelocity && targetIndex > 0){
+        targetIndex--;
       }
 
       this.args.onDragEnd(targetIndex, true);

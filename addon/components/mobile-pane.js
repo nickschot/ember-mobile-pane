@@ -211,7 +211,7 @@ export default class MobilePaneComponent extends Component {
    * @private
    */
   get visiblePanes() {
-    const activeIndex = this.activeIndex;
+    const activeIndex = Math.round(this.relativeOffset);
     const visibleIndices = [activeIndex];
 
     if(this.strictLazyRendering){
