@@ -34,6 +34,7 @@
     "ember-cli-htmlbars": "^5.1.2",
     "ember-gesture-modifiers": "^0.1.1",
     "ember-mobile-core": "0.1.0",
+    "ember-set-helper": "^2.0.1",
     "memory-scroll": "^0.9.1",
     "tracked-built-ins": "^1.0.2"
   },
@@ -54,7 +55,6 @@
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-qunit": "^4.6.0",
     "ember-resolver": "^8.0.0",
-    "ember-set-helper": "^2.0.1",
     "ember-source": "~3.19.0",
     "ember-source-channel-url": "^2.0.1",
     "ember-template-lint": "^2.8.0",
