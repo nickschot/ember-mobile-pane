@@ -4,7 +4,7 @@
 
 {{outlet}}
 
-<MobilePane @activeIndex={{this.activeIndex}} @onChange={{fn (mut this.activeIndex)}} @strictLazyRendering={{true}} as |mp|>
+<MobilePane @activeIndex={{this.activeIndex}} @onChange={{set this "activeIndex"}} @strictLazyRendering={{true}} as |mp|>
   <mp.Nav/>
   <mp.Scroller as |mps|>
     <mps.Pane @title="Pane 1">
