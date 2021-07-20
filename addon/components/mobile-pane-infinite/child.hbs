@@ -1,7 +1,7 @@
 <div ...attributes class="mobile-pane__child" style={{this.style}}>
   <div
     class="mobile-pane__child-transformable"
-    {{did-insert (fn (mut this.transformableElement))}}
+    {{did-insert (set this "transformableElement")}}
     {{did-insert this.setScrollOffset}}
   >
     {{yield}}

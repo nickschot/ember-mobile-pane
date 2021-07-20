@@ -34,6 +34,7 @@
     "ember-cli-htmlbars": "^5.1.2",
     "ember-gesture-modifiers": "^0.1.1",
     "ember-mobile-core": "0.1.0",
+    "ember-set-helper": "^2.0.1",
     "memory-scroll": "^0.9.1",
     "tracked-built-ins": "^1.0.2"
   },
