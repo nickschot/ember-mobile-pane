@@ -6,16 +6,28 @@
   {{did-update this.updateStyle @activeIndex}}
   {{did-update this.updateStyle this.items}}
 >
-  <ul class="nav__scroller">
-    {{!-- TODO: make it yieldable if there is a block --}}
-    {{#each @navItems as |navItem|}}
-      <MobilePane::Nav::Item
-        @navItem={{navItem}}
-        @activePane={{@activePane}}
-        @onClick={{@onItemClick}}
-        @registerItem={{this.registerItem}}
-        @unregisterItem={{this.unregisterItem}}
-      />
+    <ul class="nav__scroller">
+        {{!-- TODO: make it yieldable if there is a block --}}
+        {{#each @navItems as |navItem|}}
+            {{#if (has-block)}}
+                <MobilePane::Nav::Item
+                    @navItem={{navItem}}
+                    @activePane={{@activePane}}
+                    @onClick={{@onItemClick}}
+                    @registerItem={{this.registerItem}}
+                    @unregisterItem={{this.unregisterItem}}
+                >
+                    {{yield navItem}}
+                </MobilePane::Nav::Item>
+            {{else}}
+                <MobilePane::Nav::Item
+                    @navItem={{navItem}}
+                    @activePane={{@activePane}}
+                    @onClick={{@onItemClick}}
+                    @registerItem={{this.registerItem}}
+                    @unregisterItem={{this.unregisterItem}}
+                />
+        {{/if}}
     {{/each}}
   </ul>
   <span class="nav__indicator" {{did-insert this.setupIndicator}}></span>
