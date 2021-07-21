@@ -15,7 +15,7 @@ export default class ScrollerComponent extends Component {
    * @type {Number} between 0 and 1.0
    * @default 0.34
    */
-  get overScrollFactor () {
+  get overScrollFactor() {
     return this.args.overScrollFactor ?? 0.34;
   }
 
@@ -23,29 +23,30 @@ export default class ScrollerComponent extends Component {
   isDragging = false;
 
   get style() {
-    return htmlSafe(`width: ${this.args.paneCount * 100}%; transform: translateX(${this.args.procentualOffset}%);`);
+    return htmlSafe(
+      `width: ${this.args.paneCount * 100}%; transform: translateX(${
+        this.args.procentualOffset
+      }%);`
+    );
   }
 
   // gesture recognition -------------------------------------------------------
   @action
-  didPanStart(e){
-    if(!this.args.disabled){
-      const {
-        distanceX
-      } = e.current;
+  didPanStart(e) {
+    if (!this.args.disabled) {
+      const { distanceX } = e.current;
 
       const activeIndex = this.args.activeIndex;
 
       // Prevent capturing the pan events when overScroll is off and we're
       // at the end of the scroller.
-      if(
-        !(this.overScrollFactor === 0
-          && (
-               (activeIndex === 0 && distanceX > 0)
-            || (activeIndex === this.args.paneCount - 1 && distanceX < 0)
-          )
+      if (
+        !(
+          this.overScrollFactor === 0 &&
+          ((activeIndex === 0 && distanceX > 0) ||
+            (activeIndex === this.args.paneCount - 1 && distanceX < 0))
         )
-      ){
+      ) {
         // TODO: this.lockPan();
         // add a dragging class so any css transitions are disabled
         // and the pan event is enabled
@@ -57,11 +58,9 @@ export default class ScrollerComponent extends Component {
   }
 
   @action
-  didPan(e){
-    if(this.isDragging){
-      const {
-        distanceX
-      } = e.current;
+  didPan(e) {
+    if (this.isDragging) {
+      const { distanceX } = e.current;
 
       const activeIndex = this.args.activeIndex;
       const paneWidth = this.args.paneWidth;
@@ -69,12 +68,12 @@ export default class ScrollerComponent extends Component {
 
       // limit dx to -1, +1 pane
       const dx = Math.max(Math.min(distanceX, paneWidth), -paneWidth);
-      let targetOffset = 100 * dx / paneWidth / paneCount;
+      let targetOffset = (100 * dx) / paneWidth / paneCount;
 
       // overscroll effect
-      if(
-        (activeIndex === 0 && targetOffset > 0)
-        || (activeIndex === paneCount - 1 && targetOffset < 0)
+      if (
+        (activeIndex === 0 && targetOffset > 0) ||
+        (activeIndex === paneCount - 1 && targetOffset < 0)
       ) {
         targetOffset *= this.overScrollFactor;
       }
@@ -85,18 +84,19 @@ export default class ScrollerComponent extends Component {
 
   @action
   didPanEnd(e) {
-    if(this.isDragging){
-      const {
-        velocityX
-      } = e.current;
+    if (this.isDragging) {
+      const { velocityX } = e.current;
 
       this.isDragging = false;
 
       let targetIndex = Math.round(this.args.relativeOffset);
       if (targetIndex === this.args.activeIndex) {
-        if(velocityX < -1 * this.args.triggerVelocity && targetIndex < this.args.paneCount - 1){
+        if (
+          velocityX < -1 * this.args.triggerVelocity &&
+          targetIndex < this.args.paneCount - 1
+        ) {
           targetIndex++;
-        } else if(velocityX > this.args.triggerVelocity && targetIndex > 0){
+        } else if (velocityX > this.args.triggerVelocity && targetIndex > 0) {
           targetIndex--;
         }
       }

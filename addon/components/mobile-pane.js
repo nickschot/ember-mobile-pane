@@ -46,7 +46,7 @@ export default class MobilePaneComponent extends Component {
    * @default 300
    */
   get transitionDuration() {
-    return this.args.transitionDuration ?? 300
+    return this.args.transitionDuration ?? 300;
   }
 
   /**
@@ -178,7 +178,7 @@ export default class MobilePaneComponent extends Component {
     return this.panes.map((item, index) => ({
       elementId: item.elementId,
       title: item.title,
-      index
+      index,
     }));
   }
 
@@ -193,15 +193,18 @@ export default class MobilePaneComponent extends Component {
     return this.panes[this.activeIndex];
   }
 
-  get procentualOffset (){
+  get procentualOffset() {
     // don't divide by 0
     return this.paneCount !== 0
-      ? this.activeIndex * -100 / this.paneCount + this.dx
+      ? (this.activeIndex * -100) / this.paneCount + this.dx
       : this.dx;
   }
 
-  get relativeOffset (){
-    return Math.min(Math.max(this.procentualOffset * this.paneCount / -100, 0), this.paneCount - 1);
+  get relativeOffset() {
+    return Math.min(
+      Math.max((this.procentualOffset * this.paneCount) / -100, 0),
+      this.paneCount - 1
+    );
   }
 
   /**
@@ -214,27 +217,28 @@ export default class MobilePaneComponent extends Component {
     const activeIndex = Math.round(this.relativeOffset);
     const visibleIndices = [activeIndex];
 
-    if(this.strictLazyRendering){
+    if (this.strictLazyRendering) {
       const lazyOffset = this.relativeOffset - activeIndex;
 
-      if(Math.abs(lazyOffset) > this.strictLazyRenderingDeadZone){
-        const visibleNeighborIndex = lazyOffset > 0
-          ? Math.ceil(this.relativeOffset)
-          : Math.floor(this.relativeOffset);
+      if (Math.abs(lazyOffset) > this.strictLazyRenderingDeadZone) {
+        const visibleNeighborIndex =
+          lazyOffset > 0
+            ? Math.ceil(this.relativeOffset)
+            : Math.floor(this.relativeOffset);
 
         visibleIndices.push(visibleNeighborIndex);
       }
     } else {
-      visibleIndices.push(activeIndex-1, activeIndex+1);
+      visibleIndices.push(activeIndex - 1, activeIndex + 1);
     }
 
     return this.panes
       .filter((item, index) => visibleIndices.includes(index))
-      .map(item => ({ elementId: item.elementId }));
+      .map((item) => ({ elementId: item.elementId }));
   }
 
   @action
-  onDragStart(){
+  onDragStart() {
     this.isDragging = true;
     if (this.finishTransitionTask.isRunning) {
       this.finishTransitionTask.cancelAll();
@@ -246,7 +250,7 @@ export default class MobilePaneComponent extends Component {
   }
 
   @action
-  onDragMove(dx){
+  onDragMove(dx) {
     this.dx = dx + this.preservedDx;
 
     if (this.args.onDragMove) {
@@ -255,7 +259,7 @@ export default class MobilePaneComponent extends Component {
   }
 
   @action
-  async onDragEnd(activeIndex, finishTransition = false){
+  async onDragEnd(activeIndex, finishTransition = false) {
     if (finishTransition) {
       await this.finishTransition(activeIndex);
     }
@@ -267,7 +271,7 @@ export default class MobilePaneComponent extends Component {
       this.args.onDragEnd(activeIndex);
     }
 
-    if(activeIndex !== this.activeIndex && this.args.onChange){
+    if (activeIndex !== this.activeIndex && this.args.onChange) {
       this.args.onChange(activeIndex);
     }
   }
@@ -278,26 +282,29 @@ export default class MobilePaneComponent extends Component {
       this.finishTransitionTask.cancelAll();
     }
     await this.finishTransition(index);
-    this.args.onChange(...arguments)
+    this.args.onChange(...arguments);
   }
 
-  @(task(function*(targetIndex, currentVelocity){
+  @task(function* (targetIndex, currentVelocity) {
     const startPos = this.dx;
     const endPos = (targetIndex - this.activeIndex) * (-100 / this.paneCount);
 
-    const spring = new Spring(s => {
-      this.dx = s.currentValue;
-    }, {
-      stiffness: 1000,
-      mass: 1,
-      damping: 100,
-      overshootClamping: true,
+    const spring = new Spring(
+      (s) => {
+        this.dx = s.currentValue;
+      },
+      {
+        stiffness: 1000,
+        mass: 1,
+        damping: 100,
+        overshootClamping: true,
 
-      fromValue: startPos,
-      toValue: endPos,
+        fromValue: startPos,
+        toValue: endPos,
 
-      initialVelocity: currentVelocity
-    });
+        initialVelocity: currentVelocity,
+      }
+    );
 
     try {
       yield spring.start();
@@ -306,7 +313,7 @@ export default class MobilePaneComponent extends Component {
       spring.stop();
       this.preservedDx = this.dx;
     }
-  }))
+  })
   finishTransitionTask;
 
   @action
@@ -315,19 +322,25 @@ export default class MobilePaneComponent extends Component {
   }
 
   @action
-  onResize({ contentRect: { width }}) {
+  onResize({ contentRect: { width } }) {
     this.paneWidth = width;
   }
 
   @action
   registerPane(child) {
-    assert('passed child instance must be a pane', child instanceof PaneComponent);
+    assert(
+      'passed child instance must be a pane',
+      child instanceof PaneComponent
+    );
     this.panes.push(child);
   }
 
   @action
   unregisterPane(child) {
-    assert('passed child instance must be a pane', child instanceof PaneComponent);
+    assert(
+      'passed child instance must be a pane',
+      child instanceof PaneComponent
+    );
     this.panes.splice(this.panes.indexOf(child), 1);
   }
 }
