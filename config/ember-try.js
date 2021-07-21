@@ -11,17 +11,17 @@ module.exports = async function () {
         name: 'ember-cli-3.12-ember-source-3.13',
         npm: {
           devDependencies: {
-            'ember-source': '~3.13.0'
-          }
-        }
+            'ember-source': '~3.13.0',
+          },
+        },
       },
       {
         name: 'ember-lts-3.16',
         npm: {
           devDependencies: {
-            'ember-source': '~3.16.0'
-          }
-        }
+            'ember-source': '~3.16.0',
+          },
+        },
       },
       {
         name: 'ember-lts-3.20',
