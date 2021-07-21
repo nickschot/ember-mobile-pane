@@ -2,8 +2,6 @@ import Component from '@glimmer/component';
 import { htmlSafe } from '@ember/string';
 import { action } from '@ember/object';
 
-import Spring from '../../spring';
-
 /**
  * @class ScrollComponent
  */
@@ -95,10 +93,12 @@ export default class ScrollerComponent extends Component {
       this.isDragging = false;
 
       let targetIndex = Math.round(this.args.relativeOffset);
-      if(velocityX < -1 * this.args.triggerVelocity && targetIndex < this.args.paneCount - 1){
-        targetIndex++;
-      } else if(velocityX > this.args.triggerVelocity && targetIndex > 0){
-        targetIndex--;
+      if (targetIndex === this.args.activeIndex) {
+        if(velocityX < -1 * this.args.triggerVelocity && targetIndex < this.args.paneCount - 1){
+          targetIndex++;
+        } else if(velocityX > this.args.triggerVelocity && targetIndex > 0){
+          targetIndex--;
+        }
       }
 
       this.args.onDragEnd(targetIndex, true);
