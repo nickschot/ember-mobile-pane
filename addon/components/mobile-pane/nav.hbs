@@ -1,7 +1,7 @@
 <nav
   ...attributes
   class="mobile-pane__nav"
-  {{did-insert (fn (mut this.element))}}
+  {{did-insert this.setupElement}}
   {{did-update this.updateStyle @relativeOffset @activeIndex this.items}}
   {{on "touchstart" (fn (mut this.isScrolling) true)}}
   {{on "touchend" (fn (mut this.isScrolling) false)}}

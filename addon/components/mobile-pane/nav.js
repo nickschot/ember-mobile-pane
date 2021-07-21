@@ -29,6 +29,11 @@ export default class NavComponent extends Component {
 
   // lifecycle
   @action
+  setupElement(element) {
+    this.element = element;
+  }
+
+  @action
   setupIndicator(element) {
     this.indicator = element;
     this.updateStyle();
