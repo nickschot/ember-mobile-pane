@@ -84,28 +84,23 @@ export default class MobilePaneInfiniteComponent extends Component {
   @tracked childOffsetTop = 0;
 
   @action
-  updateActiveIndex() {
+  updateActiveIndex(){
     // we received new models, restore the scroll
     once(this.restoreScroll);
   }
 
-  get activeIndex() {
+  get activeIndex(){
     return this.args.previousModel ? 1 : 0;
   }
 
   get models() {
-    return [
-      this.args.previousModel,
-      this.args.currentModel,
-      this.args.nextModel,
-    ].filter(Boolean);
+    return [this.args.previousModel, this.args.currentModel, this.args.nextModel].filter(Boolean);
   }
 
   @action
-  onDragStart() {
+  onDragStart(){
     // write scroll offset for prev/next children
-    this.childOffsetTop =
-      document.scrollingElement.scrollTop || document.documentElement.scrollTop;
+    this.childOffsetTop = document.scrollingElement.scrollTop || document.documentElement.scrollTop;
 
     if (this.args.onDragStart) {
       this.args.onDragStart(...arguments);
@@ -113,17 +108,17 @@ export default class MobilePaneInfiniteComponent extends Component {
   }
 
   @action
-  onDragMove() {
+  onDragMove(){
     if (this.args.onDragMove) {
       this.args.onDragMove(...arguments);
     }
   }
 
   @action
-  onDragEnd(targetIndex) {
+  onDragEnd(targetIndex){
     // transition to previous or next model
     const targetModel = this.models[targetIndex];
-    if (targetModel !== this.args.currentModel) {
+    if(targetModel !== this.args.currentModel){
       // store the scroll position of currentModel
       this.storeScroll();
     }
@@ -134,25 +129,22 @@ export default class MobilePaneInfiniteComponent extends Component {
   }
 
   @action
-  onChange(index) {
-    if (this.args.onChange) {
-      this.args.onChange(this.models[index], index);
-    }
+  onChange(index){
+    this.args.onChange?.(this.models[index], index);
   }
 
-  storeScroll() {
+  storeScroll(){
     const key = this._buildMemoryKey(this.args.currentModel);
-    this.memory[key] =
-      document.scrollingElement.scrollTop || document.documentElement.scrollTop;
+    this.memory[key] = document.scrollingElement.scrollTop || document.documentElement.scrollTop;
   }
 
   //TODO: purge scroll states if we came from a higher level route
   //TODO: make this function more robust & optional
   @action
-  restoreScroll() {
-    const prevKey = this._buildMemoryKey(this.args.previousModel);
-    const currentKey = this._buildMemoryKey(this.args.currentModel);
-    const nextKey = this._buildMemoryKey(this.args.nextModel);
+  restoreScroll(){
+    const prevKey     = this._buildMemoryKey(this.args.previousModel);
+    const currentKey  = this._buildMemoryKey(this.args.currentModel);
+    const nextKey     = this._buildMemoryKey(this.args.nextModel);
 
     this.prevChildScroll = this.memory[prevKey] || 0;
     this.currentChildScroll = this.memory[currentKey] || 0;
@@ -160,7 +152,7 @@ export default class MobilePaneInfiniteComponent extends Component {
   }
 
   // utils
-  _buildMemoryKey(model) {
+  _buildMemoryKey(model){
     return `mobile-pane/${this.router.currentRouteName}.${guidFor(model)}`;
   }
 }

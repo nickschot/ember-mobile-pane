@@ -30,9 +30,10 @@
 </MobilePane>
 
 <MobilePaneInfinite
-  @previousModel="1"
-  @currentModel="2"
-  @nextModel="3"
+  @previousModel={{this.previousModel}}
+  @currentModel={{this.currentModel}}
+  @nextModel={{this.nextModel}}
+  @onChange={{this.handleChange}}
 as |mpi|>
   Pane {{mpi.model}}
 </MobilePaneInfinite>
