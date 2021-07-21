@@ -7,9 +7,9 @@ export default class ChildComponent extends Component {
   transformableElement = null;
 
   @action
-  setScrollOffset(){
-    if(this.args.setAsDocumentScroll){
-      const current     = document.scrollingElement || document.documentElement;
+  setScrollOffset() {
+    if (this.args.setAsDocumentScroll) {
+      const current = document.scrollingElement || document.documentElement;
       current.scrollTop = this.args.scroll;
     } else {
       this.transformableElement.style.transform = `translateY(-${this.args.scroll}px)`;
@@ -17,6 +17,8 @@ export default class ChildComponent extends Component {
   }
 
   get style() {
-    return this.args.offsetTop ? htmlSafe(`transform: translateY(${this.args.offsetTop}px);`) : null;
+    return this.args.offsetTop
+      ? htmlSafe(`transform: translateY(${this.args.offsetTop}px);`)
+      : null;
   }
 }
