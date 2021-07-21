@@ -53,6 +53,7 @@ export default class PaneComponent extends Component {
       );
 
       if (willRender) {
+        // eslint-disable-next-line ember/no-side-effects
         this.didRender = true;
       }
 
