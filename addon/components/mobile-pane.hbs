@@ -1,4 +1,4 @@
-<div ...attributes class="mobile-pane {{if this.isDragging "mobile-pane--dragging"}}" {{did-insert (fn (mut this.paneContainerElement))}}>
+<div ...attributes class="mobile-pane {{if this.isDragging "mobile-pane--dragging"}}" {{did-insert (set this "paneContainerElement")}}>
   {{yield (hash
     Nav=(component "mobile-pane/nav"
       activeIndex=this.activeIndex
