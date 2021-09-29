@@ -17,8 +17,8 @@ export default class SimpleIndicatorComponent extends Component {
 
     if (this.args.warpEnabled) {
       // warp effect
-      const fraction = offset % 100 / 100;
-      const scale = (2 * fraction - 2 * Math.pow(fraction, 2));
+      const fraction = (offset % 100) / 100;
+      const scale = 2 * fraction - 2 * Math.pow(fraction, 2);
       const scaleY = 1 - scale / 1.5;
       const scaleX = 1 + 1.5 * scale;
       style += ` scale(${scaleX}, ${scaleY})`;
@@ -29,7 +29,7 @@ export default class SimpleIndicatorComponent extends Component {
   }
 
   @action
-  onClick({ index }){
+  onClick({ index }) {
     if (this.args.onClick) {
       this.args.onClick(index);
     }

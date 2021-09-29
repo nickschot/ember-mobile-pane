@@ -43,12 +43,17 @@ export default class PaneComponent extends Component {
     return this === this.args.activePane;
   }
 
-  get renderContent(){
-    if(this.args.lazyRendering && !(this.args.keepRendered && this.didRender)){
-      const willRender = !!this.args.visiblePanes
-        .find(item => item.elementId === this.elementId);
+  get renderContent() {
+    if (
+      this.args.lazyRendering &&
+      !(this.args.keepRendered && this.didRender)
+    ) {
+      const willRender = !!this.args.visiblePanes.find(
+        (item) => item.elementId === this.elementId
+      );
 
-      if(willRender){
+      if (willRender) {
+        // eslint-disable-next-line ember/no-side-effects
         this.didRender = true;
       }
 
