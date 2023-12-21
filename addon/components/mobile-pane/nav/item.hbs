@@ -1,7 +1,7 @@
 <li
   ...attributes
   class="nav__item"
-  {{did-insert (fn (mut this.element))}}
+  {{did-insert this.setupElement}}
   {{did-insert (fn @registerItem this)}}
 >
   <a href="#{{@navItem.elementId}}"

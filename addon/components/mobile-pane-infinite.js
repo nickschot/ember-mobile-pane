@@ -135,9 +135,7 @@ export default class MobilePaneInfiniteComponent extends Component {
 
   @action
   onChange(index) {
-    if (this.args.onChange) {
-      this.args.onChange(this.models[index], index);
-    }
+    this.args.onChange?.(this.models[index], index);
   }
 
   storeScroll() {

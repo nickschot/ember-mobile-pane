@@ -1,10 +1,10 @@
 <nav
   ...attributes
   class="mobile-pane__nav"
-  {{did-insert (fn (mut this.element))}}
-  {{did-update this.updateStyle @navOffset}}
-  {{did-update this.updateStyle @activeIndex}}
-  {{did-update this.updateStyle this.items}}
+  {{did-insert this.setupElement}}
+  {{did-update this.updateStyle @relativeOffset @activeIndex this.items}}
+  {{on "touchstart" (fn (mut this.isScrolling) true)}}
+  {{on "touchend" (fn (mut this.isScrolling) false)}}
 >
   <ul class="nav__scroller">
     {{!-- TODO: make it yieldable if there is a block --}}

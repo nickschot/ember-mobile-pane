@@ -10,7 +10,7 @@
     <mps.Pane @title="Pane 1">
       Pane 1
     </mps.Pane>
-    <mps.Pane @title="Pane 2">
+    <mps.Pane @title="Long Pane 2">
       Pane 2
     </mps.Pane>
     <mps.Pane @title="Pane 3">
@@ -30,9 +30,10 @@
 </MobilePane>
 
 <MobilePaneInfinite
-  @previousModel="1"
-  @currentModel="2"
-  @nextModel="3"
+  @previousModel={{this.previousModel}}
+  @currentModel={{this.currentModel}}
+  @nextModel={{this.nextModel}}
+  @onChange={{this.handleChange}}
 as |mpi|>
   Pane {{mpi.model}}
 </MobilePaneInfinite>

@@ -61,11 +61,14 @@
 
 .mobile-pane__scroller {
   display: flex;
-
   will-change: transform;
 
   .mobile-pane__pane {
     width: 100%;
+  }
+
+  &, & * {
+    touch-action: pan-y;
   }
 }
 

@@ -7,6 +7,11 @@ export default class ChildComponent extends Component {
   transformableElement = null;
 
   @action
+  setupTransformableElement(element) {
+    this.transformableElement = element;
+  }
+
+  @action
   setScrollOffset() {
     if (this.args.setAsDocumentScroll) {
       const current = document.scrollingElement || document.documentElement;

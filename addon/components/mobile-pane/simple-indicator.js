@@ -12,9 +12,9 @@ export default class SimpleIndicatorComponent extends Component {
    */
 
   get style() {
-    const offset = -1 * this.args.currentOffset * this.args.navItems.length;
-    let style = `transform: translateX(${offset}%)`;
+    const offset = 100 * this.args.offset;
 
+    let style = `transform: translateX(${offset}%)`;
     if (this.args.warpEnabled) {
       // warp effect
       const fraction = (offset % 100) / 100;

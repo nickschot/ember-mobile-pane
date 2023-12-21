@@ -14,6 +14,11 @@ export default class NavItemComponent extends Component {
   }
 
   @action
+  setupElement(element) {
+    this.element = element;
+  }
+
+  @action
   clickItem(e) {
     e.preventDefault();
 

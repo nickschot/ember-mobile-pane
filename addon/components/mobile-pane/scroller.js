@@ -2,8 +2,6 @@ import Component from '@glimmer/component';
 import { htmlSafe } from '@ember/string';
 import { action } from '@ember/object';
 
-import Tween from 'ember-mobile-core/tween';
-
 /**
  * @class ScrollComponent
  */
@@ -23,23 +21,16 @@ export default class ScrollerComponent extends Component {
 
   // private
   isDragging = false;
-  dx = 0;
-  dxStart = 0;
-  runningAnimation = null;
 
   get style() {
     return htmlSafe(
       `width: ${this.args.paneCount * 100}%; transform: translateX(${
-        this.args.currentOffset
+        this.args.procentualOffset
       }%);`
     );
   }
 
   // gesture recognition -------------------------------------------------------
-  _getPaneWidth() {
-    return this.args.paneContainerElement.clientWidth;
-  }
-
   @action
   didPanStart(e) {
     if (!this.args.disabled) {
@@ -61,15 +52,6 @@ export default class ScrollerComponent extends Component {
         // and the pan event is enabled
         this.isDragging = true;
 
-        const anim = this.runningAnimation;
-        if (anim) {
-          anim.stop();
-          this.runningAnimation = null;
-          this.dxStart = this.dx;
-        } else {
-          this.dxStart = 0;
-        }
-
         this.args.onDragStart();
       }
     }
@@ -81,14 +63,11 @@ export default class ScrollerComponent extends Component {
       const { distanceX } = e.current;
 
       const activeIndex = this.args.activeIndex;
-      const paneWidth = this._getPaneWidth();
+      const paneWidth = this.args.paneWidth;
       const paneCount = this.args.paneCount;
 
-      const targetDistanceX =
-        (this.dxStart / 100) * paneWidth * paneCount + distanceX;
-
       // limit dx to -1, +1 pane
-      const dx = Math.max(Math.min(targetDistanceX, paneWidth), -paneWidth);
+      const dx = Math.max(Math.min(distanceX, paneWidth), -paneWidth);
       let targetOffset = (100 * dx) / paneWidth / paneCount;
 
       // overscroll effect
@@ -99,7 +78,6 @@ export default class ScrollerComponent extends Component {
         targetOffset *= this.overScrollFactor;
       }
 
-      this.dx = targetOffset;
       this.args.onDragMove(targetOffset);
     }
   }
@@ -111,20 +89,11 @@ export default class ScrollerComponent extends Component {
 
       this.isDragging = false;
 
-      const dx = this.dx;
-      const paneCount = this.args.paneCount;
-      const currentIndex = this.args.activeIndex;
-      const rawTargetIndex = (dx * paneCount) / -100;
-
-      let targetIndex = Math.max(
-        Math.min(currentIndex + Math.round(rawTargetIndex), paneCount - 1),
-        0
-      );
-
-      if (targetIndex === currentIndex) {
+      let targetIndex = Math.round(this.args.relativeOffset);
+      if (targetIndex === this.args.activeIndex) {
         if (
           velocityX < -1 * this.args.triggerVelocity &&
-          targetIndex < paneCount - 1
+          targetIndex < this.args.paneCount - 1
         ) {
           targetIndex++;
         } else if (velocityX > this.args.triggerVelocity && targetIndex > 0) {
@@ -132,30 +101,7 @@ export default class ScrollerComponent extends Component {
         }
       }
 
-      this.finishTransition(targetIndex);
+      this.args.onDragEnd(targetIndex, true);
     }
-  }
-
-  async finishTransition(targetIndex) {
-    const dx = this.dx;
-    const currentIndex = this.args.activeIndex;
-    const target =
-      (targetIndex - currentIndex) * (-100 / this.args.paneCount) - dx;
-
-    const anim = new Tween(
-      (progress) => {
-        const currentPos = dx + target * progress;
-        this.dx = currentPos;
-        this.args.onDragMove(currentPos);
-      },
-      { duration: this.transitionDuration }
-    );
-    this.runningAnimation = anim;
-    await anim.start();
-
-    this.runningAnimation = null;
-    this.dx = 0;
-
-    this.args.onDragEnd(targetIndex);
   }
 }
