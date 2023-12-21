@@ -5294,10 +5294,10 @@ ember-export-application-global@^2.0.1:
   resolved "https://registry.yarnpkg.com/ember-export-application-global/-/ember-export-application-global-2.0.1.tgz#b120a70e322ab208defc9e2daebe8d0dfc2dcd46"
   integrity sha512-B7wiurPgsxsSGzJuPFkpBWnaeuCu2PGpG2BjyrfA1VcL7//o+5RSnZqiCEY326y7qmxb2GoCgo0ft03KBU0rRw==
 
-"ember-gesture-modifiers@^5.0.0 || ^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/ember-gesture-modifiers/-/ember-gesture-modifiers-6.0.0.tgz#a30fad09cf4c3d1b53e0310f3e0bbe937ba1de39"
-  integrity sha512-PUddYyB+NRaGuqNytt7WJDb1BP/qWiVytGqCKbESZWpOawBSl+UOf/U7ocGal+VB2DRwRVNWIin1TGohoaYP+A==
+ember-gesture-modifiers@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/ember-gesture-modifiers/-/ember-gesture-modifiers-6.0.1.tgz#034bef38572d6696227727cc12196e46220713b9"
+  integrity sha512-CQCM05eqpZx77HZqbPAgb1SVkTvXIpPY9SOmlReU4TdigHL0+BcaMD94kcAvE/4SIaxQ+/nOIp0kUmVfqUg1IQ==
   dependencies:
     "@embroider/addon-shim" "^1.0.0"
     ember-modifier "^4.0.0"
