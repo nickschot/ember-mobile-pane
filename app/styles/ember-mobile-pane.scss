@@ -61,7 +61,7 @@
 
 .mobile-pane__scroller {
   display: flex;
-
+  touch-action: pan-y;
   will-change: transform;
 
   .mobile-pane__pane {

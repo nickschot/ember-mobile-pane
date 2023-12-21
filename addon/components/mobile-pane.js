@@ -285,7 +285,7 @@ export default class MobilePaneComponent extends Component {
     this.args.onChange(...arguments);
   }
 
-  @task(function* (targetIndex, currentVelocity) {
+  @task *finishTransitionTask(targetIndex, currentVelocity) {
     const startPos = this.dx;
     const endPos = (targetIndex - this.activeIndex) * (-100 / this.paneCount);
 
@@ -313,8 +313,7 @@ export default class MobilePaneComponent extends Component {
       spring.stop();
       this.preservedDx = this.dx;
     }
-  })
-  finishTransitionTask;
+  }
 
   @action
   async finishTransition(targetIndex, currentVelocity = 0) {
