@@ -6,7 +6,7 @@
   {{on "touchstart" (fn (mut this.isScrolling) true)}}
   {{on "touchend" (fn (mut this.isScrolling) false)}}
 >
-  <ul class="nav__scroller">
+  <ul class="nav__scroller" role="tablist">
     {{!-- TODO: make it yieldable if there is a block --}}
     {{#each @navItems as |navItem|}}
       <MobilePane::Nav::Item
