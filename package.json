@@ -62,7 +62,7 @@
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-page-title": "^6.2.1",
     "ember-qunit": "^6.2.0",
-    "ember-resolver": "^8.0.2",
+    "ember-resolver": "^10.1.1",
     "ember-source": "~3.28.12",
     "ember-source-channel-url": "^3.0.0",
     "ember-template-lint": "^3.2.0",

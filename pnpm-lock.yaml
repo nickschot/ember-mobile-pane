@@ -98,8 +98,8 @@ devDependencies:
     specifier: ^6.2.0
     version: 6.2.0(@ember/test-helpers@2.9.4)(ember-source@3.28.12)(qunit@2.14.1)(webpack@5.89.0)
   ember-resolver:
-    specifier: ^8.0.2
-    version: 8.0.2(@babel/core@7.23.9)
+    specifier: ^10.1.1
+    version: 10.1.1(@ember/string@3.1.1)(ember-source@3.28.12)
   ember-source:
     specifier: ~3.28.12
     version: 3.28.12(@babel/core@7.23.9)
@@ -5332,18 +5332,20 @@ packages:
       - supports-color
     dev: false
 
-  /ember-resolver@8.0.2(@babel/core@7.23.9):
-    resolution: {integrity: sha512-BmCoPT8nf5uv0g2QkhMsrG1Gmu6MtXd6igfhCVzCTMTwZ97SxhJKqoMY62EP/av5HVSWBC/Sa1uGU5cQvX1Aog==}
-    engines: {node: '>= 10.*'}
+  /ember-resolver@10.1.1(@ember/string@3.1.1)(ember-source@3.28.12):
+    resolution: {integrity: sha512-y1zzn6C4YGJui+tJzcCKlsf1oSOSVAkRrvmg8OwqVIKnALKKb9ihx2qLCslHg8x0wJvJgMtDMXgrczvQrZW0Lw==}
+    engines: {node: 14.* || 16.* || >= 18}
+    peerDependencies:
+      '@ember/string': ^3.0.1
+      ember-source: ^4.8.3 || >= 5.0.0
+    peerDependenciesMeta:
+      ember-source:
+        optional: true
     dependencies:
-      babel-plugin-debug-macros: 0.3.4(@babel/core@7.23.9)
-      broccoli-funnel: 3.0.8
-      broccoli-merge-trees: 4.2.0
+      '@ember/string': 3.1.1
       ember-cli-babel: 7.26.11
-      ember-cli-version-checker: 5.1.2
-      resolve: 1.22.8
+      ember-source: 3.28.12(@babel/core@7.23.9)
     transitivePeerDependencies:
-      - '@babel/core'
       - supports-color
     dev: true
 
