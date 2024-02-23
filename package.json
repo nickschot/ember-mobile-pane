@@ -98,7 +98,7 @@
     "configPath": "tests/dummy/config"
   },
   "volta": {
-    "node": "18.19.1",
+    "node": "20.11.1",
     "pnpm": "8.15.3"
   }
 }
