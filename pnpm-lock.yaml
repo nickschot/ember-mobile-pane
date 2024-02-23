@@ -140,8 +140,8 @@ devDependencies:
     specifier: 2.0.0
     version: 2.0.0
   sass:
-    specifier: 1.26.9
-    version: 1.26.9
+    specifier: 1.71.1
+    version: 1.71.1
   stylelint:
     specifier: 15.4.0
     version: 15.4.0
@@ -6602,6 +6602,10 @@ packages:
     engines: {node: '>= 4'}
     dev: true
 
+  /immutable@4.3.5:
+    resolution: {integrity: sha512-8eabxkth9gZatlwl5TBuJnCsoTADlL6ftEr7A4qgdaTsPyreilDSnUk57SO+jfKcNtxPa22U5KK6DSeAYhpBJw==}
+    dev: true
+
   /import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
     engines: {node: '>=6'}
@@ -9083,12 +9087,14 @@ packages:
       walker: 1.0.8
     dev: true
 
-  /sass@1.26.9:
-    resolution: {integrity: sha512-t8AkRVi+xvba4yZiLWkJdgJHBFCB3Dh4johniQkPy9ywkgFHNasXFEFP+RG/F6LhQ+aoE4aX+IorIWQjS0esVw==}
-    engines: {node: '>=8.9.0'}
+  /sass@1.71.1:
+    resolution: {integrity: sha512-wovtnV2PxzteLlfNzbgm1tFXPLoZILYAMJtvoXXkD7/+1uP41eKkIt1ypWq5/q2uT94qHjXehEYfmjKOvjL9sg==}
+    engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
       chokidar: 3.6.0
+      immutable: 4.3.5
+      source-map-js: 1.0.2
     dev: true
 
   /schema-utils@2.7.1:
