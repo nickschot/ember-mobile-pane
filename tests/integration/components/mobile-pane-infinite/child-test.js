@@ -12,15 +12,15 @@ module(
       // Set any properties with this.set('myProperty', 'value');
       // Handle any actions with this.set('myAction', function(val) { ... });
 
-      await render(hbs`{{mobile-pane-infinite/child}}`);
+      await render(hbs`<MobilePaneInfinite::Child/>`);
 
       assert.dom(this.element).hasText('');
 
       // Template block usage:
       await render(hbs`
-      {{#mobile-pane-infinite/child}}
+      <MobilePaneInfinite::Child>
         template block text
-      {{/mobile-pane-infinite/child}}
+      </MobilePaneInfinite::Child>
     `);
 
       assert.dom(this.element).hasText('template block text');

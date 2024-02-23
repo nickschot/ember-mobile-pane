@@ -10,15 +10,15 @@ module('Integration | Component | mobile-pane-infinite', function (hooks) {
     // Set any properties with this.set('myProperty', 'value');
     // Handle any actions with this.set('myAction', function(val) { ... });
 
-    await render(hbs`{{mobile-pane-infinite}}`);
+    await render(hbs`<MobilePaneInfinite/>`);
 
     assert.dom(this.element).hasText('');
 
     // Template block usage:
     await render(hbs`
-      {{#mobile-pane-infinite}}
+      <MobilePaneInfinite>
         template block text
-      {{/mobile-pane-infinite}}
+      </MobilePaneInfinite>
     `);
 
     assert.dom(this.element).hasText('template block text');
