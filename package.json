@@ -79,7 +79,7 @@
     "qunit": "2.19.4",
     "qunit-dom": "3.0.0",
     "sass": "1.71.1",
-    "stylelint": "15.4.0",
+    "stylelint": "15.11.0",
     "stylelint-config-prettier": "9.0.5",
     "stylelint-config-standard": "36.0.0",
     "stylelint-prettier": "3.0.0",
