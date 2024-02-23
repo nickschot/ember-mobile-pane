@@ -90,7 +90,7 @@ devDependencies:
     version: 2.1.2(@babel/core@7.23.9)
   ember-page-title:
     specifier: 8.2.2
-    version: 8.2.2(ember-source@4.12.0)
+    version: 8.2.2(ember-source@4.12.4)
   ember-qunit:
     specifier: 6.2.0
     version: 6.2.0(@ember/test-helpers@2.9.4)(ember-source@4.12.4)(qunit@2.19.4)(webpack@5.89.0)
@@ -137,8 +137,8 @@ devDependencies:
     specifier: 2.19.4
     version: 2.19.4
   qunit-dom:
-    specifier: 2.0.0
-    version: 2.0.0
+    specifier: 3.0.0
+    version: 3.0.0
   sass:
     specifier: 1.71.1
     version: 1.71.1
@@ -4790,7 +4790,7 @@ packages:
       - webpack
     dev: false
 
-  /ember-page-title@8.2.2(ember-source@4.12.0):
+  /ember-page-title@8.2.2(ember-source@4.12.4):
     resolution: {integrity: sha512-DpIVgDaYstMSvHuhjG8QRnyfFD+E9/uy9GXO35kzmHaCg2hGB4e5Z6jcfitk8qh/lp5VRX8Tpl4HTBX+CKwMWw==}
     engines: {node: 16.* || >= 18}
     peerDependencies:
@@ -4798,7 +4798,7 @@ packages:
     dependencies:
       '@embroider/addon-shim': 1.8.7
       '@simple-dom/document': 1.4.0
-      ember-source: 4.12.0(@babel/core@7.23.9)(@glimmer/component@1.1.2)(webpack@5.89.0)
+      ember-source: 4.12.4(@babel/core@7.23.9)(@glimmer/component@1.1.2)(webpack@5.89.0)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8609,16 +8609,8 @@ packages:
       rimraf: 2.7.1
       underscore.string: 3.3.6
 
-  /qunit-dom@2.0.0:
-    resolution: {integrity: sha512-mElzLN99wYPOGekahqRA+mq7NcThXY9c+/tDkgJmT7W5LeZAFNyITr2rFKNnCbWLIhuLdFw88kCBMrJSfyBYpA==}
-    engines: {node: 12.* || 14.* || >= 16.*}
-    dependencies:
-      broccoli-funnel: 3.0.8
-      broccoli-merge-trees: 4.2.0
-      ember-cli-babel: 7.26.11
-      ember-cli-version-checker: 5.1.2
-    transitivePeerDependencies:
-      - supports-color
+  /qunit-dom@3.0.0:
+    resolution: {integrity: sha512-rqGZ9ZgOvtOY+Ph2ElCJ4pRIHouMZmI3DWK35Xr3x3c17/gIwOHHyKAQk6XetqhqepS6p+oXvK6Bx1uZu5jJuw==}
     dev: true
 
   /qunit@2.19.4:
