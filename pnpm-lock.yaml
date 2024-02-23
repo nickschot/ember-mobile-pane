@@ -77,8 +77,8 @@ devDependencies:
     specifier: 2.1.0
     version: 2.1.0
   ember-cli-sass:
-    specifier: 10.0.1
-    version: 10.0.1
+    specifier: 11.0.1
+    version: 11.0.1
   ember-cli-sri:
     specifier: 2.1.1
     version: 2.1.1
@@ -4389,9 +4389,9 @@ packages:
       - supports-color
     dev: true
 
-  /ember-cli-sass@10.0.1:
-    resolution: {integrity: sha512-dWVoX03O2Mot1dEB1AN3ofC8DDZb6iU4Kfkbr3WYi9S9bGVHrpR/ngsR7tuVBuTugTyG53FPtLLqYdqx7XjXdA==}
-    engines: {node: 6.* || 8.* || >= 10.*}
+  /ember-cli-sass@11.0.1:
+    resolution: {integrity: sha512-RMlFPMK4kaB+67seF/IIoY3EC4rRd+L58q+lyElrxB3FcQTgph/qmGwtqf9Up7m3SDbPiA7cccCOSmgReMgCXA==}
+    engines: {node: '>= 10.*'}
     dependencies:
       broccoli-funnel: 2.0.2
       broccoli-merge-trees: 3.0.2
