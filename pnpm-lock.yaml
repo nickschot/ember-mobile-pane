@@ -140,8 +140,8 @@ devDependencies:
     specifier: 3.1.2
     version: 3.1.2
   sass:
-    specifier: 1.77.0
-    version: 1.77.0
+    specifier: 1.77.8
+    version: 1.77.8
   stylelint:
     specifier: 16.5.0
     version: 16.5.0
@@ -9195,8 +9195,8 @@ packages:
       walker: 1.0.8
     dev: true
 
-  /sass@1.77.0:
-    resolution: {integrity: sha512-eGj4HNfXqBWtSnvItNkn7B6icqH14i3CiCGbzMKs3BAPTq62pp9NBYsBgyN4cA+qssqo9r26lW4JSvlaUUWbgw==}
+  /sass@1.77.8:
+    resolution: {integrity: sha512-4UHg6prsrycW20fqLGPShtEvo/WyHRVRHwOP4DzkUrObWoWI05QBSfzU71TVB7PFaL104TwNaHpjlWXAZbQiNQ==}
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
