@@ -92,8 +92,8 @@ devDependencies:
     specifier: 8.2.4
     version: 8.2.4(ember-source@5.8.0)
   ember-qunit:
-    specifier: 8.0.2
-    version: 8.0.2(@ember/test-helpers@3.3.1)(ember-source@5.8.0)(qunit@2.20.1)
+    specifier: 8.1.1
+    version: 8.1.1(@ember/test-helpers@3.3.1)(ember-source@5.8.0)(qunit@2.20.1)
   ember-resolver:
     specifier: 11.0.1
     version: 11.0.1(ember-source@5.8.0)
@@ -4985,8 +4985,8 @@ packages:
       - supports-color
     dev: true
 
-  /ember-qunit@8.0.2(@ember/test-helpers@3.3.1)(ember-source@5.8.0)(qunit@2.20.1):
-    resolution: {integrity: sha512-Rf60jeUTWNsF3Imf/FLujW/B/DFmKVXKmXO1lirTXjpertKfwRhp/3MnN8a/U/WyodTIsERkInGT1IqTtphCdQ==}
+  /ember-qunit@8.1.1(@ember/test-helpers@3.3.1)(ember-source@5.8.0)(qunit@2.20.1):
+    resolution: {integrity: sha512-nT+6s74j3BKNn+QQY/hINC3Xw3kn0NF0cU9zlgVQmCBWoyis1J24xWrY2LFOMThPmF6lHqcrUb5JwvBD4BXEXg==}
     peerDependencies:
       '@ember/test-helpers': '>=3.0.3'
       ember-source: '>=4.0.0'
@@ -4998,6 +4998,7 @@ packages:
       ember-cli-test-loader: 3.1.0
       ember-source: 5.8.0(@babel/core@7.24.5)(@glimmer/component@1.1.2)(rsvp@4.8.5)(webpack@5.91.0)
       qunit: 2.20.1
+      qunit-theme-ember: 1.0.0
     transitivePeerDependencies:
       - '@glint/template'
       - supports-color
@@ -8630,6 +8631,10 @@ packages:
 
   /qunit-dom@3.1.2:
     resolution: {integrity: sha512-urHvzhDxihYrMBpsT/Fk7So79CPfvS0ZwZw2VPA+0JV1Q1XP2IhDg/PLHTt+r2j7787iQAOpILx2GjwAa6CpnA==}
+    dev: true
+
+  /qunit-theme-ember@1.0.0:
+    resolution: {integrity: sha512-vdMVVo6ecdCkWttMTKeyq1ZTLGHcA6zdze2zhguNuc3ritlJMhOXY5RDseqazOwqZVfCg3rtlmL3fMUyIzUyFQ==}
     dev: true
 
   /qunit@2.20.1:
