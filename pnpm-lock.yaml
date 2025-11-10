@@ -18,8 +18,8 @@ dependencies:
     specifier: ^2.7.1
     version: 2.7.2(webpack@5.102.1)
   ember-cli-babel:
-    specifier: ^7.26.11
-    version: 7.26.11
+    specifier: ^8.0.0
+    version: 8.2.0(@babel/core@7.24.5)
   ember-cli-htmlbars:
     specifier: ^6.3.0
     version: 6.3.0
