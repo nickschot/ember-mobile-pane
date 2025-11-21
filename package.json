@@ -78,7 +78,7 @@
     "prettier": "2.8.8",
     "qunit": "2.24.2",
     "qunit-dom": "3.5.0",
-    "sass": "1.93.3",
+    "sass": "1.94.2",
     "stylelint": "16.25.0",
     "stylelint-config-prettier": "9.0.5",
     "stylelint-config-standard": "36.0.1",
