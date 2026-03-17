@@ -122,8 +122,8 @@ devDependencies:
     specifier: 17.23.2
     version: 17.23.2(eslint@8.57.1)(typescript@5.9.2)
   eslint-plugin-prettier:
-    specifier: 5.5.4
-    version: 5.5.4(eslint-config-prettier@9.1.2)(eslint@8.57.1)(prettier@2.8.8)
+    specifier: 5.5.5
+    version: 5.5.5(eslint-config-prettier@9.1.2)(eslint@8.57.1)(prettier@2.8.8)
   eslint-plugin-qunit:
     specifier: 8.2.5
     version: 8.2.5(eslint@8.57.1)
@@ -5868,8 +5868,8 @@ packages:
       - typescript
     dev: true
 
-  /eslint-plugin-prettier@5.5.4(eslint-config-prettier@9.1.2)(eslint@8.57.1)(prettier@2.8.8):
-    resolution: {integrity: sha512-swNtI95SToIz05YINMA6Ox5R057IMAmWZ26GqPxusAp1TZzj+IdY9tXNWWD3vkF/wEqydCONcwjTFpxybBqZsg==}
+  /eslint-plugin-prettier@5.5.5(eslint-config-prettier@9.1.2)(eslint@8.57.1)(prettier@2.8.8):
+    resolution: {integrity: sha512-hscXkbqUZ2sPithAuLm5MXL+Wph+U7wHngPBv9OMWwlP8iaflyxpjTYZkmdgB4/vPIhemRlBEoLrH7UC1n7aUw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       '@types/eslint': '>=8.0.0'
@@ -5885,8 +5885,8 @@ packages:
       eslint: 8.57.1
       eslint-config-prettier: 9.1.2(eslint@8.57.1)
       prettier: 2.8.8
-      prettier-linter-helpers: 1.0.0
-      synckit: 0.11.11
+      prettier-linter-helpers: 1.0.1
+      synckit: 0.11.12
     dev: true
 
   /eslint-plugin-qunit@8.2.5(eslint@8.57.1):
@@ -8973,6 +8973,13 @@ packages:
       fast-diff: 1.3.0
     dev: true
 
+  /prettier-linter-helpers@1.0.1:
+    resolution: {integrity: sha512-SxToR7P8Y2lWmv/kTzVLC1t/GDI2WGjMwNhLLE9qtH8Q13C+aEmuRlzDst4Up4s0Wc8sF2M+J57iB3cMLqftfg==}
+    engines: {node: '>=6.0.0'}
+    dependencies:
+      fast-diff: 1.3.0
+    dev: true
+
   /prettier@2.8.8:
     resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
     engines: {node: '>=10.13.0'}
@@ -10230,8 +10237,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /synckit@0.11.11:
-    resolution: {integrity: sha512-MeQTA1r0litLUf0Rp/iisCaL8761lKAZHaimlbGK4j0HysC4PLfqygQj9srcs0m2RdtDYnF8UuYyKpbjHYp7Jw==}
+  /synckit@0.11.12:
+    resolution: {integrity: sha512-Bh7QjT8/SuKUIfObSXNHNSK6WHo6J1tHCqJsuaFDP7gP0fkzSfTxI8y85JrppZ0h8l0maIgc2tfuZQ6/t3GtnQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
     dependencies:
       '@pkgr/core': 0.2.9
