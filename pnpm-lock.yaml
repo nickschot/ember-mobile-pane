@@ -125,8 +125,8 @@ devDependencies:
     specifier: 5.5.5
     version: 5.5.5(eslint-config-prettier@9.1.2)(eslint@8.57.1)(prettier@2.8.8)
   eslint-plugin-qunit:
-    specifier: 8.2.5
-    version: 8.2.5(eslint@8.57.1)
+    specifier: 8.2.6
+    version: 8.2.6(eslint@8.57.1)
   loader.js:
     specifier: 4.7.0
     version: 4.7.0
@@ -5889,14 +5889,15 @@ packages:
       synckit: 0.11.12
     dev: true
 
-  /eslint-plugin-qunit@8.2.5(eslint@8.57.1):
-    resolution: {integrity: sha512-qr7RJCYImKQjB+39q4q46i1l7p1V3joHzBE5CAYfxn5tfVFjrnjn/tw7q/kDyweU9kAIcLul0Dx/KWVUCb3BgA==}
+  /eslint-plugin-qunit@8.2.6(eslint@8.57.1):
+    resolution: {integrity: sha512-S1jC/DIW9J8VtNX4uG1vlf5FZVrfQFlcuiYmvTHR2IICUhubHqpWA5o+qS1tujh+81Gs39omKV2D4OXfbSJE5g==}
     engines: {node: ^16.0.0 || ^18.0.0 || >=20.0.0}
+    peerDependencies:
+      eslint: '>=8.38.0'
     dependencies:
-      eslint-utils: 3.0.0(eslint@8.57.1)
+      '@eslint-community/eslint-utils': 4.7.0(eslint@8.57.1)
+      eslint: 8.57.1
       requireindex: 1.2.0
-    transitivePeerDependencies:
-      - eslint
     dev: true
 
   /eslint-scope@5.1.1:
