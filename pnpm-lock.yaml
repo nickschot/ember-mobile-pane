@@ -140,8 +140,8 @@ devDependencies:
     specifier: 3.5.0
     version: 3.5.0
   sass:
-    specifier: 1.94.3
-    version: 1.94.3
+    specifier: 1.98.0
+    version: 1.98.0
   stylelint:
     specifier: 16.25.0
     version: 16.25.0(typescript@5.9.2)
@@ -3783,11 +3783,11 @@ packages:
       inherits: 2.0.4
     dev: true
 
-  /chokidar@5.0.0:
-    resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==}
-    engines: {node: '>= 20.19.0'}
+  /chokidar@4.0.3:
+    resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
+    engines: {node: '>= 14.16.0'}
     dependencies:
-      readdirp: 5.0.0
+      readdirp: 4.1.2
     dev: true
 
   /chrome-trace-event@1.0.3:
@@ -7097,8 +7097,8 @@ packages:
     engines: {node: '>= 4'}
     dev: true
 
-  /immutable@5.0.3:
-    resolution: {integrity: sha512-P8IdPQHq3lA1xVeBRi5VPqUm5HDgKnx0Ru51wZz5mjxHr5n3RWhjIpOFU7ybkUxfB+5IToy+OLaHYDBIWsv+uw==}
+  /immutable@5.1.5:
+    resolution: {integrity: sha512-t7xcm2siw+hlUM68I+UEOK+z84RzmN59as9DZ7P1l0994DKUWV7UXBMQZVxaoMSRQ+PBZbHCOoBt7a2wxOMt+A==}
     dev: true
 
   /import-fresh@3.3.0:
@@ -9022,9 +9022,9 @@ packages:
       util-deprecate: 1.0.2
     dev: true
 
-  /readdirp@5.0.0:
-    resolution: {integrity: sha512-9u/XQ1pvrQtYyMpZe7DXKv2p5CNvyVwzUB6uhLAnQwHMSgKMBR62lc7AHljaeteeHXn11XTAaLLUVZYVZyuRBQ==}
-    engines: {node: '>= 20.19.0'}
+  /readdirp@4.1.2:
+    resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
+    engines: {node: '>= 14.18.0'}
     dev: true
 
   /recast@0.18.10:
@@ -9421,13 +9421,13 @@ packages:
       walker: 1.0.8
     dev: true
 
-  /sass@1.94.3:
-    resolution: {integrity: sha512-AhSSJrOPvcPEbTEQJxCt4vhIeAmLpLaVkNZF06oYM+H3HkipZ21bbD4i4B1Vj3MNUIBsytNjwXAe7CGQ7f0nag==}
+  /sass@1.98.0:
+    resolution: {integrity: sha512-+4N/u9dZ4PrgzGgPlKnaaRQx64RO0JBKs9sDhQ2pLgN6JQZ25uPQZKQYaBJU48Kd5BxgXoJ4e09Dq7nMcOUW3A==}
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
-      chokidar: 5.0.0
-      immutable: 5.0.3
+      chokidar: 4.0.3
+      immutable: 5.1.5
       source-map-js: 1.2.1
     optionalDependencies:
       '@parcel/watcher': 2.5.1
