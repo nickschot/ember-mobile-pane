@@ -261,6 +261,32 @@ module('Integration | Component | mobile-pane', function (hooks) {
     assert.dom(SCROLLER).hasAttribute('style', /width: 200%/);
   });
 
+  test('styles are layered and can be themed with custom properties', async function (assert) {
+    await render(hbs`
+      {{! template-lint-disable no-inline-styles }}
+      <MobilePane style="--mobile-pane-active-link-color: rgb(255, 0, 0)" as |mp|>
+        <mp.Nav />
+        <mp.Scroller as |mps|>
+          <mps.Pane @title="One">Pane 1</mps.Pane>
+          <mps.Pane @title="Two">Pane 2</mps.Pane>
+        </mp.Scroller>
+      </MobilePane>
+    `);
+
+    assert
+      .dom('.nav__item:nth-child(1) .item__link')
+      .hasStyle({ color: 'rgb(255, 0, 0)' }, 'active link uses the override');
+    assert
+      .dom('.nav__indicator')
+      .hasStyle(
+        { backgroundColor: 'rgb(255, 0, 0)' },
+        'derived indicator colour follows the override'
+      );
+    assert
+      .dom('.nav__item:nth-child(2) .item__link')
+      .hasStyle({ color: 'rgb(51, 51, 51)' }, 'inactive link uses the default');
+  });
+
   module('gestures', function (hooks) {
     hooks.beforeEach(function () {
       this.dragStarts = 0;

@@ -89,6 +89,16 @@ export default class NavComponent extends Component {
   }
 
   @action
+  startScrolling() {
+    this.isScrolling = true;
+  }
+
+  @action
+  stopScrolling() {
+    this.isScrolling = false;
+  }
+
+  @action
   registerItem(child) {
     assert(
       'passed child instance must be a NavItemComponent',
