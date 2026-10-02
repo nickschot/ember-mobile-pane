@@ -5,38 +5,53 @@ on:
     branches:
       - main
       - master
-      - 'v*'
   pull_request: {}
-
-env:
-  PNPM_VERSION: 8.15.9
 
 concurrency:
   group: ci-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  test:
-    name: "Tests"
+  lint:
+    name: "Lints"
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3.0.0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
         with:
-          version: ${{ env.PNPM_VERSION }}
-      - name: Install Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
+          node-version: 22
           cache: pnpm
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
       - name: Lint
-        run: pnpm run lint
+        run: pnpm lint
+
+  test:
+    name: "Tests"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
       - name: Run Tests
-        run: pnpm run test:ember
+        run: pnpm test
+      # For the Try Scenarios
+      - id: set-matrix
+        run: |
+           echo "matrix=$(pnpm -s dlx @embroider/try list)" >> $GITHUB_OUTPUT
+          
 
   floating:
     name: "Floating Dependencies"
@@ -45,89 +60,40 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3.0.0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
         with:
-          version: ${{ env.PNPM_VERSION }}
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
+          node-version: 22
           cache: pnpm
-      - name: Remove lock file
-        shell: bash
-        run: rm pnpm-lock.yaml
       - name: Install Dependencies
-        run: pnpm install
+        run: pnpm install --no-lockfile
       - name: Run Tests
-        run: pnpm run test:ember
+        run: pnpm test
 
   try-scenarios:
-    name: ${{ matrix.try-scenario }}
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
     needs: "test"
     timeout-minutes: 10
-
     strategy:
       fail-fast: false
-      matrix:
-        try-scenario:
-          - ember-lts-3.28
-          - ember-lts-4.4
-          - ember-lts-4.8
-          - ember-lts-4.12
-          - ember-release
-          - ember-classic
-          - ember-default-with-jquery
-          - embroider-safe
+      matrix: ${{fromJson(needs.test.outputs.matrix)}}
 
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3.0.0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
         with:
-          version: ${{ env.PNPM_VERSION }}
-      - name: Install Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
+          node-version: 22
           cache: pnpm
+      - name: Apply Scenario
+        run: |
+           pnpm dlx @embroider/try apply ${{ matrix.name }}
+          
       - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-lockfile
       - name: Run Tests
-        run: ./node_modules/.bin/ember try:one ${{ matrix.try-scenario }}
-
-  allowed-fail-try-scenarios:
-    name: ${{ matrix.try-scenario }} - Allowed to fail
-    runs-on: ubuntu-latest
-    needs: 'test'
-    timeout-minutes: 10
-    permissions:
-      pull-requests: write
-
-    strategy:
-      fail-fast: false
-      matrix:
-        try-scenario:
-          - ember-beta
-          - ember-canary
-          - embroider-optimized
-
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3.0.0
-        with:
-          version: ${{ env.PNPM_VERSION }}
-      - name: Install Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: pnpm
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Run Tests
-        id: tests
-        run: ./node_modules/.bin/ember try:one ${{ matrix.try-scenario }}
-        continue-on-error: true
-      - uses: mainmatter/continue-on-error-comment@v1
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          outcome: ${{ steps.tests.outcome }}
-          test-id: ${{ matrix.try-scenario }}
+        run: |
+          pnpm test
+          
+        env: ${{ matrix.env }}

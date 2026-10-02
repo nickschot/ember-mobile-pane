@@ -1,0 +1,9 @@
+@layer ember-mobile-pane.tokens, ember-mobile-pane.base;
+
+@layer ember-mobile-pane.base {
+  .mobile-pane__infinite-scroller .mobile-pane__child--previous,
+  .mobile-pane__infinite-scroller .mobile-pane__child--next {
+    max-height: 100vh;
+    overflow: hidden;
+  }
+}
