@@ -1,4 +1,5 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:js-lib",
     ":automergeLinters",
@@ -8,18 +9,52 @@
     ":semanticCommitsDisabled",
     "github>Turbo87/renovate-config:automergeCaretConstraint"
   ],
-  "regexManagers": [
-    {
-      "fileMatch": ["^.github/workflows/[^\\.]+\\.ya?ml$"],
-      "matchStrings": ["PNPM_VERSION:\\s*(?<currentValue>.*?)\n"],
-      "depNameTemplate": "pnpm",
-      "datasourceTemplate": "npm"
-    }
-  ],
   "packageRules": [
     {
-      "packageNames": ["ember-cli", "ember-data", "ember-source"],
-      "separateMinorPatch": true
+      "groupName": "ember",
+      "matchPackageNames": [
+        "ember-source",
+        "ember-cli",
+        "@ember/**",
+        "@glimmer/**",
+        "ember-qunit",
+        "qunit",
+        "qunit-dom"
+      ]
+    },
+    {
+      "groupName": "embroider",
+      "matchPackageNames": [
+        "@embroider/**",
+        "vite",
+        "rollup",
+        "@rollup/**",
+        "decorator-transforms"
+      ]
+    },
+    {
+      "groupName": "babel",
+      "matchPackageNames": [
+        "@babel/**",
+        "babel-plugin-ember-template-compilation"
+      ]
+    },
+    {
+      "groupName": "linting",
+      "matchPackageNames": [
+        "eslint",
+        "eslint-*",
+        "@eslint/**",
+        "globals",
+        "prettier",
+        "prettier-*",
+        "ember-template-lint",
+        "publint"
+      ]
+    },
+    {
+      "matchDepTypes": ["peerDependencies"],
+      "enabled": false
     }
   ]
 }
