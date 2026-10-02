@@ -4,8 +4,13 @@
 
 {{outlet}}
 
-<MobilePane @activeIndex={{this.activeIndex}} @onChange={{fn (mut this.activeIndex)}} @strictLazyRendering={{true}} as |mp|>
-  <mp.Nav/>
+<MobilePane
+  @activeIndex={{this.activeIndex}}
+  @onChange={{fn (mut this.activeIndex)}}
+  @strictLazyRendering={{true}}
+  as |mp|
+>
+  <mp.Nav />
   <mp.Scroller as |mps|>
     <mps.Pane @title="Pane 1">
       Pane 1
@@ -26,7 +31,7 @@
       Pane 6
     </mps.Pane>
   </mp.Scroller>
-  <mp.SimpleIndicator/>
+  <mp.SimpleIndicator />
 </MobilePane>
 
 <MobilePaneInfinite
@@ -34,6 +39,8 @@
   @currentModel={{this.currentModel}}
   @nextModel={{this.nextModel}}
   @onChange={{this.handleChange}}
-as |mpi|>
-  Pane {{mpi.model}}
+  as |mpi|
+>
+  Pane
+  {{mpi.model}}
 </MobilePaneInfinite>
