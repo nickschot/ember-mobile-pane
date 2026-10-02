@@ -1,8 +1,8 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
 import { guidFor } from '@ember/object/internals';
 import { assert } from '@ember/debug';
-import { TrackedArray } from 'tracked-built-ins';
 import { modifier } from 'ember-modifier';
 
 import NavItemComponent from './nav/item';
@@ -25,7 +25,9 @@ export default class NavComponent extends Component {
 
   // private
   indicator = null;
-  items = new TrackedArray();
+  // see MobilePaneComponent#panes for why there is an untracked mirror
+  @tracked items = [];
+  #items = [];
   isScrolling = false;
 
   // lifecycle
@@ -92,7 +94,7 @@ export default class NavComponent extends Component {
       'passed child instance must be a NavItemComponent',
       child instanceof NavItemComponent
     );
-    this.items.push(child);
+    this.items = this.#items = [...this.#items, child];
   }
 
   @action
@@ -101,6 +103,6 @@ export default class NavComponent extends Component {
       'passed child instance must be a NavItemComponent',
       child instanceof NavItemComponent
     );
-    this.items.splice(this.items.indexOf(child), 1);
+    this.items = this.#items = this.#items.filter((item) => item !== child);
   }
 }

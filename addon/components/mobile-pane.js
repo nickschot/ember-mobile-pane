@@ -2,8 +2,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { assert } from '@ember/debug';
-import { TrackedArray } from 'tracked-built-ins';
-import { task } from 'ember-concurrency';
+import { registerDestructor } from '@ember/destroyable';
 import PaneComponent from 'ember-mobile-pane/components/mobile-pane/pane';
 import Spring from '../spring';
 import { onResize } from '../-private/on-resize';
@@ -161,7 +160,28 @@ export default class MobilePaneComponent extends Component {
   onResize = onResize;
 
   @tracked paneWidth = 0;
-  panes = new TrackedArray();
+  /**
+   * The registered panes. Always replaced, never mutated.
+   *
+   * Registration happens from a modifier, so we must not read the tracked
+   * `panes` while updating it (that would trip Ember's "updated a value after
+   * using it in the same computation" assertion). `#panes` is an untracked
+   * mirror used for the update itself.
+   */
+  @tracked panes = [];
+  #panes = [];
+
+  /**
+   * The spring of the currently running finish transition, if any.
+   *
+   * @private
+   */
+  #activeSpring = null;
+
+  constructor(owner, args) {
+    super(owner, args);
+    registerDestructor(this, () => this.cancelTransition());
+  }
 
   /**
    * True if lazy rendering is enabled.
@@ -243,9 +263,7 @@ export default class MobilePaneComponent extends Component {
   @action
   onDragStart() {
     this.isDragging = true;
-    if (this.finishTransitionTask.isRunning) {
-      this.finishTransitionTask.cancelAll();
-    }
+    this.cancelTransition();
 
     if (this.args.onDragStart) {
       this.args.onDragStart();
@@ -264,7 +282,12 @@ export default class MobilePaneComponent extends Component {
   @action
   async onDragEnd(activeIndex, finishTransition = false) {
     if (finishTransition) {
-      await this.finishTransition(activeIndex);
+      const completed = await this.finishTransition(activeIndex);
+
+      if (!completed) {
+        // a new drag (or transition) took over, it will handle the rest
+        return;
+      }
     }
 
     this.isDragging = false;
@@ -281,14 +304,38 @@ export default class MobilePaneComponent extends Component {
 
   @action
   async moveToPane(index) {
-    if (this.finishTransitionTask.isRunning) {
-      this.finishTransitionTask.cancelAll();
+    const completed = await this.finishTransition(index);
+
+    if (completed) {
+      this.args.onChange?.(index);
     }
-    await this.finishTransition(index);
-    this.args.onChange(...arguments);
   }
 
-  @task *finishTransitionTask(targetIndex, currentVelocity) {
+  /**
+   * Stops a running finish transition, keeping the current offset.
+   *
+   * @private
+   */
+  cancelTransition() {
+    const spring = this.#activeSpring;
+
+    if (spring) {
+      this.#activeSpring = null;
+      this.preservedDx = this.dx;
+      spring.stop();
+    }
+  }
+
+  /**
+   * Animates to the given pane. Resolves to `true` when the transition
+   * completed and to `false` when it was cancelled.
+   *
+   * @private
+   */
+  @action
+  async finishTransition(targetIndex, currentVelocity = 0) {
+    this.cancelTransition();
+
     const startPos = this.dx;
     const endPos = (targetIndex - this.activeIndex) * (-100 / this.paneCount);
 
@@ -309,18 +356,18 @@ export default class MobilePaneComponent extends Component {
       }
     );
 
-    try {
-      yield spring.start();
-      this.dx = 0;
-    } finally {
-      spring.stop();
-      this.preservedDx = this.dx;
-    }
-  }
+    this.#activeSpring = spring;
+    await spring.start();
 
-  @action
-  async finishTransition(targetIndex, currentVelocity = 0) {
-    return this.finishTransitionTask.perform(targetIndex, currentVelocity);
+    if (this.#activeSpring !== spring) {
+      return false;
+    }
+
+    this.#activeSpring = null;
+    this.dx = 0;
+    this.preservedDx = 0;
+
+    return true;
   }
 
   @action
@@ -334,7 +381,7 @@ export default class MobilePaneComponent extends Component {
       'passed child instance must be a pane',
       child instanceof PaneComponent
     );
-    this.panes.push(child);
+    this.panes = this.#panes = [...this.#panes, child];
   }
 
   @action
@@ -343,6 +390,6 @@ export default class MobilePaneComponent extends Component {
       'passed child instance must be a pane',
       child instanceof PaneComponent
     );
-    this.panes.splice(this.panes.indexOf(child), 1);
+    this.panes = this.#panes = this.#panes.filter((pane) => pane !== child);
   }
 }
