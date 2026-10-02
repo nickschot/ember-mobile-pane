@@ -2,8 +2,8 @@
   ...attributes
   class="mobile-pane__nav"
   {{this.positionIndicator}}
-  {{on "touchstart" (fn (mut this.isScrolling) true)}}
-  {{on "touchend" (fn (mut this.isScrolling) false)}}
+  {{on "touchstart" this.startScrolling}}
+  {{on "touchend" this.stopScrolling}}
 >
   <ul class="nav__scroller" role="tablist">
     {{! TODO: make it yieldable if there is a block }}
