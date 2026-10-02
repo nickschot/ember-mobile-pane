@@ -86,6 +86,7 @@ export default {
     },
     {
       name: 'ember-beta',
+      allowedToFail: true,
       npm: {
         devDependencies: {
           'ember-source': 'npm:ember-source@beta',
@@ -94,6 +95,7 @@ export default {
     },
     {
       name: 'ember-alpha',
+      allowedToFail: true,
       npm: {
         devDependencies: {
           'ember-source': 'npm:ember-source@alpha',
