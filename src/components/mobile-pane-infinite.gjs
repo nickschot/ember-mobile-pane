@@ -106,9 +106,18 @@ export default class MobilePaneInfiniteComponent extends Component {
   #isInserted = false;
 
   /**
+   * The root element of the scroller.
+   *
+   * @private
+   */
+  element = null;
+
+  /**
    * Restores the scroll positions whenever new models are received.
    */
   restoreScrollOnChange = modifier((element, [models]) => {
+    this.element = element;
+
     // `models` is consumed here so the modifier re-runs when it changes
     if (!models) {
       return;
@@ -138,9 +147,13 @@ export default class MobilePaneInfiniteComponent extends Component {
 
   @action
   onDragStart() {
-    // write scroll offset for prev/next children
-    this.childOffsetTop =
-      document.scrollingElement.scrollTop || document.documentElement.scrollTop;
+    // The previous/next children are clipped to the viewport height at the
+    // top of the scroller. Shift them down by however far the scroller's top
+    // is scrolled out of view, so they line up with the visible part of the
+    // current child. That is the document scroll only if the scroller starts
+    // at the very top of the page.
+    const top = this.element?.getBoundingClientRect().top ?? 0;
+    this.childOffsetTop = Math.max(0, -top);
 
     if (this.args.onDragStart) {
       this.args.onDragStart(...arguments);

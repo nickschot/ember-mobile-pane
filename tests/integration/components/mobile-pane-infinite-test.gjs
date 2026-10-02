@@ -107,3 +107,94 @@ module('Integration | Component | mobile-pane-infinite', function (hooks) {
     assert.dom('.mobile-pane__child--next').hasText('d');
   });
 });
+
+module(
+  'Integration | Component | mobile-pane-infinite | offset',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    let spacer;
+    hooks.beforeEach(function () {
+      // make the document itself scrollable
+      spacer = document.createElement('div');
+      spacer.style.height = '5000px';
+      document.body.appendChild(spacer);
+    });
+
+    hooks.afterEach(function () {
+      window.scrollTo(0, 0);
+      spacer.remove();
+    });
+
+    async function dragAndMeasure(state, scroll) {
+      let transform;
+      // measure on every move, the last one sees the rendered drag state
+      const onDragMove = () => {
+        transform = document.querySelector('.mobile-pane__child--next').style
+          .transform;
+      };
+
+      await render(
+        <template>
+          {{! template-lint-disable no-inline-styles }}
+          <div style="height: 4000px">
+            <MobilePaneInfinite
+              @previousModel={{state.previousModel}}
+              @currentModel={{state.currentModel}}
+              @nextModel={{state.nextModel}}
+              @onChange={{state.onChange}}
+              @onDragMove={{onDragMove}}
+              as |mpi|
+            >
+              {{mpi.model}}
+            </MobilePaneInfinite>
+          </div>
+        </template>,
+      );
+
+      const scroller = document.querySelector(
+        '.mobile-pane__infinite-scroller',
+      );
+      scroll(scroller.getBoundingClientRect().top);
+      const top = scroller.getBoundingClientRect().top;
+
+      await pan(SCROLLER, 'left');
+      await waitUntil(() => state.changes.length === 1, { timeout: 3000 });
+      await settled();
+
+      const shift = transform
+        ? parseFloat(transform.match(/translateY\((-?[\d.]+)px\)/)[1])
+        : 0;
+      return { top, shift };
+    }
+
+    test('neighbours are not shifted while the scroller top is in view', async function (assert) {
+      const state = new State('b');
+      // scroll the document; the testing container is position: fixed, so the
+      // scroller's top stays in view
+      const { top, shift } = await dragAndMeasure(state, () =>
+        window.scrollTo(0, 500),
+      );
+
+      assert.ok(window.scrollY > 0, 'the document is scrolled');
+      assert.ok(top >= 0, 'the scroller top is in view');
+      assert.strictEqual(shift, 0, 'neighbours are not shifted');
+    });
+
+    test('neighbours line up with the visible part when the scroller top is scrolled out of view', async function (assert) {
+      const state = new State('b');
+      // scroll the testing container so the scroller's top ends up above the
+      // viewport
+      const { top, shift } = await dragAndMeasure(state, () => {
+        const container = document.querySelector('#ember-testing-container');
+        container.scrollTop = container.scrollHeight;
+      });
+
+      assert.ok(top < 0, 'the scroller top is out of view');
+      assert.ok(
+        Math.abs(shift + top) < 1,
+        `neighbours are shifted by ${-top}px (got ${shift}px)`,
+      );
+    });
+  },
+);
