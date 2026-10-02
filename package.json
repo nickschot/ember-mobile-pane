@@ -68,7 +68,7 @@
     "@embroider/macros": "^1.20.1",
     "@embroider/vite": "^1.1.5",
     "@eslint/js": "^9.17.0",
-    "@glimmer/component": "^2.0.0",
+    "@glimmer/component": "2.1.1",
     "@rollup/plugin-babel": "^6.0.4",
     "babel-plugin-ember-template-compilation": "^4.0.0",
     "concurrently": "^9.0.1",

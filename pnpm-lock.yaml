@@ -58,7 +58,7 @@ importers:
         specifier: ^9.17.0
         version: 9.39.5
       '@glimmer/component':
-        specifier: ^2.0.0
+        specifier: 2.1.1
         version: 2.1.1
       '@rollup/plugin-babel':
         specifier: ^6.0.4
