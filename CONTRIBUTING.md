@@ -2,24 +2,44 @@
 
 ## Installation
 
-* `git clone <repository-url>`
-* `cd ember-mobile-pane`
-* `yarn install`
+- `git clone https://github.com/nickschot/ember-mobile-pane.git`
+- `cd ember-mobile-pane`
+- `pnpm install`
 
 ## Linting
 
-* `yarn lint`
-* `yarn lint:fix`
+- `pnpm lint`
+- `pnpm lint:fix`
+
+## Building the addon
+
+- `pnpm build`
 
 ## Running tests
 
-* `ember test` – Runs the test suite on the current Ember version
-* `ember test --server` – Runs the test suite in "watch mode"
-* `ember try:each` – Runs the test suite against multiple Ember versions
+- `pnpm test`: runs the test suite on the current Ember version
+- `pnpm start` and visit [http://localhost:5173/tests/](http://localhost:5173/tests/): runs the tests in the browser, re-running on changes
 
-## Running the dummy application
+### Testing against other Ember versions
 
-* `ember serve`
-* Visit the dummy application at [http://localhost:4200](http://localhost:4200).
+The scenarios live in `.try.mjs` (ember-source 3.28 up to alpha). To run one
+locally:
 
-For more information on using ember-cli, visit [https://cli.emberjs.com/release/](https://cli.emberjs.com/release/).
+```sh
+pnpm dlx @embroider/try apply ember-lts-4.12
+pnpm install --no-lockfile
+ENABLE_COMPAT_BUILD=true pnpm test   # only for scenarios with `env.ENABLE_COMPAT_BUILD`
+git checkout package.json pnpm-lock.yaml && git clean -fd config ember-cli-build.cjs
+```
+
+## Running the demo application
+
+- `pnpm start`
+- Visit the demo application at [http://localhost:5173](http://localhost:5173).
+
+## Releasing
+
+Releases are made with [release-plan](https://github.com/embroider-build/release-plan).
+Label merged PRs (`breaking`, `enhancement`, `bug`, `documentation`, `internal`)
+and merge the "Prepare Release" PR it opens to publish. See
+[RELEASE.md](RELEASE.md).
