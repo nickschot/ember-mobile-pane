@@ -336,6 +336,44 @@ module('Integration | Component | mobile-pane', function (hooks) {
     assert.dom(SCROLLER).hasAttribute('style', /width: 200%/);
   });
 
+  test('a pane rendered between existing panes keeps its DOM position', async function (assert) {
+    const state = new State();
+    state.activeIndex = 1;
+    await render(
+      <template>
+        <MobilePane
+          @activeIndex={{state.activeIndex}}
+          @lazyRendering={{false}}
+          as |mp|
+        >
+          <mp.Nav />
+          <mp.Scroller as |mps|>
+            <mps.Pane @title="One">1</mps.Pane>
+            {{#if state.showThird}}
+              <mps.Pane @title="Inserted">inserted</mps.Pane>
+            {{/if}}
+            <mps.Pane @title="Two">2</mps.Pane>
+          </mp.Scroller>
+        </MobilePane>
+      </template>,
+    );
+
+    assert.dom('.mobile-pane__pane:nth-child(2)').hasClass('active');
+
+    state.showThird = true;
+    await settled();
+
+    assert
+      .dom('.mobile-pane__pane:nth-child(2)')
+      .hasClass('active', 'the inserted pane is now the second pane');
+    assert.dom('.mobile-pane__pane:nth-child(2)').hasText('inserted');
+    assert
+      .dom('.nav__item:nth-child(2) .item__link')
+      .hasText('Inserted')
+      .hasClass('active');
+    assert.dom('.nav__item:nth-child(3) .item__link').hasText('Two');
+  });
+
   test('styles are layered and can be themed with custom properties', async function (assert) {
     await render(
       <template>

@@ -10,6 +10,7 @@ import ScrollerComponent from './mobile-pane/scroller.gjs';
 import SimpleIndicatorComponent from './mobile-pane/simple-indicator.gjs';
 import Spring from '../-private/spring.js';
 import { onResize } from '../-private/on-resize.js';
+import { insertInDomOrder } from '../-private/dom-order.js';
 import './mobile-pane.css';
 
 //TODO: delay (normal) lazyRendering until after the animation has completed to prevent stutter
@@ -384,7 +385,7 @@ export default class MobilePaneComponent extends Component {
       'passed child instance must be a pane',
       child instanceof PaneComponent,
     );
-    this.panes = this.#panes = [...this.#panes, child];
+    this.panes = this.#panes = insertInDomOrder(this.#panes, child);
   }
 
   @action
