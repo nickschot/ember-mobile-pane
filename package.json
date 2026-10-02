@@ -1,9 +1,14 @@
 {
   "name": "ember-mobile-pane",
   "version": "0.1.0-alpha.3",
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "Swipeable, lazily rendered panes with tab navigation for Ember.js mobile apps.",
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "mobile",
+    "swipe",
+    "pane",
+    "tabs",
+    "gestures"
   ],
   "repository": {
     "type": "git",
@@ -11,86 +16,109 @@
   },
   "license": "MIT",
   "author": "Nick Schot <nickschot@webhub.nl>",
-  "directories": {
-    "doc": "doc",
-    "test": "tests"
+  "imports": {
+    "#src/*": "./src/*"
   },
+  "exports": {
+    ".": {
+      "default": "./dist/index.js"
+    },
+    "./addon-main.js": "./addon-main.cjs",
+    "./*.css": "./dist/*.css",
+    "./*": {
+      "default": "./dist/*.js"
+    }
+  },
+  "files": [
+    "addon-main.cjs",
+    "dist",
+    "src"
+  ],
   "scripts": {
-    "build": "ember build --environment=production",
-    "changelog": "npx lerna-changelog > CHANGELOG.md",
-    "lint": "concurrently \"npm:lint:*(!fix)\" --names \"lint:\"",
-    "lint:css": "stylelint \"**/*.css\" --allow-empty-input",
-    "lint:css:fix": "concurrently \"npm:lint:css -- --fix\"",
-    "lint:fix": "concurrently \"npm:lint:*:fix\" --names \"fix:\"",
-    "lint:hbs": "ember-template-lint .",
-    "lint:hbs:fix": "ember-template-lint . --fix",
+    "build": "rollup --config",
+    "format": "prettier . --cache --write",
+    "lint": "concurrently \"pnpm:lint:*(!fix)\" --names \"lint:\" --prefixColors auto",
+    "lint:fix": "concurrently \"pnpm:lint:*:fix\" --names \"fix:\" --prefixColors auto && pnpm run format",
+    "lint:format": "prettier . --cache --check",
+    "lint:hbs": "ember-template-lint . --no-error-on-unmatched-pattern",
+    "lint:hbs:fix": "ember-template-lint . --fix --no-error-on-unmatched-pattern",
     "lint:js": "eslint . --cache",
     "lint:js:fix": "eslint . --fix",
-    "start": "ember serve",
-    "test": "concurrently \"npm:lint\" \"npm:test:*\" --names \"lint,test:\"",
-    "test:ember": "ember test",
-    "test:ember-compatibility": "ember try:each"
+    "lint:publish": "pnpm build && publint run --level error",
+    "prepack": "rollup --config",
+    "start": "vite dev",
+    "test": "vite build --mode=development --out-dir dist-tests && testem --file testem.cjs ci --port 0"
   },
   "dependencies": {
-    "@glimmer/component": "^1.1.2",
-    "ember-auto-import": "^2.7.1",
-    "ember-cli-babel": "^7.26.11",
-    "ember-cli-htmlbars": "^6.3.0",
-    "ember-gesture-modifiers": "^6.0.1",
+    "@embroider/addon-shim": "^1.8.9",
+    "decorator-transforms": "^2.2.2",
+    "ember-gesture-modifiers": "^6.1.0",
     "ember-modifier": "^4.2.2",
     "wobble": "^1.5.1"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "7.28.6",
-    "@babel/plugin-proposal-decorators": "7.29.0",
-    "@ember/optional-features": "2.3.0",
-    "@ember/string": "3.1.1",
-    "@ember/test-helpers": "3.3.1",
-    "@embroider/test-setup": "3.0.3",
-    "@glimmer/tracking": "^1.1.2",
-    "broccoli-asset-rev": "3.0.0",
-    "concurrently": "8.2.2",
-    "ember-cli": "5.12.0",
-    "ember-cli-dependency-checker": "3.3.3",
-    "ember-cli-inject-live-reload": "2.1.0",
-    "ember-cli-sri": "2.1.1",
-    "ember-cli-terser": "4.0.2",
-    "ember-load-initializers": "2.1.2",
-    "ember-page-title": "8.2.4",
-    "ember-qunit": "8.1.1",
-    "ember-resolver": "11.0.1",
-    "ember-source": "5.12.0",
-    "ember-source-channel-url": "3.0.0",
-    "ember-template-lint": "5.13.0",
-    "ember-try": "3.0.0",
-    "eslint": "8.57.1",
-    "eslint-config-prettier": "9.1.2",
-    "eslint-plugin-ember": "11.12.0",
-    "eslint-plugin-n": "17.24.0",
-    "eslint-plugin-prettier": "5.5.5",
-    "eslint-plugin-qunit": "8.2.6",
-    "loader.js": "4.7.0",
-    "prettier": "2.8.8",
-    "qunit": "2.25.0",
-    "qunit-dom": "3.5.0",
-    "stylelint": "16.26.1",
-    "stylelint-config-standard": "36.0.1",
-    "webpack": "5.105.4"
+    "@babel/core": "^7.25.2",
+    "@babel/eslint-parser": "^7.25.1",
+    "@babel/runtime": "^7.25.6",
+    "@ember/test-helpers": "^5.2.1",
+    "@ember/test-waiters": "^4.1.1",
+    "@embroider/addon-dev": "^8.1.0",
+    "@embroider/compat": "^4.1.0",
+    "@embroider/core": "^4.1.0",
+    "@embroider/macros": "^1.20.1",
+    "@embroider/vite": "^1.1.5",
+    "@eslint/js": "^9.17.0",
+    "@glimmer/component": "^2.0.0",
+    "@rollup/plugin-babel": "^6.0.4",
+    "babel-plugin-ember-template-compilation": "^4.0.0",
+    "concurrently": "^9.0.1",
+    "ember-qunit": "^9.0.2",
+    "ember-source": "~7.3.0",
+    "ember-strict-application-resolver": "^0.1.0",
+    "ember-template-lint": "^7.9.0",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-ember": "^12.3.3",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-n": "^17.15.1",
+    "globals": "^16.1.0",
+    "prettier": "^3.4.2",
+    "prettier-plugin-ember-template-tag": "^2.0.4",
+    "publint": "^0.3.16",
+    "qunit": "^2.24.1",
+    "qunit-dom": "^3.4.0",
+    "rollup": "^4.22.5",
+    "testem": "^3.15.1",
+    "vite": "^7.1.9"
   },
   "peerDependencies": {
-    "ember-source": ">=^3.28.0"
+    "@glimmer/component": "^1.1.2 || ^2.0.0",
+    "ember-source": ">= 3.28.0"
   },
+  "packageManager": "pnpm@10.34.6",
   "engines": {
-    "node": "16.* || >= 18"
+    "node": ">= 20"
+  },
+  "volta": {
+    "node": "22.22.0",
+    "pnpm": "10.34.6"
   },
   "ember": {
     "edition": "octane"
   },
   "ember-addon": {
-    "configPath": "tests/dummy/config"
-  },
-  "volta": {
-    "node": "20.20.1",
-    "pnpm": "8.15.9"
+    "version": 2,
+    "type": "addon",
+    "main": "addon-main.cjs",
+    "app-js": {
+      "./components/mobile-pane-infinite.js": "./dist/_app_/components/mobile-pane-infinite.js",
+      "./components/mobile-pane-infinite/child.js": "./dist/_app_/components/mobile-pane-infinite/child.js",
+      "./components/mobile-pane.js": "./dist/_app_/components/mobile-pane.js",
+      "./components/mobile-pane/nav.js": "./dist/_app_/components/mobile-pane/nav.js",
+      "./components/mobile-pane/nav/item.js": "./dist/_app_/components/mobile-pane/nav/item.js",
+      "./components/mobile-pane/pane.js": "./dist/_app_/components/mobile-pane/pane.js",
+      "./components/mobile-pane/scroller.js": "./dist/_app_/components/mobile-pane/scroller.js",
+      "./components/mobile-pane/simple-indicator.js": "./dist/_app_/components/mobile-pane/simple-indicator.js"
+    }
   }
 }

@@ -1,0 +1,40 @@
+/*
+ * ember-mobile-pane styles.
+ *
+ * Everything lives in the `ember-mobile-pane` cascade layer, so any unlayered
+ * styles in the app win regardless of specificity. Customise by overriding the
+ * custom properties below (globally on `:root`, or on a specific element):
+ *
+ *   :root { --mobile-pane-active-link-color: rebeccapurple; }
+ *
+ * If your app uses cascade layers itself, declare the order up front, e.g.
+ *   @layer ember-mobile-pane, base, components, utilities;
+ */
+@layer ember-mobile-pane.tokens, ember-mobile-pane.base;
+
+@layer ember-mobile-pane.tokens {
+  :root {
+    --mobile-pane-link-color: #333;
+    --mobile-pane-link-opacity: 0.6;
+    --mobile-pane-active-link-color: #007bff;
+    --mobile-pane-active-link-opacity: 1;
+    --mobile-pane-indicator-height: 2px;
+    --mobile-pane-simple-indicator-bg: #ccd2e3;
+
+    /*
+     * Not defined here on purpose, they default to the active link colour at
+     * the point of use, so overriding --mobile-pane-active-link-color on a
+     * single pane also updates them:
+     *
+     * --mobile-pane-indicator-bg
+     * --mobile-pane-simple-indicator-active-bg
+     */
+  }
+}
+
+@layer ember-mobile-pane.base {
+  .mobile-pane {
+    position: relative;
+    overflow: hidden;
+  }
+}

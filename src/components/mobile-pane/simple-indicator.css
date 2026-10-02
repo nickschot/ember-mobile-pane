@@ -1,0 +1,42 @@
+@layer ember-mobile-pane.tokens, ember-mobile-pane.base;
+
+@layer ember-mobile-pane.base {
+  .scroller__simple-indicator {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 15px;
+    display: flex;
+  }
+
+  .scroller__simple-indicator button,
+  .scroller__simple-indicator span {
+    margin: 0;
+    padding: 5px;
+    border: none;
+    background: none;
+  }
+
+  .scroller__simple-indicator button i,
+  .scroller__simple-indicator span i {
+    display: block;
+    height: 10px;
+    width: 10px;
+    border-radius: 100%;
+    background: var(--mobile-pane-simple-indicator-bg, #ccd2e3);
+  }
+
+  .scroller__simple-indicator .simple-indicator__indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    will-change: transform;
+  }
+
+  .scroller__simple-indicator .simple-indicator__indicator i {
+    background: var(
+      --mobile-pane-simple-indicator-active-bg,
+      var(--mobile-pane-active-link-color, #007bff)
+    );
+  }
+}

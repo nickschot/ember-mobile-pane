@@ -18,11 +18,7 @@
   ],
   "packageRules": [
     {
-      "packageNames": [
-        "ember-cli",
-        "ember-data",
-        "ember-source"
-      ],
+      "packageNames": ["ember-cli", "ember-data", "ember-source"],
       "separateMinorPatch": true
     }
   ]

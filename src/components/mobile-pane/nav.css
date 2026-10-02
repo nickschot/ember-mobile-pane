@@ -1,0 +1,57 @@
+@layer ember-mobile-pane.tokens, ember-mobile-pane.base;
+
+@layer ember-mobile-pane.base {
+  .mobile-pane__nav {
+    position: relative;
+    overflow: scroll hidden;
+
+    /* hide the scrollbar */
+    scrollbar-width: none;
+  }
+
+  .mobile-pane__nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-pane__nav .nav__scroller {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  .mobile-pane__nav .nav__item {
+    white-space: nowrap;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .mobile-pane__nav .item__link {
+    display: block;
+    color: var(--mobile-pane-link-color, #333);
+    text-decoration: none;
+    padding: 8px 16px;
+    opacity: var(--mobile-pane-link-opacity, 0.6);
+  }
+
+  .mobile-pane__nav .item__link.active,
+  .mobile-pane__nav .item__link:active {
+    opacity: var(--mobile-pane-active-link-opacity, 1);
+    color: var(--mobile-pane-active-link-color, #007bff);
+  }
+
+  .mobile-pane__nav .nav__indicator {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 1px;
+    height: var(--mobile-pane-indicator-height, 2px);
+    background: var(
+      --mobile-pane-indicator-bg,
+      var(--mobile-pane-active-link-color, #007bff)
+    );
+    transform-origin: 0 0 0;
+    will-change: transform;
+  }
+}

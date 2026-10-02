@@ -1,0 +1,17 @@
+@layer ember-mobile-pane.tokens, ember-mobile-pane.base;
+
+@layer ember-mobile-pane.base {
+  .mobile-pane__scroller {
+    display: flex;
+    will-change: transform;
+  }
+
+  .mobile-pane__scroller .mobile-pane__pane {
+    width: 100%;
+  }
+
+  .mobile-pane__scroller,
+  .mobile-pane__scroller * {
+    touch-action: pan-y;
+  }
+}
