@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - master
+      - 'v*'
   pull_request: {}
 
 concurrency:
@@ -50,8 +51,7 @@ jobs:
       # For the Try Scenarios
       - id: set-matrix
         run: |
-           echo "matrix=$(pnpm -s dlx @embroider/try list)" >> $GITHUB_OUTPUT
-          
+          echo "matrix=$(pnpm -s dlx @embroider/try list)" >> $GITHUB_OUTPUT
 
   floating:
     name: "Floating Dependencies"
@@ -71,13 +71,16 @@ jobs:
         run: pnpm test
 
   try-scenarios:
-    name: ${{ matrix.name }}
+    name: ${{ matrix.name }}${{ matrix.allowedToFail && ' (allowed to fail)' || '' }}
     runs-on: ubuntu-latest
     needs: "test"
     timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
     strategy:
       fail-fast: false
-      matrix: ${{fromJson(needs.test.outputs.matrix)}}
+      matrix: ${{ fromJson(needs.test.outputs.matrix) }}
 
     steps:
       - uses: actions/checkout@v4
@@ -87,13 +90,19 @@ jobs:
           node-version: 22
           cache: pnpm
       - name: Apply Scenario
-        run: |
-           pnpm dlx @embroider/try apply ${{ matrix.name }}
-          
+        run: pnpm dlx @embroider/try apply ${{ matrix.name }}
       - name: Install Dependencies
         run: pnpm install --no-lockfile
       - name: Run Tests
-        run: |
-          pnpm test
-          
+        id: tests
+        run: pnpm test
         env: ${{ matrix.env }}
+        continue-on-error: ${{ matrix.allowedToFail == true }}
+      - uses: mainmatter/continue-on-error-comment@v1
+        if: ${{ matrix.allowedToFail == true }}
+        # the token is read-only for PRs from forks
+        continue-on-error: true
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          outcome: ${{ steps.tests.outcome }}
+          test-id: ${{ matrix.name }}
