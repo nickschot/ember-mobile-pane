@@ -23,8 +23,16 @@ export default class ChildComponent extends Component {
     const { scroll, setAsDocumentScroll } = this.args;
 
     if (setAsDocumentScroll) {
-      const current = document.scrollingElement || document.documentElement;
-      current.scrollTop = scroll;
+      // `scroll` is relative to the top of the scroller, which isn't
+      // necessarily the top of the page
+      const scroller =
+        element.closest('.mobile-pane__infinite-scroller') ?? element;
+      const top = scroller.getBoundingClientRect().top;
+
+      if (Math.max(0, -top) !== scroll) {
+        const doc = document.scrollingElement || document.documentElement;
+        doc.scrollTop += top + scroll;
+      }
     } else {
       element.style.transform = `translateY(-${scroll}px)`;
     }

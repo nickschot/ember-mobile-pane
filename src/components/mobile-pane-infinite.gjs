@@ -150,10 +150,8 @@ export default class MobilePaneInfiniteComponent extends Component {
     // The previous/next children are clipped to the viewport height at the
     // top of the scroller. Shift them down by however far the scroller's top
     // is scrolled out of view, so they line up with the visible part of the
-    // current child. That is the document scroll only if the scroller starts
-    // at the very top of the page.
-    const top = this.element?.getBoundingClientRect().top ?? 0;
-    this.childOffsetTop = Math.max(0, -top);
+    // current child.
+    this.childOffsetTop = this.scrollWithin;
 
     if (this.args.onDragStart) {
       this.args.onDragStart(...arguments);
@@ -186,12 +184,21 @@ export default class MobilePaneInfiniteComponent extends Component {
     this.args.onChange?.(this.models[index], index);
   }
 
+  /**
+   * How far the user scrolled *within* the scroller: the distance its top is
+   * scrolled above the viewport. This equals the document scroll only when
+   * the scroller starts at the very top of the page.
+   *
+   * @private
+   */
+  get scrollWithin() {
+    const top = this.element?.getBoundingClientRect().top ?? 0;
+    return Math.max(0, -top);
+  }
+
   storeScroll() {
     const key = this._buildMemoryKey(this.args.currentModel);
-    this.memory.set(
-      key,
-      document.scrollingElement.scrollTop || document.documentElement.scrollTop,
-    );
+    this.memory.set(key, this.scrollWithin);
   }
 
   //TODO: purge scroll states if we came from a higher level route

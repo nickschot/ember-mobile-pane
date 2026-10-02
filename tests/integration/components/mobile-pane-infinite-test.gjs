@@ -196,5 +196,51 @@ module(
         `neighbours are shifted by ${-top}px (got ${shift}px)`,
       );
     });
+
+    test('remembered scroll positions are relative to the scroller, not the page', async function (assert) {
+      const state = new State('b');
+      await render(
+        <template>
+          <MobilePaneInfinite
+            @previousModel={{state.previousModel}}
+            @currentModel={{state.currentModel}}
+            @nextModel={{state.nextModel}}
+            @onChange={{state.onChange}}
+            as |mpi|
+          >
+            {{mpi.model}}
+          </MobilePaneInfinite>
+        </template>,
+      );
+
+      // scroll the document; the scroller's top stays in view (the testing
+      // container is position: fixed), so nothing is scrolled *within* it
+      window.scrollTo(0, 500);
+
+      // go to the first model (the previous pane disappears) and back (it is
+      // rendered again, with the remembered scroll of 'a')
+      await pan(SCROLLER, 'right');
+      await waitUntil(() => state.changes.length === 1, { timeout: 3000 });
+      await settled();
+      await pan(SCROLLER, 'left');
+      await waitUntil(() => state.changes.length === 2, { timeout: 3000 });
+      await settled();
+
+      assert.deepEqual(state.changes, [
+        ['a', 0],
+        ['b', 1],
+      ]);
+      assert.dom('.mobile-pane__child--previous').hasText('a');
+      const inner = document.querySelector(
+        '.mobile-pane__child--previous .mobile-pane__child-transformable',
+      );
+      const { transform } = getComputedStyle(inner);
+      const shift = transform === 'none' ? 0 : new DOMMatrix(transform).m42;
+      assert.strictEqual(
+        shift,
+        0,
+        'the re-rendered previous pane is not shifted out of view',
+      );
+    });
   },
 );
