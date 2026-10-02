@@ -1,21 +1,20 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
+import { modifier } from 'ember-modifier';
 
 export default class NavItemComponent extends Component {
   element = null;
 
-  willDestroy() {
-    this.args.unregisterItem(this);
-    super.willDestroy(...arguments);
-  }
+  register = modifier((element) => {
+    const { registerItem, unregisterItem } = this.args;
+    this.element = element;
+    registerItem(this);
+
+    return () => unregisterItem(this);
+  });
 
   get isActive() {
     return this.args.navItem.elementId === this.args.activePane.elementId;
-  }
-
-  @action
-  setupElement(element) {
-    this.element = element;
   }
 
   @action

@@ -1,13 +1,12 @@
 <nav
   ...attributes
   class="mobile-pane__nav"
-  {{did-insert this.setupElement}}
-  {{did-update this.updateStyle @relativeOffset @activeIndex this.items}}
+  {{this.positionIndicator}}
   {{on "touchstart" (fn (mut this.isScrolling) true)}}
   {{on "touchend" (fn (mut this.isScrolling) false)}}
 >
   <ul class="nav__scroller" role="tablist">
-    {{!-- TODO: make it yieldable if there is a block --}}
+    {{! TODO: make it yieldable if there is a block }}
     {{#each @navItems as |navItem|}}
       <MobilePane::Nav::Item
         @navItem={{navItem}}
@@ -18,5 +17,5 @@
       />
     {{/each}}
   </ul>
-  <span class="nav__indicator" {{did-insert this.setupIndicator}}></span>
+  <span class="nav__indicator"></span>
 </nav>

@@ -1,14 +1,10 @@
-{{!-- template-lint-disable require-context-role  --}}
-<li
-  ...attributes
-  class="nav__item"
-  {{did-insert this.setupElement}}
-  {{did-insert (fn @registerItem this)}}
->
-  <a href="#{{@navItem.elementId}}"
-     role="tab"
-     class="item__link {{if this.isActive "active"}}"
-     {{on "click" this.clickItem}}
+{{! template-lint-disable require-context-role  }}
+<li ...attributes class="nav__item" {{this.register}}>
+  <a
+    href="#{{@navItem.elementId}}"
+    role="tab"
+    class="item__link {{if this.isActive 'active'}}"
+    {{on "click" this.clickItem}}
   >
     {{@navItem.title}}
   </a>

@@ -3,6 +3,7 @@ import { action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
 import { assert } from '@ember/debug';
 import { TrackedArray } from 'tracked-built-ins';
+import { modifier } from 'ember-modifier';
 
 import NavItemComponent from './nav/item';
 
@@ -28,16 +29,16 @@ export default class NavComponent extends Component {
   isScrolling = false;
 
   // lifecycle
-  @action
-  setupElement(element) {
+  /**
+   * Keeps the indicator (and nav scroll position) in sync. `updateStyle` reads
+   * `@relativeOffset`, `@isDragging` and the registered items, so autotracking
+   * re-runs this modifier whenever any of those change.
+   */
+  positionIndicator = modifier((element) => {
     this.element = element;
-  }
-
-  @action
-  setupIndicator(element) {
-    this.indicator = element;
+    this.indicator = element.querySelector(':scope > .nav__indicator');
     this.updateStyle();
-  }
+  });
 
   @action
   updateStyle() {

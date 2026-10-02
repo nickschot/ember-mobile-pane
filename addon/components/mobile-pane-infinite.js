@@ -4,6 +4,7 @@ import { action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
 import { inject as service } from '@ember/service';
 import { once } from '@ember/runloop';
+import { modifier } from 'ember-modifier';
 
 /**
  * @class MobilePaneInfiniteComponent
@@ -83,11 +84,31 @@ export default class MobilePaneInfiniteComponent extends Component {
   @tracked nextChildScroll = 0;
   @tracked childOffsetTop = 0;
 
-  @action
-  updateActiveIndex() {
-    // we received new models, restore the scroll
-    once(this.restoreScroll);
+  constructor(owner, args) {
+    super(owner, args);
+
+    // restore the initial scroll positions before the children render
+    this.restoreScroll();
   }
+
+  #isInserted = false;
+
+  /**
+   * Restores the scroll positions whenever new models are received.
+   */
+  restoreScrollOnChange = modifier((element, [models]) => {
+    // `models` is consumed here so the modifier re-runs when it changes
+    if (!models) {
+      return;
+    }
+
+    if (this.#isInserted) {
+      once(this.restoreScroll);
+    } else {
+      // the initial restore already happened in the constructor
+      this.#isInserted = true;
+    }
+  });
 
   get activeIndex() {
     return this.args.previousModel ? 1 : 0;

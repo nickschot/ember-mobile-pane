@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
+import { modifier } from 'ember-modifier';
 
 /**
  * @class PaneComponent
@@ -28,10 +29,12 @@ export default class PaneComponent extends Component {
    */
   didRender = false;
 
-  willDestroy() {
-    this.args.unregisterPane(this);
-    super.willDestroy(...arguments);
-  }
+  register = modifier(() => {
+    const { registerPane, unregisterPane } = this.args;
+    registerPane(this);
+
+    return () => unregisterPane(this);
+  });
 
   /**
    * True if this pane is the active pane.
