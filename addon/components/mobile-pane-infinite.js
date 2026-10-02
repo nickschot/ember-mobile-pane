@@ -2,16 +2,31 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
-import { inject as service } from '@ember/service';
 import { once } from '@ember/runloop';
 import { modifier } from 'ember-modifier';
+import { service } from '../-private/service';
+import { scrollMemoryFor } from '../-private/scroll-memory';
 
 /**
  * @class MobilePaneInfiniteComponent
  */
 export default class MobilePaneInfiniteComponent extends Component {
   @service router;
-  @service('memory-scroll') memory;
+
+  /**
+   * Remembered scroll positions, keyed by route and model.
+   *
+   * @private
+   */
+  memory;
+
+  constructor(owner, args) {
+    super(owner, args);
+    this.memory = scrollMemoryFor(owner);
+
+    // restore the initial scroll positions before the children render
+    this.restoreScroll();
+  }
 
   /**
    * Model for the previous pane. Must be truthy to render the pane.
@@ -84,13 +99,6 @@ export default class MobilePaneInfiniteComponent extends Component {
   @tracked nextChildScroll = 0;
   @tracked childOffsetTop = 0;
 
-  constructor(owner, args) {
-    super(owner, args);
-
-    // restore the initial scroll positions before the children render
-    this.restoreScroll();
-  }
-
   #isInserted = false;
 
   /**
@@ -161,8 +169,10 @@ export default class MobilePaneInfiniteComponent extends Component {
 
   storeScroll() {
     const key = this._buildMemoryKey(this.args.currentModel);
-    this.memory[key] =
-      document.scrollingElement.scrollTop || document.documentElement.scrollTop;
+    this.memory.set(
+      key,
+      document.scrollingElement.scrollTop || document.documentElement.scrollTop
+    );
   }
 
   //TODO: purge scroll states if we came from a higher level route
@@ -173,9 +183,9 @@ export default class MobilePaneInfiniteComponent extends Component {
     const currentKey = this._buildMemoryKey(this.args.currentModel);
     const nextKey = this._buildMemoryKey(this.args.nextModel);
 
-    this.prevChildScroll = this.memory[prevKey] || 0;
-    this.currentChildScroll = this.memory[currentKey] || 0;
-    this.nextChildScroll = this.memory[nextKey] || 0;
+    this.prevChildScroll = this.memory.get(prevKey) || 0;
+    this.currentChildScroll = this.memory.get(currentKey) || 0;
+    this.nextChildScroll = this.memory.get(nextKey) || 0;
   }
 
   // utils
