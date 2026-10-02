@@ -6,6 +6,7 @@ import { TrackedArray } from 'tracked-built-ins';
 import { task } from 'ember-concurrency';
 import PaneComponent from 'ember-mobile-pane/components/mobile-pane/pane';
 import Spring from '../spring';
+import { onResize } from '../-private/on-resize';
 
 //TODO: delay (normal) lazyRendering until after the animation has completed to prevent stutter
 
@@ -156,6 +157,8 @@ export default class MobilePaneComponent extends Component {
    */
   @tracked dx = 0;
   preservedDx = 0;
+
+  onResize = onResize;
 
   @tracked paneWidth = 0;
   panes = new TrackedArray();
@@ -321,7 +324,7 @@ export default class MobilePaneComponent extends Component {
   }
 
   @action
-  onResize({ contentRect: { width } }) {
+  handleResize({ contentRect: { width } }) {
     this.paneWidth = width;
   }
 

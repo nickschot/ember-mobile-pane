@@ -1,9 +1,5 @@
 <div ...attributes class="mobile-pane__child" style={{this.style}}>
-  <div
-    class="mobile-pane__child-transformable"
-    {{did-insert this.setupTransformableElement}}
-    {{did-insert this.setScrollOffset}}
-  >
+  <div class="mobile-pane__child-transformable" {{this.applyScroll}}>
     {{yield}}
   </div>
 </div>
