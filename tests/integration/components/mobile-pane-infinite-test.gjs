@@ -231,6 +231,9 @@ module(
         ['b', 1],
       ]);
       assert.dom('.mobile-pane__child--previous').hasText('a');
+      assert
+        .dom('.mobile-pane__pane:nth-child(2)')
+        .hasClass('active', 'the current (middle) pane is the active one');
       const inner = document.querySelector(
         '.mobile-pane__child--previous .mobile-pane__child-transformable',
       );

@@ -29,8 +29,11 @@ export default class PaneComponent extends Component {
    */
   didRender = false;
 
-  register = modifier(() => {
+  element = null;
+
+  register = modifier((element) => {
     const { registerPane, unregisterPane } = this.args;
+    this.element = element;
     registerPane(this);
 
     return () => unregisterPane(this);

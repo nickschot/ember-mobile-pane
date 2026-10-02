@@ -7,6 +7,7 @@ import { modifier } from 'ember-modifier';
 
 import { on } from '@ember/modifier';
 import NavItemComponent from './nav/item.gjs';
+import { insertInDomOrder } from '../../-private/dom-order.js';
 import './nav.css';
 
 export default class NavComponent extends Component {
@@ -106,7 +107,7 @@ export default class NavComponent extends Component {
       'passed child instance must be a NavItemComponent',
       child instanceof NavItemComponent,
     );
-    this.items = this.#items = [...this.#items, child];
+    this.items = this.#items = insertInDomOrder(this.#items, child);
   }
 
   @action
