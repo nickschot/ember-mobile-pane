@@ -55,7 +55,7 @@ importers:
         specifier: 1.7.13
         version: 1.7.13(@embroider/core@4.6.7)(vite@7.3.6(@types/node@26.6.4)(terser@5.51.2)(yaml@2.9.1))
       '@eslint/js':
-        specifier: ^9.17.0
+        specifier: 9.39.5
         version: 9.39.5
       '@glimmer/component':
         specifier: 2.1.1
@@ -79,34 +79,34 @@ importers:
         specifier: 0.1.1
         version: 0.1.1(@babel/core@7.29.7)
       ember-template-lint:
-        specifier: ^7.9.0
+        specifier: 7.9.3
         version: 7.9.3
       eslint:
-        specifier: ^9.17.0
+        specifier: 9.39.5
         version: 9.39.5
       eslint-config-prettier:
-        specifier: ^10.1.5
+        specifier: 10.1.8
         version: 10.1.8(eslint@9.39.5)
       eslint-plugin-ember:
-        specifier: ^12.3.3
+        specifier: 12.7.5
         version: 12.7.5(@babel/core@7.29.7)(eslint@9.39.5)
       eslint-plugin-import:
-        specifier: ^2.31.0
+        specifier: 2.32.0
         version: 2.32.0(eslint@9.39.5)
       eslint-plugin-n:
-        specifier: ^17.15.1
+        specifier: 17.24.0
         version: 17.24.0(eslint@9.39.5)
       globals:
-        specifier: ^16.1.0
+        specifier: 16.5.0
         version: 16.5.0
       prettier:
-        specifier: ^3.4.2
+        specifier: 3.9.9
         version: 3.9.9
       prettier-plugin-ember-template-tag:
-        specifier: ^2.0.4
+        specifier: 2.1.8
         version: 2.1.8(prettier@3.9.9)
       publint:
-        specifier: ^0.3.16
+        specifier: 0.3.25
         version: 0.3.25
       qunit:
         specifier: 2.26.0
