@@ -1,5 +1,10 @@
 # Changelog
 
+
+
+
+
+
 ## Release (2026-10-02)
 
 * ember-mobile-pane 1.0.0 (major)
