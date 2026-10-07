@@ -31,8 +31,8 @@ importers:
         specifier: 7.29.9
         version: 7.29.9(@babel/core@7.29.7)(eslint@9.39.5)
       '@babel/runtime':
-        specifier: 7.29.7
-        version: 7.29.7
+        specifier: 7.29.10
+        version: 7.29.10
       '@ember/test-helpers':
         specifier: 5.7.0
         version: 5.7.0(@babel/core@7.29.7)
@@ -64,8 +64,8 @@ importers:
         specifier: 6.1.0
         version: 6.1.0(@babel/core@7.29.7)(rollup@4.64.1)
       babel-plugin-ember-template-compilation:
-        specifier: 4.0.0
-        version: 4.0.0
+        specifier: 4.0.1
+        version: 4.0.1
       concurrently:
         specifier: 9.2.4
         version: 9.2.4
@@ -659,8 +659,8 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0 || ^8.0.0-0 <8.0.0
 
-  '@babel/runtime@7.29.7':
-    resolution: {integrity: sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==}
+  '@babel/runtime@7.29.10':
+    resolution: {integrity: sha512-NpugTzbKgGrNe45Ui32cN8vCFFMxVtP/9rtfwv0nP5FRDAjvYBxJcLVpYA9mr1jxP6cnIT7x9LUzuDTbWYYNRA==}
     engines: {node: '>=6.9.0'}
 
   '@babel/template@7.29.7':
@@ -1582,8 +1582,8 @@ packages:
     resolution: {integrity: sha512-kk7cGyblE9n4MB98rqw2wuUW7YLD5FM+Tr97gNSYL4e8DBMQndLuWaWNx1wfd7o00NjFhhoTR+HZs2nj23g2Lw==}
     engines: {node: '>= 18.*'}
 
-  babel-plugin-ember-template-compilation@4.0.0:
-    resolution: {integrity: sha512-J2dR6ZPfPNuIR7vzhneO9xR0aTvOHITszuGif2EOYw3Qg3KlIVEd/hNnEeubyWgjYXn06Sgm6/NdNXEMNSsWYQ==}
+  babel-plugin-ember-template-compilation@4.0.1:
+    resolution: {integrity: sha512-t1o2O+91u4oLtku0sysC2nAuwBoyH9lDWmRoKHdAktt5fFaD8b2slKsWq2dyXrZ+/FW/jFa5rWdN3zK9VB0qvQ==}
     engines: {node: '>= 18.*'}
 
   babel-plugin-module-resolver@5.0.3:
@@ -5539,7 +5539,7 @@ snapshots:
       '@babel/types': 7.29.8
       esutils: 2.0.3
 
-  '@babel/runtime@7.29.7': {}
+  '@babel/runtime@7.29.10': {}
 
   '@babel/template@7.29.7':
     dependencies:
@@ -5647,7 +5647,7 @@ snapshots:
       '@babel/plugin-syntax-typescript': 7.29.7(@babel/core@7.29.7)
       '@babel/plugin-transform-runtime': 7.29.7(@babel/core@7.29.7)
       '@babel/preset-env': 7.29.7(@babel/core@7.29.7)
-      '@babel/runtime': 7.29.7
+      '@babel/runtime': 7.29.10
       '@babel/traverse': 7.29.8
       '@embroider/core': 4.6.9
       '@embroider/macros': 1.21.3(@babel/core@7.29.7)
@@ -6525,7 +6525,7 @@ snapshots:
       babel-import-util: 3.0.1
       import-meta-resolve: 4.2.0
 
-  babel-plugin-ember-template-compilation@4.0.0:
+  babel-plugin-ember-template-compilation@4.0.1:
     dependencies:
       '@glimmer/syntax': 0.95.0
       babel-import-util: 3.0.1
@@ -7164,7 +7164,7 @@ snapshots:
       '@babel/plugin-transform-runtime': 7.29.7(@babel/core@7.29.7)
       '@babel/plugin-transform-typescript': 7.29.9(@babel/core@7.29.7)
       '@babel/preset-env': 7.29.7(@babel/core@7.29.7)
-      '@babel/runtime': 7.29.7
+      '@babel/runtime': 7.29.10
       amd-name-resolver: 1.3.1
       babel-plugin-debug-macros: 0.3.4(@babel/core@7.29.7)
       babel-plugin-ember-data-packages-polyfill: 0.1.2

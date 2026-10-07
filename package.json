@@ -59,7 +59,7 @@
   "devDependencies": {
     "@babel/core": "7.29.7",
     "@babel/eslint-parser": "7.29.9",
-    "@babel/runtime": "7.29.7",
+    "@babel/runtime": "7.29.10",
     "@ember/test-helpers": "5.7.0",
     "@ember/test-waiters": "4.1.2",
     "@embroider/addon-dev": "8.4.2",
@@ -70,7 +70,7 @@
     "@eslint/js": "9.39.5",
     "@glimmer/component": "2.1.1",
     "@rollup/plugin-babel": "6.1.0",
-    "babel-plugin-ember-template-compilation": "4.0.0",
+    "babel-plugin-ember-template-compilation": "4.0.1",
     "concurrently": "9.2.4",
     "ember-qunit": "9.2.0",
     "ember-source": "7.3.0",
