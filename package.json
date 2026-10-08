@@ -88,7 +88,7 @@
     "qunit": "3.0.0",
     "qunit-dom": "3.6.0",
     "release-plan": "0.20.1",
-    "rollup": "4.64.2",
+    "rollup": "4.64.3",
     "testem": "3.21.3",
     "vite": "7.3.7"
   },
