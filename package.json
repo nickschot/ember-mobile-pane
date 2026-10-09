@@ -107,6 +107,7 @@
   "ember": {
     "edition": "octane"
   },
+  "ignoreCommitters": [],
   "ember-addon": {
     "version": 2,
     "type": "addon",
