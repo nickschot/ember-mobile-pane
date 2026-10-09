@@ -1,5 +1,17 @@
 # Changelog
 
+## Release (2026-10-09)
+
+* ember-mobile-pane 1.0.1 (patch)
+
+#### :house: Internal
+* `ember-mobile-pane`
+  * [#272](https://github.com/nickschot/ember-mobile-pane/pull/272) Add perfect-dependabot-setup ([@nickschot](https://github.com/nickschot))
+  * [#270](https://github.com/nickschot/ember-mobile-pane/pull/270) Remove renovate.json, put back carets in package.json ([@nickschot](https://github.com/nickschot))
+
+#### Committers: 1
+- Nick Schot ([@nickschot](https://github.com/nickschot))
+
 ## Release (2026-10-02)
 
 * ember-mobile-pane 1.0.0 (major)
