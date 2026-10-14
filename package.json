@@ -1,6 +1,6 @@
 {
   "name": "ember-mobile-pane",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Swipeable, lazily rendered panes with tab navigation for Ember.js mobile apps.",
   "keywords": [
     "ember-addon",
